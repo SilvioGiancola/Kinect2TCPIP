@@ -70,4 +70,5 @@ SET(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 SET(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/Kinect2Client.dir/DependInfo.cmake"
+  "CMakeFiles/Kinect2Server.dir/DependInfo.cmake"
   )

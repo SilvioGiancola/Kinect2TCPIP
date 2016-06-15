@@ -4,11 +4,9 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
-  "/home/sineco/git/Kinect2TCPIP/main.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/main.cpp.o"
-  "/home/sineco/git/Kinect2TCPIP/mainwindow.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o"
-  "/home/sineco/git/Kinect2TCPIP/build/moc_mainwindow.cxx" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o"
-  "/home/sineco/git/Kinect2TCPIP/build/moc_mykinect.cxx" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o"
-  "/home/sineco/git/Kinect2TCPIP/mykinect.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/mykinect.cpp.o"
+  "/home/sineco/git/Kinect2TCPIP/ClientMain.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o"
+  "/home/sineco/git/Kinect2TCPIP/ClientWindow.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o"
+  "/home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

@@ -52,152 +52,97 @@ include CMakeFiles/Kinect2Client.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Kinect2Client.dir/flags.make
 
-ui_mainwindow.h: ../mainwindow.ui
+ui_ClientWindow.h: ../ClientWindow.ui
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_1)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ui_mainwindow.h"
-	/usr/lib/x86_64-linux-gnu/qt4/bin/uic -o /home/sineco/git/Kinect2TCPIP/build/ui_mainwindow.h /home/sineco/git/Kinect2TCPIP/mainwindow.ui
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating ui_ClientWindow.h"
+	/usr/lib/x86_64-linux-gnu/qt4/bin/uic -o /home/sineco/git/Kinect2TCPIP/build/ui_ClientWindow.h /home/sineco/git/Kinect2TCPIP/ClientWindow.ui
 
-moc_mainwindow.cxx: ../mainwindow.h
+moc_ClientWindow.cxx: ../ClientWindow.h
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_2)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_mainwindow.cxx"
-	/usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/sineco/git/Kinect2TCPIP/build/moc_mainwindow.cxx_parameters
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_ClientWindow.cxx"
+	/usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx_parameters
 
-moc_mykinect.cxx: ../mykinect.h
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o: CMakeFiles/Kinect2Client.dir/flags.make
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o: ../ClientMain.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_3)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating moc_mykinect.cxx"
-	/usr/lib/x86_64-linux-gnu/qt4/bin/moc @/home/sineco/git/Kinect2TCPIP/build/moc_mykinect.cxx_parameters
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o -c /home/sineco/git/Kinect2TCPIP/ClientMain.cpp
 
-CMakeFiles/Kinect2Client.dir/main.cpp.o: CMakeFiles/Kinect2Client.dir/flags.make
-CMakeFiles/Kinect2Client.dir/main.cpp.o: ../main.cpp
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/ClientMain.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/ClientMain.cpp > CMakeFiles/Kinect2Client.dir/ClientMain.cpp.i
+
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/ClientMain.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/ClientMain.cpp -o CMakeFiles/Kinect2Client.dir/ClientMain.cpp.s
+
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.requires:
+.PHONY : CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.requires
+
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.provides: CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.provides.build
+.PHONY : CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.provides
+
+CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.provides.build: CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o
+
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o: CMakeFiles/Kinect2Client.dir/flags.make
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o: ../ClientWindow.cpp
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_4)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/main.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/main.cpp.o -c /home/sineco/git/Kinect2TCPIP/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o -c /home/sineco/git/Kinect2TCPIP/ClientWindow.cpp
 
-CMakeFiles/Kinect2Client.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/main.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/main.cpp > CMakeFiles/Kinect2Client.dir/main.cpp.i
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/ClientWindow.cpp > CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.i
 
-CMakeFiles/Kinect2Client.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/main.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/main.cpp -o CMakeFiles/Kinect2Client.dir/main.cpp.s
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/ClientWindow.cpp -o CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.s
 
-CMakeFiles/Kinect2Client.dir/main.cpp.o.requires:
-.PHONY : CMakeFiles/Kinect2Client.dir/main.cpp.o.requires
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.requires:
+.PHONY : CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.requires
 
-CMakeFiles/Kinect2Client.dir/main.cpp.o.provides: CMakeFiles/Kinect2Client.dir/main.cpp.o.requires
-	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/main.cpp.o.provides.build
-.PHONY : CMakeFiles/Kinect2Client.dir/main.cpp.o.provides
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.provides: CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.provides.build
+.PHONY : CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.provides
 
-CMakeFiles/Kinect2Client.dir/main.cpp.o.provides.build: CMakeFiles/Kinect2Client.dir/main.cpp.o
+CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.provides.build: CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o
 
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o: CMakeFiles/Kinect2Client.dir/flags.make
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o: ../mainwindow.cpp
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o: CMakeFiles/Kinect2Client.dir/flags.make
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o: moc_ClientWindow.cxx
 	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_5)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o -c /home/sineco/git/Kinect2TCPIP/mainwindow.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o"
+	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o -c /home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx
 
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/mainwindow.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/mainwindow.cpp > CMakeFiles/Kinect2Client.dir/mainwindow.cpp.i
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.i"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx > CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.i
 
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/mainwindow.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/mainwindow.cpp -o CMakeFiles/Kinect2Client.dir/mainwindow.cpp.s
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.s"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx -o CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.s
 
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.requires:
-.PHONY : CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.requires
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.requires:
+.PHONY : CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.requires
 
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.provides: CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.requires
-	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.provides.build
-.PHONY : CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.provides
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.provides: CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.requires
+	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.provides.build
+.PHONY : CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.provides
 
-CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.provides.build: CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o
-
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.o: CMakeFiles/Kinect2Client.dir/flags.make
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.o: ../mykinect.cpp
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_6)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/mykinect.cpp.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/mykinect.cpp.o -c /home/sineco/git/Kinect2TCPIP/mykinect.cpp
-
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/mykinect.cpp.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/mykinect.cpp > CMakeFiles/Kinect2Client.dir/mykinect.cpp.i
-
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/mykinect.cpp.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/mykinect.cpp -o CMakeFiles/Kinect2Client.dir/mykinect.cpp.s
-
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.requires:
-.PHONY : CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.requires
-
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.provides: CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.requires
-	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.provides.build
-.PHONY : CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.provides
-
-CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.provides.build: CMakeFiles/Kinect2Client.dir/mykinect.cpp.o
-
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o: CMakeFiles/Kinect2Client.dir/flags.make
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o: moc_mainwindow.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_7)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o -c /home/sineco/git/Kinect2TCPIP/build/moc_mainwindow.cxx
-
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/build/moc_mainwindow.cxx > CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.i
-
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/build/moc_mainwindow.cxx -o CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.s
-
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.requires:
-.PHONY : CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.requires
-
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.provides: CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.requires
-	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.provides.build
-.PHONY : CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.provides
-
-CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.provides.build: CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o
-
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o: CMakeFiles/Kinect2Client.dir/flags.make
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o: moc_mykinect.cxx
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles $(CMAKE_PROGRESS_8)
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building CXX object CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o"
-	/usr/bin/c++   $(CXX_DEFINES) $(CXX_FLAGS) -o CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o -c /home/sineco/git/Kinect2TCPIP/build/moc_mykinect.cxx
-
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.i"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -E /home/sineco/git/Kinect2TCPIP/build/moc_mykinect.cxx > CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.i
-
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.s"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_FLAGS) -S /home/sineco/git/Kinect2TCPIP/build/moc_mykinect.cxx -o CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.s
-
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.requires:
-.PHONY : CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.requires
-
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.provides: CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.requires
-	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.provides.build
-.PHONY : CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.provides
-
-CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.provides.build: CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o
+CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.provides.build: CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o
 
 # Object files for target Kinect2Client
 Kinect2Client_OBJECTS = \
-"CMakeFiles/Kinect2Client.dir/main.cpp.o" \
-"CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o" \
-"CMakeFiles/Kinect2Client.dir/mykinect.cpp.o" \
-"CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o" \
-"CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o"
+"CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o" \
+"CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o" \
+"CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o"
 
 # External object files for target Kinect2Client
 Kinect2Client_EXTERNAL_OBJECTS =
 
-Kinect2Client: CMakeFiles/Kinect2Client.dir/main.cpp.o
-Kinect2Client: CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o
-Kinect2Client: CMakeFiles/Kinect2Client.dir/mykinect.cpp.o
-Kinect2Client: CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o
-Kinect2Client: CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o
+Kinect2Client: CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o
+Kinect2Client: CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o
+Kinect2Client: CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o
 Kinect2Client: CMakeFiles/Kinect2Client.dir/build.make
 Kinect2Client: /usr/lib/x86_64-linux-gnu/libQtGui.so
 Kinect2Client: /usr/lib/x86_64-linux-gnu/libQtNetwork.so
@@ -320,20 +265,17 @@ Kinect2Client: CMakeFiles/Kinect2Client.dir/link.txt
 CMakeFiles/Kinect2Client.dir/build: Kinect2Client
 .PHONY : CMakeFiles/Kinect2Client.dir/build
 
-CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/main.cpp.o.requires
-CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/mainwindow.cpp.o.requires
-CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/mykinect.cpp.o.requires
-CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/moc_mainwindow.cxx.o.requires
-CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/moc_mykinect.cxx.o.requires
+CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o.requires
+CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o.requires
+CMakeFiles/Kinect2Client.dir/requires: CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o.requires
 .PHONY : CMakeFiles/Kinect2Client.dir/requires
 
 CMakeFiles/Kinect2Client.dir/clean:
 	$(CMAKE_COMMAND) -P CMakeFiles/Kinect2Client.dir/cmake_clean.cmake
 .PHONY : CMakeFiles/Kinect2Client.dir/clean
 
-CMakeFiles/Kinect2Client.dir/depend: ui_mainwindow.h
-CMakeFiles/Kinect2Client.dir/depend: moc_mainwindow.cxx
-CMakeFiles/Kinect2Client.dir/depend: moc_mykinect.cxx
+CMakeFiles/Kinect2Client.dir/depend: ui_ClientWindow.h
+CMakeFiles/Kinect2Client.dir/depend: moc_ClientWindow.cxx
 	cd /home/sineco/git/Kinect2TCPIP/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/sineco/git/Kinect2TCPIP /home/sineco/git/Kinect2TCPIP /home/sineco/git/Kinect2TCPIP/build /home/sineco/git/Kinect2TCPIP/build /home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/Kinect2Client.dir/depend
 

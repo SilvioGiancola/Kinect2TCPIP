@@ -113,6 +113,102 @@
             <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
+      <Target title="Kinect2Server">
+         <Option output="/home/sineco/git/Kinect2TCPIP/build/Kinect2Server" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DDISABLE_ENSENSO" />
+            <Add option="-DDISABLE_DAVIDSDK" />
+            <Add option="-DDISABLE_DSSDK" />
+            <Add option="-DDISABLE_PCAP" />
+            <Add option="-DDISABLE_PNG" />
+            <Add option="-DEIGEN_USE_NEW_STDVECTOR" />
+            <Add option="-DEIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET" />
+            <Add option="-DFLANN_STATIC" />
+            <Add option="-Dqh_QHpointer" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_NETWORK_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_DEBUG" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP/build" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.8" />
+            <Add directory="/usr/include/c++/4.8/backward" />
+            <Add directory="/usr/include/eigen3" />
+            <Add directory="/usr/include/ni" />
+            <Add directory="/usr/include/openni2" />
+            <Add directory="/usr/include/pcl-1.7" />
+            <Add directory="/usr/include/qt4" />
+            <Add directory="/usr/include/qt4/QtCore" />
+            <Add directory="/usr/include/qt4/QtGui" />
+            <Add directory="/usr/include/qt4/QtNetwork" />
+            <Add directory="/usr/include/vtk-5.8" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.8" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
+            <Add directory="/usr/local/include" />
+            <Add directory="/usr/local/include/pcl-1.8" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 Kinect2Server" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Kinect2Server/fast">
+         <Option output="/home/sineco/git/Kinect2TCPIP/build/Kinect2Server" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DDISABLE_ENSENSO" />
+            <Add option="-DDISABLE_DAVIDSDK" />
+            <Add option="-DDISABLE_DSSDK" />
+            <Add option="-DDISABLE_PCAP" />
+            <Add option="-DDISABLE_PNG" />
+            <Add option="-DEIGEN_USE_NEW_STDVECTOR" />
+            <Add option="-DEIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET" />
+            <Add option="-DFLANN_STATIC" />
+            <Add option="-Dqh_QHpointer" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_NETWORK_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_DEBUG" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP/build" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.8" />
+            <Add directory="/usr/include/c++/4.8/backward" />
+            <Add directory="/usr/include/eigen3" />
+            <Add directory="/usr/include/ni" />
+            <Add directory="/usr/include/openni2" />
+            <Add directory="/usr/include/pcl-1.7" />
+            <Add directory="/usr/include/qt4" />
+            <Add directory="/usr/include/qt4/QtCore" />
+            <Add directory="/usr/include/qt4/QtGui" />
+            <Add directory="/usr/include/qt4/QtNetwork" />
+            <Add directory="/usr/include/vtk-5.8" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.8" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
+            <Add directory="/usr/local/include" />
+            <Add directory="/usr/local/include/pcl-1.8" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 Kinect2Server/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
       <Target title="rebuild_cache">
          <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
          <Option type="4" />
@@ -124,11 +220,19 @@
          </MakeCommands>
       </Target>
       </Build>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/ClientMain.cpp">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/ClientWindow.cpp">
+      </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/main.cpp">
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/mainwindow.cpp">
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect.cpp">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/ClientWindow.h">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/ClientWindow.ui">
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/mainwindow.h">
       </Unit>

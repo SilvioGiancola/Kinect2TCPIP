@@ -6,6 +6,10 @@
 -I/usr/include/ni
 -I/usr/include/openni2
 -I/usr/include/vtk-5.8
+-I/usr/include/qt4
+-I/usr/include/qt4/QtGui
+-I/usr/include/qt4/QtNetwork
+-I/usr/include/qt4/QtCore
 -DDISABLE_ENSENSO
 -DDISABLE_DAVIDSDK
 -DDISABLE_DSSDK
@@ -18,6 +22,9 @@
 -DEIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 -DFLANN_STATIC
 -Dqh_QHpointer
+-DQT_GUI_LIB
+-DQT_NETWORK_LIB
+-DQT_CORE_LIB
 -o
 /home/sineco/git/Kinect2TCPIP/build/moc_mykinect.cxx
 /home/sineco/git/Kinect2TCPIP/mykinect.h
