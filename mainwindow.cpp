@@ -5,9 +5,25 @@
 // Constructor
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    // Setings
+    QSettings settings("Silvio Giancola","KinectV2Client");
+  //  settings.setValue("editor/wrapMargin",68);
+
+
+
     // Set the user interface from Qt Designer
     ui->setupUi(this);
 
+    // Initilizza l'elenco di Kinect
+
+    libfreenect2::Freenect2 freenect2;
+    int n_kinect = freenect2.enumerateDevices();
+    for (int i = 0; i < n_kinect; i++)
+    {
+        KinectList.append( MyKinect(i));
+    }
+
+    // initializza il Server TCPIP
     _port = 1234;
 
     server = new QTcpServer(this);
@@ -36,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         {
             qDebug () << "waiting for a network connection";
             qApp->processEvents();
-          //  usleep(1000*1000);
+            //  usleep(1000*1000);
         }
     }
 }
@@ -85,7 +101,7 @@ void MainWindow::newMessageReceived()
     qDebug() << "Server received the following message : " << message;
     if (message == QString("Connect"))
     {
-       /* if (ui->myIMU->openConnection() == SUCCESS)
+        /* if (ui->myIMU->openConnection() == SUCCESS)
             socket->write("IMU connected!");
         else
             socket->write("ERROR in IMU connection!");
@@ -98,20 +114,20 @@ void MainWindow::newMessageReceived()
     }
     else if(message == QString("Disconnect"))
     {
-     /*   ui->myIMU->closeConnection();
+        /*   ui->myIMU->closeConnection();
         ui->myPololuController->closeConnection();
         socket->write("disconnected!");*/
     }
     else if(message == QString("Grab"))
     {
-       /* ui->myPololuController->impulseChannel0();
+        /* ui->myPololuController->impulseChannel0();
         Eigen::Quaternionf quat = ui->myIMU->getQuaternion();
         QString message = QString("grabbed! quat are (w, x, y, z): %1, %2, %3, %4").arg(quat.w()).arg(quat.x()).arg(quat.y()).arg(quat.z());
         socket->write(message.toStdString().c_str());*/
     }
     else if(message.contains("GrabMult"))
     {
-       /* message.remove(0,8);
+        /* message.remove(0,8);
         int loop = message.toInt();
 
         for (int i = 0; i<loop; i++)

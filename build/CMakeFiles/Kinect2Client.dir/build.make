@@ -277,6 +277,7 @@ Kinect2Client: /usr/lib/libvtkRendering.so.5.8.0
 Kinect2Client: /usr/lib/libvtkGraphics.so.5.8.0
 Kinect2Client: /usr/lib/libvtkHybrid.so.5.8.0
 Kinect2Client: /usr/lib/libQVTK.so.5.8.0
+Kinect2Client: /usr/local/lib/libfreenect2.so
 Kinect2Client: /usr/lib/libpcl_common.so
 Kinect2Client: /usr/lib/libpcl_octree.so
 Kinect2Client: /usr/lib/libpcl_io.so
@@ -296,6 +297,7 @@ Kinect2Client: /usr/lib/libpcl_visualization.so
 Kinect2Client: /usr/local/lib/libpcl_stereo.so
 Kinect2Client: /usr/lib/libpcl_people.so
 Kinect2Client: /usr/lib/libpcl_outofcore.so
+Kinect2Client: /usr/local/lib/libfreenect2.so
 Kinect2Client: /usr/lib/libvtkViews.so.5.8.0
 Kinect2Client: /usr/lib/libvtkInfovis.so.5.8.0
 Kinect2Client: /usr/lib/libvtkWidgets.so.5.8.0

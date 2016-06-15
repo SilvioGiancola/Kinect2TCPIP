@@ -8,6 +8,8 @@
 #include <QNetworkInterface>
 #include <QDir>
 #include <QThread>
+#include <QSettings>
+#include <mykinect.h>
 
 
 namespace Ui {
@@ -34,6 +36,8 @@ private:
 
     QTcpServer *server;
     QTcpSocket *socket;
+
+    QList<MyKinect> KinectList;
     int _port;
 
 

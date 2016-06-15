@@ -7,17 +7,20 @@ find_package (Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork) # component of QT4
 find_package (VTK REQUIRED) # find VTK
 find_package (PCL 1.8 REQUIRED) # find PCL
 
+ # find freenect2
+find_package (freenect2 REQUIRED)
+
+
 # include the current directory
 SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+
+
 
 
 include_directories (${PCL_INCLUDE_DIRS})
 link_directories    (${PCL_LIBRARY_DIRS})
 add_definitions     (${PCL_DEFINITIONS})
-
- # find freenect2
-find_package (freenect2 REQUIRED)
-
 
 set  (project_SOURCES main.cpp mainwindow.cpp mykinect.cpp)
 set  (project_HEADERS mainwindow.h mykinect.h)
@@ -42,4 +45,4 @@ ADD_EXECUTABLE(Kinect2Client ${project_SOURCES}
                 ${project_FORMS_HEADERS}
                 ${project_HEADERS_MOC} )
 
-TARGET_LINK_LIBRARIES(Kinect2Client ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES})
+TARGET_LINK_LIBRARIES(Kinect2Client ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})

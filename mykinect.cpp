@@ -16,6 +16,21 @@ MyKinect::MyKinect(std::string serial)
 }
 
 
+MyKinect::MyKinect(int index)
+{
+    dev = 0;
+    pipeline = 0;
+
+    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Debug));
+
+    listener = new libfreenect2::SyncMultiFrameListener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth);
+    _serial = freenect2.getDeviceSerialNumber(index);
+    _open = false;
+    _play = false;
+    _save = false;
+}
+
+
 
 int MyKinect::Open(int i)
 {

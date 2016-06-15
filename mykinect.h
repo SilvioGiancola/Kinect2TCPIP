@@ -26,6 +26,7 @@ class MyKinect
 {
 public:
     MyKinect(std::string serial = "");
+    MyKinect(int i);
 
     int Open(int i=0);
     int Close();
