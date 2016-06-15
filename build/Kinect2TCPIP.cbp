@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="Kinect2TCPIP" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\usr\lib\vtk-5.8\;CMake Files\..\..\..\..\usr\lib\vtk-5.8\CMake\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\share\;CMake Files\..\..\..\..\usr\local\share\pcl-1.8\;CMake Files\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\usr\local\lib\cmake\freenect2\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Kinect2Client">
+         <Option output="/home/sineco/git/Kinect2TCPIP/build/Kinect2Client" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DDISABLE_ENSENSO" />
+            <Add option="-DDISABLE_DAVIDSDK" />
+            <Add option="-DDISABLE_DSSDK" />
+            <Add option="-DDISABLE_PCAP" />
+            <Add option="-DDISABLE_PNG" />
+            <Add option="-DEIGEN_USE_NEW_STDVECTOR" />
+            <Add option="-DEIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET" />
+            <Add option="-DFLANN_STATIC" />
+            <Add option="-Dqh_QHpointer" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_NETWORK_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_DEBUG" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP/build" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.8" />
+            <Add directory="/usr/include/c++/4.8/backward" />
+            <Add directory="/usr/include/eigen3" />
+            <Add directory="/usr/include/ni" />
+            <Add directory="/usr/include/openni2" />
+            <Add directory="/usr/include/pcl-1.7" />
+            <Add directory="/usr/include/qt4" />
+            <Add directory="/usr/include/qt4/QtCore" />
+            <Add directory="/usr/include/qt4/QtGui" />
+            <Add directory="/usr/include/qt4/QtNetwork" />
+            <Add directory="/usr/include/vtk-5.8" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.8" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
+            <Add directory="/usr/local/include" />
+            <Add directory="/usr/local/include/pcl-1.8" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 Kinect2Client" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Kinect2Client/fast">
+         <Option output="/home/sineco/git/Kinect2TCPIP/build/Kinect2Client" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DDISABLE_ENSENSO" />
+            <Add option="-DDISABLE_DAVIDSDK" />
+            <Add option="-DDISABLE_DSSDK" />
+            <Add option="-DDISABLE_PCAP" />
+            <Add option="-DDISABLE_PNG" />
+            <Add option="-DEIGEN_USE_NEW_STDVECTOR" />
+            <Add option="-DEIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET" />
+            <Add option="-DFLANN_STATIC" />
+            <Add option="-Dqh_QHpointer" />
+            <Add option="-DQT_GUI_LIB" />
+            <Add option="-DQT_NETWORK_LIB" />
+            <Add option="-DQT_CORE_LIB" />
+            <Add option="-DQT_DEBUG" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP" />
+            <Add directory="/home/sineco/git/Kinect2TCPIP/build" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.8" />
+            <Add directory="/usr/include/c++/4.8/backward" />
+            <Add directory="/usr/include/eigen3" />
+            <Add directory="/usr/include/ni" />
+            <Add directory="/usr/include/openni2" />
+            <Add directory="/usr/include/pcl-1.7" />
+            <Add directory="/usr/include/qt4" />
+            <Add directory="/usr/include/qt4/QtCore" />
+            <Add directory="/usr/include/qt4/QtGui" />
+            <Add directory="/usr/include/qt4/QtNetwork" />
+            <Add directory="/usr/include/vtk-5.8" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.8" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
+            <Add directory="/usr/local/include" />
+            <Add directory="/usr/local/include/pcl-1.8" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 Kinect2Client/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/sineco/git/Kinect2TCPIP/build" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/sineco/git/Kinect2TCPIP/build/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/main.cpp">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/mainwindow.cpp">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect.cpp">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/mainwindow.h">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/mainwindow.ui">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect.h">
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Java.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Python.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Tcl.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigQt.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKTargets.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKTargets-release.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Java.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Python.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Tcl.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigQt.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/UseVTK.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Java.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Python.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Tcl.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigQt.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/UseVTK.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Java.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Python.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfig-Tcl.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/VTKConfigQt.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/UseVTK.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/lib/vtk-5.8/CMake/vtkMakeInstantiator.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\lib\vtk-5.8\CMake\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/local/share/pcl-1.8/PCLConfigVersion.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\share\pcl-1.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/local/share/pcl-1.8/PCLConfig.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\share\pcl-1.8\" />
+      </Unit>
+      <Unit filename="/home/sineco/git/Kinect2TCPIP/../../../../usr/local/lib/cmake/freenect2/freenect2Config.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\freenect2\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

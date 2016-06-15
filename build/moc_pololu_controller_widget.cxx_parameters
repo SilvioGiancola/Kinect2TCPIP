@@ -1,0 +1,12 @@
+-I/usr/include/vtk-5.8
+-DDISABLE_ENSENSO
+-DDISABLE_DAVIDSDK
+-DDISABLE_DSSDK
+-DDISABLE_PCAP
+-DDISABLE_PNG
+-DDISABLE_ENSENSO
+-DDISABLE_DAVIDSDK
+-DDISABLE_DSSDK
+-o
+/home/sineco/git/Kinect2TCPIP/build/moc_pololu_controller_widget.cxx
+/home/sineco/git/Kinect2TCPIP/pololu_controller_widget.h
