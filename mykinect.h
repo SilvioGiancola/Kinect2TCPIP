@@ -15,26 +15,40 @@
 #include <QTime>
 #include <QDir>
 #include <QString>
+#include <QDebug>
 
-typedef pcl::PointXYZRGBNormal PointT;
-typedef pcl::PointCloud<PointT> PointCloudT;
+#include <define.h>
 
-#define SUCCESS 0
-#define ERROR 1
 
-class MyKinect
+class MyKinect : public QObject
 {
+    Q_OBJECT
+
 public:
     MyKinect(std::string serial = "");
-    MyKinect(int i);
 
-    int Open(int i=0);
+    int Open();
     int Close();
-    PointCloudT::Ptr Grab();
+    int Grab();
 
     bool _open;
     bool _play;
     bool _save;
+
+    QString getSerial()    {        return QString::fromStdString(_serial);    }
+    void setSerial(QString str)    {        _serial = str.toStdString();    }
+
+    QStringList getSerialList()
+    {
+        QStringList list;
+        for (int i = 0; i < freenect2.enumerateDevices(); i++)
+            list.append(QString::fromStdString(freenect2.getDeviceSerialNumber(i)));
+
+        return list;
+    }
+
+signals:
+    void PCGrabbedsignal(PointCloudT::Ptr);
 
 private:
     libfreenect2::Freenect2 freenect2;
@@ -44,9 +58,9 @@ private:
     libfreenect2::PacketPipeline *pipeline;
 
 
-
-
     std::string _serial;
+
+
 
     PointCloudT::Ptr PC;
 

@@ -1,9 +1,11 @@
 FILE(REMOVE_RECURSE
   "ui_ClientWindow.h"
   "moc_ClientWindow.cxx"
+  "moc_define.cxx"
   "CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o"
   "CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o"
   "CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o"
+  "CMakeFiles/Kinect2Client.dir/moc_define.cxx.o"
   "Kinect2Client.pdb"
   "Kinect2Client"
 )

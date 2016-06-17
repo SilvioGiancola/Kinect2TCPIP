@@ -88,17 +88,17 @@ void ClientWindow::on_pushButton_Send_clicked()
 
 void ClientWindow::on_pushButton_Connect_Devices_clicked()
 {
-    WriteMessage(QString("Connect"));
+    WriteMessage(QString(PROTOCOL_OPEN));
 }
 
 void ClientWindow::on_pushButton_Disconnect_Devices_clicked()
 {
-    WriteMessage(QString("Disconnect"));
+    WriteMessage(QString(PROTOCOL_CLOSE));
 }
 
 void ClientWindow::on_pushButton_Grab_Devices_clicked()
 {
-    WriteMessage(QString("Grab"));
+    WriteMessage(QString(PROTOCOL_GRAB));
 }
 
 

@@ -175,53 +175,53 @@ ClientWindow.cpp.s:
 	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.s
 .PHONY : ClientWindow.cpp.s
 
-main.o: main.cpp.o
-.PHONY : main.o
+ServerMain.o: ServerMain.cpp.o
+.PHONY : ServerMain.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/main.cpp.o
-.PHONY : main.cpp.o
+ServerMain.cpp.o:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/ServerMain.cpp.o
+.PHONY : ServerMain.cpp.o
 
-main.i: main.cpp.i
-.PHONY : main.i
+ServerMain.i: ServerMain.cpp.i
+.PHONY : ServerMain.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/main.cpp.i
-.PHONY : main.cpp.i
+ServerMain.cpp.i:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/ServerMain.cpp.i
+.PHONY : ServerMain.cpp.i
 
-main.s: main.cpp.s
-.PHONY : main.s
+ServerMain.s: ServerMain.cpp.s
+.PHONY : ServerMain.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/main.cpp.s
-.PHONY : main.cpp.s
+ServerMain.cpp.s:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/ServerMain.cpp.s
+.PHONY : ServerMain.cpp.s
 
-mainwindow.o: mainwindow.cpp.o
-.PHONY : mainwindow.o
+ServerWindow.o: ServerWindow.cpp.o
+.PHONY : ServerWindow.o
 
 # target to build an object file
-mainwindow.cpp.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mainwindow.cpp.o
-.PHONY : mainwindow.cpp.o
+ServerWindow.cpp.o:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/ServerWindow.cpp.o
+.PHONY : ServerWindow.cpp.o
 
-mainwindow.i: mainwindow.cpp.i
-.PHONY : mainwindow.i
+ServerWindow.i: ServerWindow.cpp.i
+.PHONY : ServerWindow.i
 
 # target to preprocess a source file
-mainwindow.cpp.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mainwindow.cpp.i
-.PHONY : mainwindow.cpp.i
+ServerWindow.cpp.i:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/ServerWindow.cpp.i
+.PHONY : ServerWindow.cpp.i
 
-mainwindow.s: mainwindow.cpp.s
-.PHONY : mainwindow.s
+ServerWindow.s: ServerWindow.cpp.s
+.PHONY : ServerWindow.s
 
 # target to generate assembly for a file
-mainwindow.cpp.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mainwindow.cpp.s
-.PHONY : mainwindow.cpp.s
+ServerWindow.cpp.s:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/ServerWindow.cpp.s
+.PHONY : ServerWindow.cpp.s
 
 moc_ClientWindow.o: moc_ClientWindow.cxx.o
 .PHONY : moc_ClientWindow.o
@@ -247,29 +247,56 @@ moc_ClientWindow.cxx.s:
 	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.s
 .PHONY : moc_ClientWindow.cxx.s
 
-moc_mainwindow.o: moc_mainwindow.cxx.o
-.PHONY : moc_mainwindow.o
+moc_ServerWindow.o: moc_ServerWindow.cxx.o
+.PHONY : moc_ServerWindow.o
 
 # target to build an object file
-moc_mainwindow.cxx.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mainwindow.cxx.o
-.PHONY : moc_mainwindow.cxx.o
+moc_ServerWindow.cxx.o:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_ServerWindow.cxx.o
+.PHONY : moc_ServerWindow.cxx.o
 
-moc_mainwindow.i: moc_mainwindow.cxx.i
-.PHONY : moc_mainwindow.i
+moc_ServerWindow.i: moc_ServerWindow.cxx.i
+.PHONY : moc_ServerWindow.i
 
 # target to preprocess a source file
-moc_mainwindow.cxx.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mainwindow.cxx.i
-.PHONY : moc_mainwindow.cxx.i
+moc_ServerWindow.cxx.i:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_ServerWindow.cxx.i
+.PHONY : moc_ServerWindow.cxx.i
 
-moc_mainwindow.s: moc_mainwindow.cxx.s
-.PHONY : moc_mainwindow.s
+moc_ServerWindow.s: moc_ServerWindow.cxx.s
+.PHONY : moc_ServerWindow.s
 
 # target to generate assembly for a file
-moc_mainwindow.cxx.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mainwindow.cxx.s
-.PHONY : moc_mainwindow.cxx.s
+moc_ServerWindow.cxx.s:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_ServerWindow.cxx.s
+.PHONY : moc_ServerWindow.cxx.s
+
+moc_define.o: moc_define.cxx.o
+.PHONY : moc_define.o
+
+# target to build an object file
+moc_define.cxx.o:
+	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_define.cxx.o
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_define.cxx.o
+.PHONY : moc_define.cxx.o
+
+moc_define.i: moc_define.cxx.i
+.PHONY : moc_define.i
+
+# target to preprocess a source file
+moc_define.cxx.i:
+	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_define.cxx.i
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_define.cxx.i
+.PHONY : moc_define.cxx.i
+
+moc_define.s: moc_define.cxx.s
+.PHONY : moc_define.s
+
+# target to generate assembly for a file
+moc_define.cxx.s:
+	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/moc_define.cxx.s
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_define.cxx.s
+.PHONY : moc_define.cxx.s
 
 moc_mykinect.o: moc_mykinect.cxx.o
 .PHONY : moc_mykinect.o
@@ -295,6 +322,30 @@ moc_mykinect.cxx.s:
 	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect.cxx.s
 .PHONY : moc_mykinect.cxx.s
 
+moc_mykinect_widget.o: moc_mykinect_widget.cxx.o
+.PHONY : moc_mykinect_widget.o
+
+# target to build an object file
+moc_mykinect_widget.cxx.o:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect_widget.cxx.o
+.PHONY : moc_mykinect_widget.cxx.o
+
+moc_mykinect_widget.i: moc_mykinect_widget.cxx.i
+.PHONY : moc_mykinect_widget.i
+
+# target to preprocess a source file
+moc_mykinect_widget.cxx.i:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect_widget.cxx.i
+.PHONY : moc_mykinect_widget.cxx.i
+
+moc_mykinect_widget.s: moc_mykinect_widget.cxx.s
+.PHONY : moc_mykinect_widget.s
+
+# target to generate assembly for a file
+moc_mykinect_widget.cxx.s:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect_widget.cxx.s
+.PHONY : moc_mykinect_widget.cxx.s
+
 mykinect.o: mykinect.cpp.o
 .PHONY : mykinect.o
 
@@ -319,6 +370,30 @@ mykinect.cpp.s:
 	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect.cpp.s
 .PHONY : mykinect.cpp.s
 
+mykinect_widget.o: mykinect_widget.cpp.o
+.PHONY : mykinect_widget.o
+
+# target to build an object file
+mykinect_widget.cpp.o:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect_widget.cpp.o
+.PHONY : mykinect_widget.cpp.o
+
+mykinect_widget.i: mykinect_widget.cpp.i
+.PHONY : mykinect_widget.i
+
+# target to preprocess a source file
+mykinect_widget.cpp.i:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect_widget.cpp.i
+.PHONY : mykinect_widget.cpp.i
+
+mykinect_widget.s: mykinect_widget.cpp.s
+.PHONY : mykinect_widget.s
+
+# target to generate assembly for a file
+mykinect_widget.cpp.s:
+	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect_widget.cpp.s
+.PHONY : mykinect_widget.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -335,24 +410,33 @@ help:
 	@echo "... ClientWindow.o"
 	@echo "... ClientWindow.i"
 	@echo "... ClientWindow.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... mainwindow.o"
-	@echo "... mainwindow.i"
-	@echo "... mainwindow.s"
+	@echo "... ServerMain.o"
+	@echo "... ServerMain.i"
+	@echo "... ServerMain.s"
+	@echo "... ServerWindow.o"
+	@echo "... ServerWindow.i"
+	@echo "... ServerWindow.s"
 	@echo "... moc_ClientWindow.o"
 	@echo "... moc_ClientWindow.i"
 	@echo "... moc_ClientWindow.s"
-	@echo "... moc_mainwindow.o"
-	@echo "... moc_mainwindow.i"
-	@echo "... moc_mainwindow.s"
+	@echo "... moc_ServerWindow.o"
+	@echo "... moc_ServerWindow.i"
+	@echo "... moc_ServerWindow.s"
+	@echo "... moc_define.o"
+	@echo "... moc_define.i"
+	@echo "... moc_define.s"
 	@echo "... moc_mykinect.o"
 	@echo "... moc_mykinect.i"
 	@echo "... moc_mykinect.s"
+	@echo "... moc_mykinect_widget.o"
+	@echo "... moc_mykinect_widget.i"
+	@echo "... moc_mykinect_widget.s"
 	@echo "... mykinect.o"
 	@echo "... mykinect.i"
 	@echo "... mykinect.s"
+	@echo "... mykinect_widget.o"
+	@echo "... mykinect_widget.i"
+	@echo "... mykinect_widget.s"
 .PHONY : help
 
 

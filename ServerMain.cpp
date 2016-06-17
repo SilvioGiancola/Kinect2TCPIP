@@ -1,11 +1,11 @@
 #include <QtGui/QApplication>
-#include "mainwindow.h"
+#include "ServerWindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    MainWindow w;
+    ServerWindow w;
     w.showMaximized();
 
     return a.exec();

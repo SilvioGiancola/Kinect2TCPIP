@@ -62,7 +62,7 @@ CMAKE_BINARY_DIR = /home/sineco/git/Kinect2TCPIP/build
 CMakeFiles/Kinect2Client.dir/all:
 	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/depend
 	$(MAKE) -f CMakeFiles/Kinect2Client.dir/build.make CMakeFiles/Kinect2Client.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles  1 2 3 4 5
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles  1 2 3 4 5 6 7
 	@echo "Built target Kinect2Client"
 .PHONY : CMakeFiles/Kinect2Client.dir/all
 
@@ -72,7 +72,7 @@ all: CMakeFiles/Kinect2Client.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Kinect2Client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/sineco/git/Kinect2TCPIP/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sineco/git/Kinect2TCPIP/build/CMakeFiles 7
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Kinect2Client.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/sineco/git/Kinect2TCPIP/build/CMakeFiles 0
 .PHONY : CMakeFiles/Kinect2Client.dir/rule
@@ -97,7 +97,7 @@ clean: CMakeFiles/Kinect2Client.dir/clean
 CMakeFiles/Kinect2Server.dir/all:
 	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/depend
 	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles  6 7 8 9 10 11 12 13
+	$(CMAKE_COMMAND) -E cmake_progress_report /home/sineco/git/Kinect2TCPIP/build/CMakeFiles  8 9 10 11 12 13 14 15 16 17 18 19 20 21
 	@echo "Built target Kinect2Server"
 .PHONY : CMakeFiles/Kinect2Server.dir/all
 
@@ -107,7 +107,7 @@ all: CMakeFiles/Kinect2Server.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Kinect2Server.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/sineco/git/Kinect2TCPIP/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sineco/git/Kinect2TCPIP/build/CMakeFiles 14
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Kinect2Server.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/sineco/git/Kinect2TCPIP/build/CMakeFiles 0
 .PHONY : CMakeFiles/Kinect2Server.dir/rule

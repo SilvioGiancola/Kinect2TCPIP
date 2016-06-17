@@ -7,6 +7,7 @@ SET(CMAKE_DEPENDS_CHECK_CXX
   "/home/sineco/git/Kinect2TCPIP/ClientMain.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/ClientMain.cpp.o"
   "/home/sineco/git/Kinect2TCPIP/ClientWindow.cpp" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/ClientWindow.cpp.o"
   "/home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/moc_ClientWindow.cxx.o"
+  "/home/sineco/git/Kinect2TCPIP/build/moc_define.cxx" "/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir/moc_define.cxx.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

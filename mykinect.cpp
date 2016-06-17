@@ -1,12 +1,12 @@
 #include "mykinect.h"
 
 
-MyKinect::MyKinect(std::string serial)
+MyKinect::MyKinect(std::string serial) : QObject()
 {
     dev = 0;
     pipeline = 0;
 
-    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Debug));
+    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Warning));
 
     listener = new libfreenect2::SyncMultiFrameListener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth);
     _serial = serial;
@@ -16,33 +16,23 @@ MyKinect::MyKinect(std::string serial)
 }
 
 
-MyKinect::MyKinect(int index)
-{
-    dev = 0;
-    pipeline = 0;
-
-    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Debug));
-
-    listener = new libfreenect2::SyncMultiFrameListener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth);
-    _serial = freenect2.getDeviceSerialNumber(index);
-    _open = false;
-    _play = false;
-    _save = false;
-}
-
-
-
-int MyKinect::Open(int i)
+int MyKinect::Open()
 {
     if (_open)
     {
-        std::cout << "Device is already open!" << std::endl;
+        qWarning() << "Kinect is already open";
         return ERROR;
     }
 
     if(freenect2.enumerateDevices() == 0)
     {
-        std::cout << "no device connected!" << std::endl;
+        qWarning() << tr("Error in opening Kinect, no Kinect connected");
+        return ERROR;
+    }
+
+    if (_serial == "")
+    {
+        qWarning() << tr("Error in opening Kinect, please define a serial number");
         return ERROR;
     }
 
@@ -59,18 +49,16 @@ int MyKinect::Open(int i)
 #endif
 #endif
 
-    if (_serial == "")
-        _serial = freenect2.getDeviceSerialNumber(i);
-
     dev = freenect2.openDevice(_serial,pipeline);
 
 
 
     if(dev == 0)
     {
-        std::cout << "no device connected or failure opening the default one!" << std::endl;
+        qWarning() << tr("Error in opening Kinect, failure opening the default one");
         return ERROR;
     }
+
 
     dev->setColorFrameListener(listener);
     dev->setIrAndDepthFrameListener(listener);
@@ -112,13 +100,13 @@ int MyKinect::Close()
 }
 
 
-PointCloudT::Ptr MyKinect::Grab()
+int MyKinect::Grab()
 {
     if (!_open)
     {
         std::cout << "stream not opened" << std::endl;
         PC.reset(new PointCloudT());
-        return PC;
+        return ERROR;
     }
 
 
@@ -156,7 +144,8 @@ PointCloudT::Ptr MyKinect::Grab()
     //   PC->width = undistorted.width;          // set the width
     //   PC->is_dense = false;                   // Kinect V2 returns organized and not dense point clouds
     PC->header.stamp = timestamp.toMSecsSinceEpoch();                               // the stamp correspond to the acquisition time
-    PC->header.frame_id = QString("%1/PointClouds/Kinect%2_%3.pcd").arg(QDir::homePath()).arg(_serial.c_str()).arg(timestamp.toString("yyyy-MM-dd-HH:mm:ss:zzz")).toStdString();
+    //  PC->header.frame_id = QString("%1/PointClouds/Kinect%2_%3.pcd").arg(QDir::homePath()).arg(_serial.c_str()).arg(timestamp.toString("yyyy-MM-dd-HH:mm:ss:zzz")).toStdString();
+    PC->header.frame_id = _serial;
 
 
     // Set data into my Point cloud
@@ -191,8 +180,10 @@ PointCloudT::Ptr MyKinect::Grab()
         }
     }
 
-    std::cout << QDateTime::currentDateTime().toString().toStdString() << " time elapsed :" << t.elapsed() << "  PointCloud is : " << PC->size() << std::endl;
 
+    emit PCGrabbedsignal(PC);
 
-    return PC;
+    return SUCCESS;
 }
+
+

@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QSettings>
 
+#include <define.h>
+
 namespace Ui {
 class ClientWindow;
 }
