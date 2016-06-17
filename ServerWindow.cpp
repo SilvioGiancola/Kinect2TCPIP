@@ -10,7 +10,7 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
     ui->centralWidget->setVisible(false);
 
 
-    // Init inter parameters
+    // Init intern parameters
     for (int i = 0; i < 2 ; i++)
     {
         serials.append(QString(""));
@@ -51,15 +51,6 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
     ui->comboBox_pipeline_kin1->model()->setData(ui->comboBox_pipeline_kin1->model()->index(3,0), 0, Qt::UserRole - 1);
     ui->comboBox_pipeline_kin2->model()->setData(ui->comboBox_pipeline_kin2->model()->index(3,0), 0, Qt::UserRole - 1);
 #endif
-
-
-
-
-
-
-
-    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Warning));
-
 
 
 
@@ -283,11 +274,11 @@ int ServerWindow::OpenKinect(int i)
         return ERROR;
     }
 
-    if(freenect2.enumerateDevices() == 0)
+   /* if(freenect2.enumerateDevices() == 0)
     {
         qWarning() << tr("Error in opening Kinect, no Kinect connected");
         return ERROR;
-    }
+    }*/
 
     if (serials.at(i).isEmpty())
     {
@@ -316,43 +307,14 @@ int ServerWindow::OpenKinect(int i)
     registration.replace(i, new libfreenect2::Registration(dev.at(i)->getIrCameraParams(), dev.at(i)->getColorCameraParams()));
 
 
-
-
     return SUCCESS;
 }
 
 int ServerWindow::GrabKinect(int i)
 {
-    /*
-    libfreenect2::Freenect2Device *dev;
-    libfreenect2::Registration *registration;
-    libfreenect2::SyncMultiFrameListener *listener;
-    libfreenect2::PacketPipeline *pipeline;
-
-    //  std::string _serial;
-    if (i == 1)
-    {
-        dev = kin1_dev;
-        // _serial = kin1_serial;
-        listener = kin1_listener;
-        registration = kin1_registration;
-        pipeline = kin1_pipeline;
-    }
-    else if (i ==2)
-    {
-        dev = kin2_dev;
-        //   _serial = kin2_serial;
-        listener = kin2_listener;
-        registration = kin2_registration;
-        pipeline = kin2_pipeline;
-    }
-    else
-        return ERROR;*/
-
-
     if (dev.at(i) == 0)
     {
-        std::cout << "stream not opened" << std::endl;
+        qWarning() << "Kinect stream is not open";
         return ERROR;
     }
 
@@ -437,25 +399,10 @@ int ServerWindow::GrabKinect(int i)
 
 int ServerWindow::CloseKinect(int i)
 {
-    /*   libfreenect2::Freenect2Device *dev;
-    // std::string _serial;
-    if (i == 1)
-    {
-        dev = kin1_dev;
-        //   _serial = kin1_serial;
-    }
-    else if (i ==2)
-    {
-        dev = kin2_dev;
-        //     _serial = kin2_serial;
-    }
-    else
-        return ERROR;
 
-*/
     if (dev.at(i) == 0)
     {
-        std::cout << "already closed" << std::endl;
+        qWarning() << "Kinect already closed";
         return ERROR;
     }
 

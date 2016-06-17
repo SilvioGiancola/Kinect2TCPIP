@@ -298,102 +298,6 @@ moc_define.cxx.s:
 	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_define.cxx.s
 .PHONY : moc_define.cxx.s
 
-moc_mykinect.o: moc_mykinect.cxx.o
-.PHONY : moc_mykinect.o
-
-# target to build an object file
-moc_mykinect.cxx.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect.cxx.o
-.PHONY : moc_mykinect.cxx.o
-
-moc_mykinect.i: moc_mykinect.cxx.i
-.PHONY : moc_mykinect.i
-
-# target to preprocess a source file
-moc_mykinect.cxx.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect.cxx.i
-.PHONY : moc_mykinect.cxx.i
-
-moc_mykinect.s: moc_mykinect.cxx.s
-.PHONY : moc_mykinect.s
-
-# target to generate assembly for a file
-moc_mykinect.cxx.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect.cxx.s
-.PHONY : moc_mykinect.cxx.s
-
-moc_mykinect_widget.o: moc_mykinect_widget.cxx.o
-.PHONY : moc_mykinect_widget.o
-
-# target to build an object file
-moc_mykinect_widget.cxx.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect_widget.cxx.o
-.PHONY : moc_mykinect_widget.cxx.o
-
-moc_mykinect_widget.i: moc_mykinect_widget.cxx.i
-.PHONY : moc_mykinect_widget.i
-
-# target to preprocess a source file
-moc_mykinect_widget.cxx.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect_widget.cxx.i
-.PHONY : moc_mykinect_widget.cxx.i
-
-moc_mykinect_widget.s: moc_mykinect_widget.cxx.s
-.PHONY : moc_mykinect_widget.s
-
-# target to generate assembly for a file
-moc_mykinect_widget.cxx.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/moc_mykinect_widget.cxx.s
-.PHONY : moc_mykinect_widget.cxx.s
-
-mykinect.o: mykinect.cpp.o
-.PHONY : mykinect.o
-
-# target to build an object file
-mykinect.cpp.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect.cpp.o
-.PHONY : mykinect.cpp.o
-
-mykinect.i: mykinect.cpp.i
-.PHONY : mykinect.i
-
-# target to preprocess a source file
-mykinect.cpp.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect.cpp.i
-.PHONY : mykinect.cpp.i
-
-mykinect.s: mykinect.cpp.s
-.PHONY : mykinect.s
-
-# target to generate assembly for a file
-mykinect.cpp.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect.cpp.s
-.PHONY : mykinect.cpp.s
-
-mykinect_widget.o: mykinect_widget.cpp.o
-.PHONY : mykinect_widget.o
-
-# target to build an object file
-mykinect_widget.cpp.o:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect_widget.cpp.o
-.PHONY : mykinect_widget.cpp.o
-
-mykinect_widget.i: mykinect_widget.cpp.i
-.PHONY : mykinect_widget.i
-
-# target to preprocess a source file
-mykinect_widget.cpp.i:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect_widget.cpp.i
-.PHONY : mykinect_widget.cpp.i
-
-mykinect_widget.s: mykinect_widget.cpp.s
-.PHONY : mykinect_widget.s
-
-# target to generate assembly for a file
-mykinect_widget.cpp.s:
-	$(MAKE) -f CMakeFiles/Kinect2Server.dir/build.make CMakeFiles/Kinect2Server.dir/mykinect_widget.cpp.s
-.PHONY : mykinect_widget.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -425,18 +329,6 @@ help:
 	@echo "... moc_define.o"
 	@echo "... moc_define.i"
 	@echo "... moc_define.s"
-	@echo "... moc_mykinect.o"
-	@echo "... moc_mykinect.i"
-	@echo "... moc_mykinect.s"
-	@echo "... moc_mykinect_widget.o"
-	@echo "... moc_mykinect_widget.i"
-	@echo "... moc_mykinect_widget.s"
-	@echo "... mykinect.o"
-	@echo "... mykinect.i"
-	@echo "... mykinect.s"
-	@echo "... mykinect_widget.o"
-	@echo "... mykinect_widget.i"
-	@echo "... mykinect_widget.s"
 .PHONY : help
 
 

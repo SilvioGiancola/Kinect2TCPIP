@@ -12,14 +12,6 @@ pcl/point_cloud.h
 pcl/point_types.h
 -
 
-/home/sineco/git/Kinect2TCPIP/ClientMain.cpp
-ClientWindow.h
-/home/sineco/git/Kinect2TCPIP/ClientWindow.h
-QApplication
--
-QFile
--
-
 /home/sineco/git/Kinect2TCPIP/ClientWindow.cpp
 ClientWindow.h
 /home/sineco/git/Kinect2TCPIP/ClientWindow.h
@@ -35,10 +27,6 @@ QSettings
 -
 define.h
 -
-
-/home/sineco/git/Kinect2TCPIP/build/moc_ClientWindow.cxx
-../ClientWindow.h
-/home/sineco/git/Kinect2TCPIP/ClientWindow.h
 
 /usr/include/eigen3/Eigen/Cholesky
 Core
@@ -1065,10 +1053,6 @@ iterator
 -
 list
 -
-
-/usr/include/qt4/QtCore/QFile
-qfile.h
-/usr/include/qt4/QtCore/qfile.h
 
 /usr/include/qt4/QtCore/QPoint
 qpoint.h

@@ -28,9 +28,9 @@ set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
 
 
 # SERVER SOLUTION (Kinect V2 Handler)
-set  (server_SOURCES ServerMain.cpp ServerWindow.cpp mykinect.cpp mykinect_widget.cpp)
-set  (server_HEADERS ServerWindow.h define.h mykinect.h mykinect_widget.h)
-set  (server_FORMS   ServerWindow.ui mykinect_widget.ui)
+set  (server_SOURCES ServerMain.cpp ServerWindow.cpp )
+set  (server_HEADERS ServerWindow.h define.h )
+set  (server_FORMS   ServerWindow.ui)
 
 
 QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})

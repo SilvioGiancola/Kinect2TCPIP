@@ -228,10 +228,6 @@
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/ServerWindow.cpp">
       </Unit>
-      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect.cpp">
-      </Unit>
-      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect_widget.cpp">
-      </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/ClientWindow.h">
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/ClientWindow.ui">
@@ -241,12 +237,6 @@
       <Unit filename="/home/sineco/git/Kinect2TCPIP/ServerWindow.ui">
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/define.h">
-      </Unit>
-      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect.h">
-      </Unit>
-      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect_widget.h">
-      </Unit>
-      <Unit filename="/home/sineco/git/Kinect2TCPIP/mykinect_widget.ui">
       </Unit>
       <Unit filename="/home/sineco/git/Kinect2TCPIP/CMakeLists.txt">
           <Option virtualFolder="CMake Files\" />

@@ -9,7 +9,15 @@
 #include <QDir>
 #include <QThread>
 #include <QSettings>
-#include <mykinect.h>
+#include <QTime>
+
+#include <define.h>
+
+#include <libfreenect2/libfreenect2.hpp>
+#include <libfreenect2/frame_listener_impl.h>
+#include <libfreenect2/registration.h>
+#include <libfreenect2/packet_pipeline.h>
+#include <libfreenect2/logger.h>
 
 #include <pcl/visualization/pcl_visualizer.h> // viewer
 #include <vtkRenderWindow.h> // qvtk
