@@ -45,9 +45,9 @@ TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRA
 
 
 # CLIENT SOLUTION (remote control)
-set  (client_SOURCES ClientMain.cpp ClientWindow.cpp)
-set  (client_HEADERS ClientWindow.h define.h )
-set  (client_FORMS   ClientWindow.ui)
+set  (client_SOURCES ClientMain.cpp ClientWidget.cpp MultiClientWindow.cpp)
+set  (client_HEADERS ClientWidget.h MultiClientWindow.h define.h )
+set  (client_FORMS   ClientWidget.ui MultiClientWindow.ui)
 
 
 QT4_WRAP_CPP(client_HEADERS_MOC ${client_HEADERS})

@@ -58,20 +58,13 @@ void ClientWindow::on_pushButton_Disconnect_clicked()
 
 void ClientWindow::plotState(QAbstractSocket::SocketState state)
 {
-    if (state == QAbstractSocket::UnconnectedState)
-        ui->label_ConnectionState->setText(QString("UnconnectedState"));
-    else if (state == QAbstractSocket::HostLookupState)
-        ui->label_ConnectionState->setText(QString("HostLookupState"));
-    else if (state == QAbstractSocket::ConnectingState)
-        ui->label_ConnectionState->setText(QString("ConnectingState"));
-    else if (state == QAbstractSocket::ConnectedState)
-        ui->label_ConnectionState->setText(QString("ConnectedState"));
-    else if (state == QAbstractSocket::BoundState)
-        ui->label_ConnectionState->setText(QString("BoundState"));
-    else if (state == QAbstractSocket::ListeningState)
-        ui->label_ConnectionState->setText(QString("ListeningState"));
-    else if (state == QAbstractSocket::ClosingState)
-        ui->label_ConnectionState->setText(QString("ClosingState"));
+    if (state == QAbstractSocket::UnconnectedState)     ui->label_ConnectionState->setText(QString("UnconnectedState"));
+    else if (state == QAbstractSocket::HostLookupState) ui->label_ConnectionState->setText(QString("HostLookupState"));
+    else if (state == QAbstractSocket::ConnectingState) ui->label_ConnectionState->setText(QString("ConnectingState"));
+    else if (state == QAbstractSocket::ConnectedState)  ui->label_ConnectionState->setText(QString("ConnectedState"));
+    else if (state == QAbstractSocket::BoundState)      ui->label_ConnectionState->setText(QString("BoundState"));
+    else if (state == QAbstractSocket::ListeningState)  ui->label_ConnectionState->setText(QString("ListeningState"));
+    else if (state == QAbstractSocket::ClosingState)    ui->label_ConnectionState->setText(QString("ClosingState"));
 
     qDebug() << state;
 }
@@ -101,6 +94,20 @@ void ClientWindow::on_pushButton_Grab_Devices_clicked()
     WriteMessage(QString(PROTOCOL_GRAB));
 }
 
+void ClientWindow::on_pushButton_Grab_Multiple_clicked()
+{
+    WriteMessage(QString("GrabMult%1").arg(ui->spinBox_nb_Grab->value()));
+}
+
+
+/// TO DO:
+/// ADD REBOOT server
+/// ADD Setup OpenCL/OpenGL/CPU control (pipeline)
+/// ADD verification number of Kinect
+/// ADD answer on server if correctly grabbed / open / closed
+/// ADD multiple computer handler
+/// ADD position matrix handle
+/// CONNECT 2 kinect on 2nd PC
 
 void ClientWindow::newMessageReceived()
 {
@@ -113,9 +120,4 @@ void ClientWindow::WriteMessage(QString message)
 {
     mySocket->write(message.toStdString().c_str());
     return;
-}
-
-void ClientWindow::on_pushButton_Grab_Multiple_clicked()
-{
-    WriteMessage(QString("GrabMult%1").arg(ui->spinBox_nb_Grab->value()));
 }
