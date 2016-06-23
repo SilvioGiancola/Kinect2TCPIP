@@ -13,5 +13,10 @@ typedef pcl::PointCloud<PointT> PointCloudT;
 #define PROTOCOL_GRAB "Grab"
 #define PROTOCOL_OPEN "Open"
 #define PROTOCOL_CLOSE "Close"
+#define PROTOCOL_PIPELINE "Pipeline_"
+#define PROTOCOL_SAVE "SAVE_"
+
+#define dateFormat "yyyy.MM.dd_hh.mm.ss.zzz"
+
 
 #endif // DEFINE_H

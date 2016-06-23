@@ -27,10 +27,22 @@ ClientWidget::~ClientWidget()
 
 
 // GET/SET
+void ClientWidget::setIPCompletion(QStringList *strList)
+{
+    IPhistory = strList;
+    QCompleter *comp = new QCompleter(*IPhistory, this);
+    comp->setCaseSensitivity(Qt::CaseInsensitive);
+    ui->lineEdit_IP->setCompleter(comp);
+}
+
+
 void ClientWidget::setIP(QString str){ui->lineEdit_IP->setText(str);}
 void ClientWidget::setPort(QString str){ui->lineEdit_Port->setText(str);}
+void ClientWidget::setMessage(QString str) {ui->lineEdit_Message->setText(str);}
 QString ClientWidget::getIP(){return ui->lineEdit_IP->text();}
 QString ClientWidget::getPort(){return ui->lineEdit_Port->text();}
+QString ClientWidget::getLastMessage(){return ui->lineEdit_Message->text();}
+
 
 
 
@@ -40,6 +52,14 @@ QString ClientWidget::getPort(){return ui->lineEdit_Port->text();}
 void ClientWidget::on_pushButton_Connect_clicked()
 {
     mySocket->connectToHost(ui->lineEdit_IP->text(), ui->lineEdit_Port->text().toInt());
+
+    // Auto Completion
+    IPhistory->append(ui->lineEdit_IP->text());
+    IPhistory->removeDuplicates();
+    IPhistory->sort();
+    QCompleter *comp = new QCompleter(*IPhistory, this);
+    comp->setCaseSensitivity(Qt::CaseInsensitive);
+    ui->lineEdit_IP->setCompleter(comp);
 }
 
 void ClientWidget::on_pushButton_Disconnect_clicked()
@@ -52,6 +72,9 @@ void ClientWidget::on_pushButton_Send_clicked()                 {   WriteMessage
 void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage(QString(PROTOCOL_OPEN));}
 void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
 void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
+void ClientWidget::on_comboBox_activated(const QString &arg1)   {   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
+void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage(QString("%1%2").arg(PROTOCOL_SAVE).arg((int)checked));}
+
 
 
 // SSH communication
@@ -72,15 +95,14 @@ void ClientWidget::on_checkBox_ExpertMode_toggled(bool checked)
     }
 }
 
-
 void ClientWidget::on_pushButton_SSHReboot_clicked()
 {
     this->setEnabled(false);
     QProcess proc;
-    proc.startDetached(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
+    proc.start(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        qWarning() << "Timeout reached";
-    else qDebug() << "Done";
+        qWarning() << "Reboot Timeout reached";
+    else qDebug() << "Reboot Done";
     this->setEnabled(true);
 }
 
@@ -88,10 +110,17 @@ void ClientWidget::on_pushButton_SSHUpdate_clicked()
 {
     this->setEnabled(false);
     QProcess proc;
-    proc.startDetached(QString("scp -r /home/silvio/git/Kinect2TCPIP/ sineco@%1:/home/sineco/git/").arg(ui->lineEdit_IP->text()));
+
+    proc.start(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/git/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        qWarning() << "Timeout reached";
-    else qDebug() << "Done";
+        qWarning() << "Update Timeout reached";
+    else qDebug() << "Update Done";
+
+    proc.start(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/git/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        qWarning() << "Update Timeout reached";
+    else qDebug() << "Update Done";
+
     this->setEnabled(true);
 }
 
@@ -100,22 +129,14 @@ void ClientWidget::on_pushButton_SSHClientCompile_clicked()
     this->setEnabled(false);
     QProcess proc;
     proc.startDetached(QString("ssh sineco@%1 sh /home/sineco/git/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        qWarning() << "Timeout reached";
-    else qDebug() << "Done";
     this->setEnabled(true);
 }
 
 
-/// TO DO:
-/// ADD Setup OpenCL/OpenGL/CPU control (pipeline)
-/// ADD verification number of Kinect
-/// ADD answer on server if correctly grabbed / open / closed
-/// ADD multiple computer handler
-/// ADD position matrix handle
-/// CONNECT 2 kinect on 2nd PC
 
-// SIGNAL
+
+
+// TCPIP handling
 
 void ClientWidget::plotState(QAbstractSocket::SocketState state)
 {
@@ -133,14 +154,14 @@ void ClientWidget::plotState(QAbstractSocket::SocketState state)
 void ClientWidget::newMessageReceived()
 {
     QString message = QString(mySocket->readAll());
-    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
+    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(dateFormat)).arg(message));
 }
-
 
 void ClientWidget::WriteMessage(QString message)
 {
     mySocket->write(message.toStdString().c_str());
     ui->plainTextEdit_sent->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
+    mySocket->waitForBytesWritten(1000);
     return;
 }
 

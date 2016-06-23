@@ -22,6 +22,7 @@
 
 #include <pcl/visualization/pcl_visualizer.h> // viewer
 #include <vtkRenderWindow.h> // qvtk
+#include <pcl/io/pcd_io.h>
 
 namespace Ui {
 class ServerWindow;
@@ -47,6 +48,7 @@ private slots:
     void clientStateChanged(QAbstractSocket::SocketState);
 
     void showPC(PointCloudT::Ptr);
+    void savePC(PointCloudT::Ptr);
 
 
     void on_pushButton_Open_kin1_clicked();
@@ -68,7 +70,8 @@ private slots:
 
     void on_comboBox_log_currentIndexChanged(const QString &arg1);
 
-    void on_pushButton_updateGit_clicked();
+
+    void on_checkBox_save_clicked(bool checked);
 
 signals:
     void PCGrabbedsignal(PointCloudT::Ptr);

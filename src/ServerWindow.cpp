@@ -135,11 +135,10 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
 ServerWindow::~ServerWindow()
 {
     writeSettings();
+
     for (int i = 0; i <dev.size();i++)
-    {
-        dev.at(i)->stop();
-        dev.at(i)->close();
-    }
+        CloseKinect(i);
+
     dev.clear();
     listener.clear();
     registration.clear();
@@ -161,9 +160,9 @@ void ServerWindow::writeSettings()
     for (int i = 0; i < serials.length(); i++)
         settings.setValue(QString("Serial Kinect %1").arg(i), serials.at(i));
 
-    if (!ui->comboBox_pipeline_kin1->currentText().isEmpty())
+    if (!ui->comboBox_pipeline_kin1->currentText().compare("") == 0)
         settings.setValue(QString("Pipeline %1").arg(1), ui->comboBox_pipeline_kin1->currentText());
-    if (!ui->comboBox_pipeline_kin2->currentText().isEmpty())
+    if (!ui->comboBox_pipeline_kin2->currentText().compare("") == 0)
         settings.setValue(QString("Pipeline %1").arg(2), ui->comboBox_pipeline_kin2->currentText());
 
     settings.setValue("LogLevel", ui->comboBox_log->currentText());
@@ -222,43 +221,56 @@ void ServerWindow::clientStateChanged(QAbstractSocket::SocketState state)
 void ServerWindow::newMessageReceived()
 {
     QString message = QString(socket->readAll());
-    socket->write("ok!");
-    qDebug() << "Server received the following message : " << message;
+    QString Answer = "->" + message;
+
     if (message == QString(PROTOCOL_OPEN))
     {
-        if (OpenKinect(0)== SUCCESS)         socket->write("1st Kinect OK!");
-        else socket->write("1st Kinect ERROR!");
-        if (OpenKinect(1)== SUCCESS)         socket->write("2nd Kinect OK!");
-        else socket->write("2nd Kinect ERROR!");
+        Answer.append(": ");
+        if (OpenKinect(0)== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
+        Answer.append(" / ");
+        if (OpenKinect(1)== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
 
     }
-    else if(message == QString(PROTOCOL_CLOSE))
+    else if(message.contains(QString(PROTOCOL_CLOSE)))
     {
-        on_pushButton_Close_kin1_clicked();
-        on_pushButton_Close_kin2_clicked();
+        Answer.append(": ");
+        if (CloseKinect(0)== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
+        Answer.append(" / ");
+        if (CloseKinect(1)== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
+
     }
-    else if(message == QString(PROTOCOL_GRAB))
+    else if(message.contains(QString(PROTOCOL_GRAB)))
     {
-        on_pushButton_Grab_kin1_clicked();
-        on_pushButton_Grab_kin2_clicked();
+        Answer.append(": ");
+        if (GrabKinect(0)== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
+        Answer.append(" / ");
+        if (GrabKinect(1)== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
     }
-
-    else if(message.contains("GrabMult"))
+    else if(message.contains(QString(PROTOCOL_PIPELINE)))
     {
-        /* message.remove(0,8);
-        int loop = message.toInt();
-
-        for (int i = 0; i<loop; i++)
-        {
-            ui->myPololuController->impulseChannel0();
-            Eigen::Quaternionf quat = ui->myIMU->getQuaternion();
-            QString message = QString("grabbed %1 ! quat are (w, x, y, z): %2, %3, %4, %5").arg(i).arg(quat.w()).arg(quat.x()).arg(quat.y()).arg(quat.z());
-            socket->write(message.toStdString().c_str());
-            socket->waitForBytesWritten(1000);
-            QThread::sleep(1);
-        }*/
-
+        const QString submess = message.remove(0,QString(PROTOCOL_PIPELINE).length());
+        Answer.append(": " + submess);
+        int index = ui->comboBox_pipeline_kin1->findText(submess);
+        ui->comboBox_pipeline_kin1->setCurrentIndex(index);
+        ui->comboBox_pipeline_kin2->setCurrentIndex(index);
     }
+    else if(message.contains(QString(PROTOCOL_SAVE)))
+    {
+        const QString submess = message.remove(0,QString(PROTOCOL_SAVE).length());
+        Answer.append(": " + submess);
+        int index = submess.toInt();
+        ui->checkBox_save->setChecked((bool)index);
+    }
+
+
+    socket->write(Answer.toLocal8Bit());
+
 }
 
 
@@ -417,15 +429,38 @@ int ServerWindow::CloseKinect(int i)
     return SUCCESS;
 }
 
-void ServerWindow::on_pushButton_updateGit_clicked()
-{
-    QProcess process;
-    process.startDetached("sh /home/sineco/git/Kinect2TCPIP/updateFromGit.sh");
 
+
+void ServerWindow::showPC(PointCloudT::Ptr PC)
+{
+    pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
+    viewer->removePointCloud(PC->header.frame_id);
+    viewer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
+    ui->qvtkwidget->update ();
+
+
+    qDebug() << QString::fromStdString(PC->header.frame_id);
+}
+
+void ServerWindow::savePC(PointCloudT::Ptr PC)
+{
+    QString DIR = QDir::homePath() + "/PointClouds/" + QString::fromStdString(PC->header.frame_id) + "/";
+    QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(dateFormat);
+
+    QDir dir;
+    if (!QDir(DIR).exists())
+        dir.mkpath(DIR);
+
+    QString path = QString("%1/%2.pcd").arg(DIR).arg(NAME);
+    pcl::io::savePCDFileBinary(path.toStdString(), *PC);
+
+    qDebug() << "saved in: " << path ;
 }
 
 
-// UIv
+
+
+// UI
 
 void ServerWindow::on_pushButton_Open_kin1_clicked()
 {
@@ -467,21 +502,6 @@ void ServerWindow::on_comboBox_KinectSerials_kin2_currentIndexChanged(const QStr
     serials.replace(1, arg1);
 }
 
-
-
-
-void ServerWindow::showPC(PointCloudT::Ptr PC)
-{
-    pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
-    viewer->removePointCloud(PC->header.frame_id);
-    viewer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
-    ui->qvtkwidget->update ();
-
-    qDebug() << QString::fromStdString(PC->header.frame_id);
-}
-
-
-
 void ServerWindow::on_comboBox_pipeline_kin1_currentIndexChanged(const QString &arg1)
 {
     if (arg1.compare("Cpu") == 0)           pipeline.replace(0, new libfreenect2::CpuPacketPipeline());
@@ -522,3 +542,10 @@ void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
     else if (arg1.compare("Error") == 0)    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Error));
 }
 
+void ServerWindow::on_checkBox_save_clicked(bool checked)
+{
+    if (checked)
+        QObject::connect(this, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+    else
+        QObject::disconnect(this, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+}
