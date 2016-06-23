@@ -14,5 +14,6 @@ typedef pcl::PointCloud<PointT> PointCloudT;
 #define PROTOCOL_OPEN "Open"
 #define PROTOCOL_CLOSE "Close"
 #define PROTOCOL_REBOOT "Reboot"
+#define PROTOCOL_GITUPDATE "Git_Update"
 
 #endif // DEFINE_H

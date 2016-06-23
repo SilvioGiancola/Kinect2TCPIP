@@ -241,6 +241,11 @@ void ServerWindow::newMessageReceived()
     {
         QProcess process;
         process.startDetached("sudo reboot");
+    }
+    else if(message == QString(PROTOCOL_GITUPDATE))
+    {
+        QProcess process;
+        process.startDetached("cd ~/git/Kinect2TCPIP && git stash && git pull && cd build && cmake .. && make -j4 && sudo reboot");
 
     }
     else if(message.contains("GrabMult"))

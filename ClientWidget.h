@@ -43,6 +43,8 @@ private slots:
 
     void on_pushButton_Reboot_clicked();
 
+    void on_pushButton_GitUpdate_clicked();
+
 private:
     Ui::ClientWidget *ui;
     QTcpSocket * mySocket;

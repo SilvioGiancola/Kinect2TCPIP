@@ -51,7 +51,7 @@ void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage
 void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
 void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
 void ClientWidget::on_pushButton_Reboot_clicked()               {   WriteMessage(QString(PROTOCOL_REBOOT));}
-
+void ClientWidget::on_pushButton_GitUpdate_clicked()            {   WriteMessage(QString(PROTOCOL_GITUPDATE));}
 
 
 /// TO DO:
@@ -91,4 +91,5 @@ void ClientWidget::WriteMessage(QString message)
     ui->plainTextEdit_sent->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
     return;
 }
+
 
