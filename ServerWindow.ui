@@ -46,6 +46,9 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_TCPIP">
+   <property name="windowTitle">
+    <string>updated from TCPIP</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
@@ -103,6 +106,9 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidget_Kinect">
+   <property name="windowTitle">
+    <string>pippo</string>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
