@@ -6,19 +6,45 @@
 
 #IncludeRegexTransform: 
 
-../define.h
-pcl/point_cloud.h
+/home/silvio/git/Kinect2TCPIP/build/moc_ClientWidget.cxx
+../src/ClientWidget.h
+/home/silvio/git/Kinect2TCPIP/src/ClientWidget.h
+
+/home/silvio/git/Kinect2TCPIP/build/moc_MultiClientWindow.cxx
+../src/MultiClientWindow.h
+/home/silvio/git/Kinect2TCPIP/src/MultiClientWindow.h
+
+/home/silvio/git/Kinect2TCPIP/build/moc_define.cxx
+
+/home/silvio/git/Kinect2TCPIP/src/ClientMain.cpp
+MultiClientWindow.h
+/home/silvio/git/Kinect2TCPIP/src/MultiClientWindow.h
+QApplication
 -
-pcl/point_types.h
+QFile
 -
 
-/home/sineco/git/Kinect2TCPIP/ClientWindow.cpp
-ClientWindow.h
-/home/sineco/git/Kinect2TCPIP/ClientWindow.h
-ui_ClientWindow.h
-/home/sineco/git/Kinect2TCPIP/ui_ClientWindow.h
+/home/silvio/git/Kinect2TCPIP/src/ClientWidget.cpp
+ClientWidget.h
+/home/silvio/git/Kinect2TCPIP/src/ClientWidget.h
+ui_ClientWidget.h
+/home/silvio/git/Kinect2TCPIP/src/ui_ClientWidget.h
 
-/home/sineco/git/Kinect2TCPIP/ClientWindow.h
+/home/silvio/git/Kinect2TCPIP/src/ClientWidget.h
+QMainWindow
+-
+QTcpSocket
+-
+QSettings
+-
+QDateTime
+-
+QProcess
+-
+define.h
+-
+
+/home/silvio/git/Kinect2TCPIP/src/ClientWindow.h
 QMainWindow
 -
 QTcpSocket
@@ -26,6 +52,30 @@ QTcpSocket
 QSettings
 -
 define.h
+-
+
+/home/silvio/git/Kinect2TCPIP/src/MultiClientWindow.cpp
+MultiClientWindow.h
+/home/silvio/git/Kinect2TCPIP/src/MultiClientWindow.h
+ui_MultiClientWindow.h
+/home/silvio/git/Kinect2TCPIP/src/ui_MultiClientWindow.h
+
+/home/silvio/git/Kinect2TCPIP/src/MultiClientWindow.h
+QMainWindow
+-
+QTcpSocket
+-
+QSettings
+-
+ClientWindow.h
+-
+define.h
+-
+
+/home/silvio/git/Kinect2TCPIP/src/define.h
+pcl/point_cloud.h
+-
+pcl/point_types.h
 -
 
 /usr/include/eigen3/Eigen/Cholesky
@@ -1054,6 +1104,14 @@ iterator
 list
 -
 
+/usr/include/qt4/QtCore/QDateTime
+qdatetime.h
+/usr/include/qt4/QtCore/qdatetime.h
+
+/usr/include/qt4/QtCore/QFile
+qfile.h
+/usr/include/qt4/QtCore/qfile.h
+
 /usr/include/qt4/QtCore/QPoint
 qpoint.h
 /usr/include/qt4/QtCore/qpoint.h
@@ -1061,6 +1119,10 @@ qpoint.h
 /usr/include/qt4/QtCore/QPointF
 qpoint.h
 /usr/include/qt4/QtCore/qpoint.h
+
+/usr/include/qt4/QtCore/QProcess
+qprocess.h
+/usr/include/qt4/QtCore/qprocess.h
 
 /usr/include/qt4/QtCore/QSettings
 qsettings.h
@@ -1304,6 +1366,14 @@ QtCore/qiodevice.h
 QtCore/qglobal.h
 -
 
+/usr/include/qt4/QtCore/qdatetime.h
+QtCore/qstring.h
+-
+QtCore/qnamespace.h
+-
+QtCore/qsharedpointer.h
+-
+
 /usr/include/qt4/QtCore/qdebug.h
 QtCore/qalgorithms.h
 -
@@ -1494,6 +1564,14 @@ QtCore/qnamespace.h
 QtCore/qobject.h
 -
 
+/usr/include/qt4/QtCore/qprocess.h
+QtCore/qiodevice.h
+-
+QtCore/qstringlist.h
+-
+QtCore/qshareddata.h
+-
+
 /usr/include/qt4/QtCore/qrect.h
 QtCore/qsize.h
 -
@@ -1676,6 +1754,10 @@ qapplication.h
 qbuttongroup.h
 /usr/include/qt4/QtGui/qbuttongroup.h
 
+/usr/include/qt4/QtGui/QCheckBox
+qcheckbox.h
+/usr/include/qt4/QtGui/qcheckbox.h
+
 /usr/include/qt4/QtGui/QGridLayout
 qgridlayout.h
 /usr/include/qt4/QtGui/qgridlayout.h
@@ -1708,6 +1790,10 @@ qmainwindow.h
 qmenubar.h
 /usr/include/qt4/QtGui/qmenubar.h
 
+/usr/include/qt4/QtGui/QPlainTextEdit
+qplaintextedit.h
+/usr/include/qt4/QtGui/qplaintextedit.h
+
 /usr/include/qt4/QtGui/QPlatformWindow
 qplatformwindow_qpa.h
 /usr/include/qt4/QtGui/qplatformwindow_qpa.h
@@ -1716,13 +1802,13 @@ qplatformwindow_qpa.h
 qpushbutton.h
 /usr/include/qt4/QtGui/qpushbutton.h
 
-/usr/include/qt4/QtGui/QSpinBox
-qspinbox.h
-/usr/include/qt4/QtGui/qspinbox.h
-
 /usr/include/qt4/QtGui/QStatusBar
 qstatusbar.h
 /usr/include/qt4/QtGui/qstatusbar.h
+
+/usr/include/qt4/QtGui/QVBoxLayout
+qboxlayout.h
+/usr/include/qt4/QtGui/qboxlayout.h
 
 /usr/include/qt4/QtGui/QWidget
 qwidget.h
@@ -1764,6 +1850,18 @@ QtGui/qwidget.h
 QtGui/qwidget.h
 -
 QtGui/qvalidator.h
+-
+
+/usr/include/qt4/QtGui/qabstracttextdocumentlayout.h
+QtCore/qobject.h
+-
+QtGui/qtextlayout.h
+-
+QtGui/qtextdocument.h
+-
+QtGui/qtextcursor.h
+-
+QtGui/qpalette.h
 -
 
 /usr/include/qt4/QtGui/qaction.h
@@ -1838,6 +1936,10 @@ QtGui/qpixmap.h
 QtCore/qobject.h
 -
 
+/usr/include/qt4/QtGui/qcheckbox.h
+QtGui/qabstractbutton.h
+-
+
 /usr/include/qt4/QtGui/qcolor.h
 QtGui/qrgb.h
 -
@@ -1896,6 +1998,18 @@ QtCore/qstring.h
 QtCore/qsharedpointer.h
 -
 
+/usr/include/qt4/QtGui/qfontdatabase.h
+QtGui/qwindowdefs.h
+-
+QtCore/qstring.h
+-
+QtGui/qfont.h
+-
+QtCore/qstringlist.h
+-
+QtCore/qlist.h
+-
+
 /usr/include/qt4/QtGui/qfontinfo.h
 QtGui/qfont.h
 -
@@ -1912,6 +2026,16 @@ QtCore/qrect.h
 
 /usr/include/qt4/QtGui/qframe.h
 QtGui/qwidget.h
+-
+
+/usr/include/qt4/QtGui/qglyphrun.h
+QtCore/qsharedpointer.h
+-
+QtCore/qvector.h
+-
+QtCore/qpoint.h
+-
+QtGui/qrawfont.h
 -
 
 /usr/include/qt4/QtGui/qgridlayout.h
@@ -2112,6 +2236,22 @@ QtGui/qimage.h
 QtGui/qtransform.h
 -
 
+/usr/include/qt4/QtGui/qplaintextedit.h
+QtGui/qtextedit.h
+-
+QtGui/qabstractscrollarea.h
+-
+QtGui/qtextdocument.h
+-
+QtGui/qtextoption.h
+-
+QtGui/qtextcursor.h
+-
+QtGui/qtextformat.h
+-
+QtGui/qabstracttextdocumentlayout.h
+-
+
 /usr/include/qt4/QtGui/qplatformwindow_qpa.h
 QtCore/qscopedpointer.h
 -
@@ -2138,6 +2278,24 @@ QtCore/qrect.h
 QtGui/qabstractbutton.h
 -
 
+/usr/include/qt4/QtGui/qrawfont.h
+QtCore/qstring.h
+-
+QtCore/qiodevice.h
+-
+QtCore/qglobal.h
+-
+QtCore/qobject.h
+-
+QtCore/qpoint.h
+-
+QtGui/qfont.h
+-
+QtGui/qtransform.h
+-
+QtGui/qfontdatabase.h
+-
+
 /usr/include/qt4/QtGui/qregion.h
 QtCore/qatomic.h
 -
@@ -2162,10 +2320,6 @@ QtCore/qobject.h
 
 /usr/include/qt4/QtGui/qslider.h
 QtGui/qabstractslider.h
--
-
-/usr/include/qt4/QtGui/qspinbox.h
-QtGui/qabstractspinbox.h
 -
 
 /usr/include/qt4/QtGui/qstatusbar.h
@@ -2230,6 +2384,32 @@ QtCore/qshareddata.h
 QtGui/qtextformat.h
 -
 
+/usr/include/qt4/QtGui/qtextdocument.h
+QtCore/qobject.h
+-
+QtCore/qsize.h
+-
+QtCore/qrect.h
+-
+QtGui/qfont.h
+-
+
+/usr/include/qt4/QtGui/qtextedit.h
+QtGui/qabstractscrollarea.h
+-
+QtGui/qtextdocument.h
+-
+QtGui/qtextoption.h
+-
+QtGui/qtextcursor.h
+-
+QtGui/qtextformat.h
+-
+QtGui/qtextobject.h
+-
+QtGui/qtextlayout.h
+-
+
 /usr/include/qt4/QtGui/qtextformat.h
 QtGui/qcolor.h
 -
@@ -2246,6 +2426,36 @@ QtGui/qpen.h
 QtGui/qbrush.h
 -
 QtGui/qtextoption.h
+-
+
+/usr/include/qt4/QtGui/qtextlayout.h
+QtCore/qstring.h
+-
+QtCore/qnamespace.h
+-
+QtCore/qrect.h
+-
+QtCore/qvector.h
+-
+QtGui/qcolor.h
+-
+QtCore/qobject.h
+-
+QtGui/qevent.h
+-
+QtGui/qtextformat.h
+-
+QtGui/qglyphrun.h
+-
+QtGui/qtextcursor.h
+-
+
+/usr/include/qt4/QtGui/qtextobject.h
+QtCore/qobject.h
+-
+QtGui/qtextformat.h
+-
+QtGui/qglyphrun.h
 -
 
 /usr/include/qt4/QtGui/qtextoption.h
@@ -2514,7 +2724,7 @@ boost/type_traits.hpp
 stddef.h
 -
 
-ui_ClientWindow.h
+ui_ClientWidget.h
 QtCore/QVariant
 -
 QtGui/QAction
@@ -2522,6 +2732,8 @@ QtGui/QAction
 QtGui/QApplication
 -
 QtGui/QButtonGroup
+-
+QtGui/QCheckBox
 -
 QtGui/QGridLayout
 -
@@ -2535,16 +2747,36 @@ QtGui/QLabel
 -
 QtGui/QLineEdit
 -
-QtGui/QMainWindow
--
-QtGui/QMenuBar
+QtGui/QPlainTextEdit
 -
 QtGui/QPushButton
 -
-QtGui/QSpinBox
+QtGui/QVBoxLayout
+-
+QtGui/QWidget
+-
+
+ui_MultiClientWindow.h
+QtCore/QVariant
+-
+QtGui/QAction
+-
+QtGui/QApplication
+-
+QtGui/QButtonGroup
+-
+QtGui/QHBoxLayout
+-
+QtGui/QHeaderView
+-
+QtGui/QMainWindow
+-
+QtGui/QMenuBar
 -
 QtGui/QStatusBar
 -
 QtGui/QWidget
 -
+ClientWidget.h
+ClientWidget.h
 

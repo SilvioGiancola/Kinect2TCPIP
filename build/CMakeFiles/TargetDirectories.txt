@@ -1,2 +1,2 @@
-/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir
-/home/sineco/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Server.dir
+/home/silvio/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Client.dir
+/home/silvio/git/Kinect2TCPIP/build/CMakeFiles/Kinect2Server.dir
