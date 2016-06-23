@@ -34,6 +34,7 @@ QString ClientWidget::getPort(){return ui->lineEdit_Port->text();}
 
 
 // CLICK
+// Socket Connection
 void ClientWidget::on_pushButton_Connect_clicked()
 {
     mySocket->connectToHost(ui->lineEdit_IP->text(), ui->lineEdit_Port->text().toInt());
@@ -44,25 +45,13 @@ void ClientWidget::on_pushButton_Disconnect_clicked()
     mySocket->disconnectFromHost();
 }
 
-void ClientWidget::on_pushButton_Send_clicked()
-{
-    WriteMessage(ui->lineEdit_Message->text());
-}
+// Message Writing
+void ClientWidget::on_pushButton_Send_clicked()                 {   WriteMessage(ui->lineEdit_Message->text());}
+void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage(QString(PROTOCOL_OPEN));}
+void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
+void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
+void ClientWidget::on_pushButton_Reboot_clicked()               {   WriteMessage(QString(PROTOCOL_REBOOT));}
 
-void ClientWidget::on_pushButton_Connect_Devices_clicked()
-{
-    WriteMessage(QString(PROTOCOL_OPEN));
-}
-
-void ClientWidget::on_pushButton_Disconnect_Devices_clicked()
-{
-    WriteMessage(QString(PROTOCOL_CLOSE));
-}
-
-void ClientWidget::on_pushButton_Grab_Devices_clicked()
-{
-    WriteMessage(QString(PROTOCOL_GRAB));
-}
 
 
 /// TO DO:
@@ -102,3 +91,4 @@ void ClientWidget::WriteMessage(QString message)
     ui->plainTextEdit_sent->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
     return;
 }
+

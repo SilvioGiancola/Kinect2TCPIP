@@ -41,6 +41,16 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="0">
+       <widget class="QPlainTextEdit" name="plainTextEdit_sent"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="pushButton_Disconnect">
+        <property name="text">
+         <string>Disconnnect</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLineEdit" name="lineEdit_IP">
         <property name="text">
@@ -69,12 +79,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="pushButton_Disconnect">
-        <property name="text">
-         <string>Disconnnect</string>
-        </property>
-       </widget>
+      <item row="5" column="1">
+       <widget class="QPlainTextEdit" name="plainTextEdit_received"/>
       </item>
       <item row="2" column="1" rowspan="2">
        <widget class="QLabel" name="label_ConnectionState">
@@ -83,11 +89,12 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QPlainTextEdit" name="plainTextEdit_sent"/>
-      </item>
-      <item row="5" column="1">
-       <widget class="QPlainTextEdit" name="plainTextEdit_received"/>
+      <item row="6" column="0">
+       <widget class="QPushButton" name="pushButton_Reboot">
+        <property name="text">
+         <string>Reboot</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

@@ -10,6 +10,7 @@
 #include <QThread>
 #include <QSettings>
 #include <QTime>
+#include <QProcess>
 
 #include <define.h>
 

@@ -208,20 +208,13 @@ void ServerWindow::newTCPIPConnection()
 
 void ServerWindow::clientStateChanged(QAbstractSocket::SocketState state)
 {
-    if (state == QAbstractSocket::UnconnectedState)
-        ui->label_ClientState->setText(QString("Client : UnconnectedState"));
-    if (state == QAbstractSocket::HostLookupState)
-        ui->label_ClientState->setText(QString("Client : HostLookupState"));
-    if (state == QAbstractSocket::ConnectingState)
-        ui->label_ClientState->setText(QString("Client : ConnectingState"));
-    if (state == QAbstractSocket::ConnectedState)
-        ui->label_ClientState->setText(QString("Client : ConnectedState"));
-    if (state == QAbstractSocket::BoundState)
-        ui->label_ClientState->setText(QString("Client : BoundState"));
-    if (state == QAbstractSocket::ListeningState)
-        ui->label_ClientState->setText(QString("Client : ListeningState"));
-    if (state == QAbstractSocket::ClosingState)
-        ui->label_ClientState->setText(QString("Client : ClosingState"));
+    if (state == QAbstractSocket::UnconnectedState) ui->label_ClientState->setText(QString("Socket : UnconnectedState"));
+    if (state == QAbstractSocket::HostLookupState)  ui->label_ClientState->setText(QString("Socket : HostLookupState"));
+    if (state == QAbstractSocket::ConnectingState)  ui->label_ClientState->setText(QString("Socket : ConnectingState"));
+    if (state == QAbstractSocket::ConnectedState)   ui->label_ClientState->setText(QString("Socket : ConnectedState"));
+    if (state == QAbstractSocket::BoundState)       ui->label_ClientState->setText(QString("Socket : BoundState"));
+    if (state == QAbstractSocket::ListeningState)   ui->label_ClientState->setText(QString("Socket : ListeningState"));
+    if (state == QAbstractSocket::ClosingState)     ui->label_ClientState->setText(QString("Socket : ClosingState"));
 }
 
 void ServerWindow::newMessageReceived()
@@ -243,6 +236,12 @@ void ServerWindow::newMessageReceived()
     {
         on_pushButton_Grab_kin1_clicked();
         on_pushButton_Grab_kin2_clicked();
+    }
+    else if(message == QString(PROTOCOL_REBOOT))
+    {
+        QProcess process;
+        process.startDetached("sudo reboot");
+
     }
     else if(message.contains("GrabMult"))
     {
