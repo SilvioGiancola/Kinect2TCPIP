@@ -248,7 +248,7 @@ void ServerWindow::newMessageReceived()
     else if(message == QString(PROTOCOL_GITUPDATE))
     {
         QProcess process;
-        process.start("git -C /home/sineco/git/Kinect2TCPIP stash && git -C /home/sineco/git/Kinect2TCPIP pull && cd build && cmake .. && make -j4");
+        process.startDetached("sh /home/sineco/git/Kinect2TCPIP/updateFromGit.sh");
     }
     else if(message.contains("GrabMult"))
     {
