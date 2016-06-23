@@ -161,8 +161,10 @@ void ServerWindow::writeSettings()
     for (int i = 0; i < serials.length(); i++)
         settings.setValue(QString("Serial Kinect %1").arg(i), serials.at(i));
 
-    settings.setValue(QString("Pipeline %1").arg(1), ui->comboBox_pipeline_kin1->currentText());
-    settings.setValue(QString("Pipeline %1").arg(2), ui->comboBox_pipeline_kin2->currentText());
+    if (!ui->comboBox_pipeline_kin1->currentText().isEmpty())
+        settings.setValue(QString("Pipeline %1").arg(1), ui->comboBox_pipeline_kin1->currentText());
+    if (!ui->comboBox_pipeline_kin2->currentText().isEmpty())
+        settings.setValue(QString("Pipeline %1").arg(2), ui->comboBox_pipeline_kin2->currentText());
 
     settings.setValue("LogLevel", ui->comboBox_log->currentText());
 
@@ -240,16 +242,7 @@ void ServerWindow::newMessageReceived()
         on_pushButton_Grab_kin1_clicked();
         on_pushButton_Grab_kin2_clicked();
     }
-    else if(message == QString(PROTOCOL_REBOOT))
-    {
-        QProcess process;
-        process.startDetached("sudo reboot");
-    }
-    else if(message == QString(PROTOCOL_GITUPDATE))
-    {
-        QProcess process;
-        process.startDetached("sh /home/sineco/git/Kinect2TCPIP/updateFromGit.sh");
-    }
+
     else if(message.contains("GrabMult"))
     {
         /* message.remove(0,8);
@@ -280,7 +273,7 @@ int ServerWindow::OpenKinect(int i)
         return ERROR;
     }
 
-   /* if(freenect2.enumerateDevices() == 0)
+    /* if(freenect2.enumerateDevices() == 0)
     {
         qWarning() << tr("Error in opening Kinect, no Kinect connected");
         return ERROR;

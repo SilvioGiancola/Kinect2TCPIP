@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QSettings>
 #include <QDateTime>
+#include <QProcess>
 
 #include <define.h>
 
@@ -41,9 +42,10 @@ private slots:
 
 
 
-    void on_pushButton_Reboot_clicked();
-
-    void on_pushButton_GitUpdate_clicked();
+    void on_checkBox_ExpertMode_toggled(bool checked);
+    void on_pushButton_SSHReboot_clicked();
+    void on_pushButton_SSHUpdate_clicked();
+    void on_pushButton_SSHClientCompile_clicked();
 
 private:
     Ui::ClientWidget *ui;

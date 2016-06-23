@@ -7,6 +7,8 @@ ClientWidget::ClientWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->checkBox_ExpertMode->setChecked(false);
+
     mySocket = new QTcpSocket();
     mySocket->setReadBufferSize(0);
     connect(mySocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(plotState(QAbstractSocket::SocketState)));
@@ -50,12 +52,62 @@ void ClientWidget::on_pushButton_Send_clicked()                 {   WriteMessage
 void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage(QString(PROTOCOL_OPEN));}
 void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
 void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
-void ClientWidget::on_pushButton_Reboot_clicked()               {   WriteMessage(QString(PROTOCOL_REBOOT));}
-void ClientWidget::on_pushButton_GitUpdate_clicked()            {   WriteMessage(QString(PROTOCOL_GITUPDATE));}
+
+
+// SSH communication
+
+void ClientWidget::on_checkBox_ExpertMode_toggled(bool checked)
+{
+    if (checked)
+    {
+        ui->pushButton_SSHReboot->setVisible(true);
+        ui->pushButton_SSHUpdate->setVisible(true);
+        ui->pushButton_SSHClientCompile->setVisible(true);
+    }
+    else
+    {
+        ui->pushButton_SSHReboot->setVisible(false);
+        ui->pushButton_SSHUpdate->setVisible(false);
+        ui->pushButton_SSHClientCompile->setVisible(false);
+    }
+}
+
+
+void ClientWidget::on_pushButton_SSHReboot_clicked()
+{
+    this->setEnabled(false);
+    QProcess proc;
+    proc.startDetached(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        qWarning() << "Timeout reached";
+    else qDebug() << "Done";
+    this->setEnabled(true);
+}
+
+void ClientWidget::on_pushButton_SSHUpdate_clicked()
+{
+    this->setEnabled(false);
+    QProcess proc;
+    proc.startDetached(QString("scp -r /home/silvio/git/Kinect2TCPIP/ sineco@%1:/home/sineco/git/").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        qWarning() << "Timeout reached";
+    else qDebug() << "Done";
+    this->setEnabled(true);
+}
+
+void ClientWidget::on_pushButton_SSHClientCompile_clicked()
+{
+    this->setEnabled(false);
+    QProcess proc;
+    proc.startDetached(QString("ssh sineco@%1 sh /home/sineco/git/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        qWarning() << "Timeout reached";
+    else qDebug() << "Done";
+    this->setEnabled(true);
+}
 
 
 /// TO DO:
-/// ADD REBOOT server
 /// ADD Setup OpenCL/OpenGL/CPU control (pipeline)
 /// ADD verification number of Kinect
 /// ADD answer on server if correctly grabbed / open / closed
@@ -81,7 +133,7 @@ void ClientWidget::plotState(QAbstractSocket::SocketState state)
 void ClientWidget::newMessageReceived()
 {
     QString message = QString(mySocket->readAll());
-     ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
+    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
 }
 
 
