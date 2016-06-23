@@ -68,7 +68,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label_IP">
        <property name="text">
         <string>myIPlabel</string>
@@ -89,7 +89,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
+     <item row="5" column="0">
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -101,6 +101,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="pushButton_updateGit">
+       <property name="text">
+        <string>UpdateFromGit</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>

@@ -224,8 +224,11 @@ void ServerWindow::newMessageReceived()
     qDebug() << "Server received the following message : " << message;
     if (message == QString(PROTOCOL_OPEN))
     {
-        on_pushButton_Open_kin1_clicked();
-        on_pushButton_Open_kin2_clicked();
+        if (OpenKinect(0)== SUCCESS)         socket->write("1st Kinect OK!");
+        else socket->write("1st Kinect ERROR!");
+        if (OpenKinect(1)== SUCCESS)         socket->write("2nd Kinect OK!");
+        else socket->write("2nd Kinect ERROR!");
+
     }
     else if(message == QString(PROTOCOL_CLOSE))
     {
@@ -245,7 +248,7 @@ void ServerWindow::newMessageReceived()
     else if(message == QString(PROTOCOL_GITUPDATE))
     {
         QProcess process;
-        process.startDetached("cd /home/sineco/git/Kinect2TCPIP && git stash && git pull && cd build && cmake .. && make -j4");
+        process.start("git -C /home/sineco/git/Kinect2TCPIP stash && git -C /home/sineco/git/Kinect2TCPIP pull && cd build && cmake .. && make -j4");
     }
     else if(message.contains("GrabMult"))
     {
@@ -421,6 +424,12 @@ int ServerWindow::CloseKinect(int i)
     return SUCCESS;
 }
 
+void ServerWindow::on_pushButton_updateGit_clicked()
+{
+    QProcess process;
+    process.startDetached("sh /home/sineco/git/Kinect2TCPIP/updateFromGit.sh");
+
+}
 
 
 // UIv
@@ -519,3 +528,4 @@ void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
     else if (arg1.compare("Warning") == 0)  libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Warning));
     else if (arg1.compare("Error") == 0)    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Error));
 }
+

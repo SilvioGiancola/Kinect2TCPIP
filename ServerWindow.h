@@ -68,6 +68,8 @@ private slots:
 
     void on_comboBox_log_currentIndexChanged(const QString &arg1);
 
+    void on_pushButton_updateGit_clicked();
+
 signals:
     void PCGrabbedsignal(PointCloudT::Ptr);
 
