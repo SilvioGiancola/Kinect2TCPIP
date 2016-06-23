@@ -1,8 +1,0 @@
-# Hashes of file build rules.
-6f4f747d510a414b84fde34f675fe900 moc_ClientWidget.cxx
-f49e42731c768bdd92513de5c50702bf moc_MultiClientWindow.cxx
-aef3a1547ba2e0d0fa57903be876c86e moc_ServerWindow.cxx
-af5f65b967c7b357c8ba8dd533358b1e moc_define.cxx
-d8d9c83497a7c6030a3290ac365e7df9 ui_ClientWidget.h
-c908a050c0859e5989258b4b4ea96342 ui_MultiClientWindow.h
-e159f55bd1d95cf844a998c9694c67b8 ui_ServerWindow.h
