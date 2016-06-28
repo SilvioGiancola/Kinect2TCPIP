@@ -37,7 +37,7 @@ QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})
 QT4_WRAP_UI(server_FORMS_HEADERS ${server_FORMS})
 
 
-ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES})
+ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES} ../CompileScript.sh)
 
 TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
 

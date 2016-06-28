@@ -111,12 +111,23 @@ void ClientWidget::on_pushButton_SSHUpdate_clicked()
     this->setEnabled(false);
     QProcess proc;
 
-    proc.start(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/git/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
+  /*  proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP/build-Server").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        qWarning() << "Update Timeout reached";
+    else qDebug() << "Update Done";*/
+
+
+    proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP/build-Server").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
         qWarning() << "Update Timeout reached";
     else qDebug() << "Update Done";
 
-    proc.start(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/git/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
+    proc.start(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        qWarning() << "Update Timeout reached";
+    else qDebug() << "Update Done";
+
+    proc.start(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
         qWarning() << "Update Timeout reached";
     else qDebug() << "Update Done";
@@ -128,7 +139,7 @@ void ClientWidget::on_pushButton_SSHClientCompile_clicked()
 {
     this->setEnabled(false);
     QProcess proc;
-    proc.startDetached(QString("ssh sineco@%1 sh /home/sineco/git/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
+    proc.startDetached(QString("ssh sineco@%1 sh /home/sineco/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
     this->setEnabled(true);
 }
 
