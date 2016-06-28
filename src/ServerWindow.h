@@ -41,10 +41,10 @@ public:
     ~ServerWindow();
 
 
-    int OpenKinect(int i);
+  /*  int OpenKinect(int i);
     int GrabKinect(int i);
     int CloseKinect(int i);
-
+*/
 private slots:
 
     void newTCPIPConnection();
@@ -54,7 +54,7 @@ private slots:
     void showPC(PointCloudT::Ptr);
     void savePC(PointCloudT::Ptr);
 
-
+/*
     void on_pushButton_Open_kin1_clicked();
     void on_pushButton_Close_kin1_clicked();
     void on_pushButton_Grab_kin1_clicked();
@@ -71,17 +71,17 @@ private slots:
 
     void on_comboBox_pipeline_kin1_currentIndexChanged(const QString &arg1);
     void on_comboBox_pipeline_kin2_currentIndexChanged(const QString &arg1);
-
+*/
     void on_comboBox_log_currentIndexChanged(const QString &arg1);
 
 
     void on_checkBox_save_clicked(bool checked);
 
-   void  TransformationChanged(TransformT);
+  // void  TransformationChanged(TransformT);
 
 
 signals:
-    void PCGrabbedsignal(PointCloudT::Ptr);
+ //   void PCGrabbedsignal(PointCloudT::Ptr);
 
 
 private:
@@ -94,7 +94,7 @@ private:
 
     // pcl 3D Viewer
     pcl::visualization::PCLVisualizer::Ptr viewer;
-
+/*
     // Libfreenect2
     libfreenect2::Freenect2 freenect2;
     QList<libfreenect2::Freenect2Device*> dev;
@@ -104,7 +104,7 @@ private:
     QList<QString> serials;
 
     TransformT t_kin1;
-
+*/
 
 
     void writeSettings();

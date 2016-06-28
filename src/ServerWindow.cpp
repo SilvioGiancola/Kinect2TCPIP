@@ -10,7 +10,7 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
     ui->centralWidget->setVisible(false);
 
 
-    // Init intern parameters
+    /*    // Init intern parameters
     for (int i = 0; i < 2 ; i++)
     {
         serials.append(QString(""));
@@ -29,7 +29,7 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
         ui->comboBox_KinectSerials_kin1->addItem(QString::fromStdString(freenect2.getDeviceSerialNumber(i)));
         ui->comboBox_KinectSerials_kin2->addItem(QString::fromStdString(freenect2.getDeviceSerialNumber(i)));
     }
-
+*/
 
 
 
@@ -37,7 +37,7 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
     readSettings();
 
 
-
+    /*
 
 #ifndef LIBFREENECT2_WITH_OPENGL_SUPPORT
     ui->comboBox_pipeline_kin1->model()->setData(ui->comboBox_pipeline_kin1->model()->index(1,0), 0, Qt::UserRole - 1);
@@ -51,11 +51,12 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
     ui->comboBox_pipeline_kin1->model()->setData(ui->comboBox_pipeline_kin1->model()->index(3,0), 0, Qt::UserRole - 1);
     ui->comboBox_pipeline_kin2->model()->setData(ui->comboBox_pipeline_kin2->model()->index(3,0), 0, Qt::UserRole - 1);
 #endif
+*/
 
 
 
-
-    QObject::connect(this, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
+    QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
+    QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
     // QObject::connect(Kinect2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
 
 
@@ -138,14 +139,14 @@ ServerWindow::~ServerWindow()
 {
     writeSettings();
 
-    for (int i = 0; i <dev.size();i++)
+    /* for (int i = 0; i <dev.size();i++)
         CloseKinect(i);
 
     dev.clear();
     listener.clear();
     registration.clear();
     pipeline.clear();
-
+*/
     //  viewer.
     delete server;
     delete socket;
@@ -159,13 +160,15 @@ void ServerWindow::writeSettings()
     QSettings settings("SilvioGiancola", "Kinect 2 TCPIP");
 
     settings.beginGroup("Kinect settings");
-    for (int i = 0; i < serials.length(); i++)
-        settings.setValue(QString("Serial Kinect %1").arg(i), serials.at(i));
 
-    if (!ui->comboBox_pipeline_kin1->currentText().compare("") == 0)
-        settings.setValue(QString("Pipeline %1").arg(1), ui->comboBox_pipeline_kin1->currentText());
-    if (!ui->comboBox_pipeline_kin2->currentText().compare("") == 0)
-        settings.setValue(QString("Pipeline %1").arg(2), ui->comboBox_pipeline_kin2->currentText());
+    settings.setValue("Serial Kinect 0", ui->myKinectWidget1->getSerial());
+    settings.setValue("Serial Kinect 1", ui->myKinectWidget2->getSerial());
+
+
+    if (!ui->myKinectWidget1->getPipeline().compare("") == 0)
+        settings.setValue("Pipeline 0", ui->myKinectWidget1->getPipeline());
+    if (!ui->myKinectWidget2->getPipeline().compare("") == 0)
+        settings.setValue("Pipeline 1", ui->myKinectWidget2->getPipeline());
 
     settings.setValue("LogLevel", ui->comboBox_log->currentText());
 
@@ -177,16 +180,12 @@ void ServerWindow::readSettings()
     QSettings settings("SilvioGiancola", "Kinect 2 TCPIP");
 
     settings.beginGroup("Kinect settings");
-    for (int i = 0; i < serials.length(); i++)
-        serials.replace(i, settings.value(QString("Serial Kinect %1").arg(i),"").toString());
 
+    ui->myKinectWidget1->setSerial(settings.value(QString("Serial Kinect 0"),"").toString());
+    ui->myKinectWidget2->setSerial(settings.value(QString("Serial Kinect 1"),"").toString());
 
-    // define current Kinect
-    ui->comboBox_KinectSerials_kin1->setCurrentIndex(ui->comboBox_KinectSerials_kin1->findText(serials.at(0)));
-    ui->comboBox_KinectSerials_kin2->setCurrentIndex(ui->comboBox_KinectSerials_kin2->findText(serials.at(1)));
-
-    ui->comboBox_pipeline_kin1->setCurrentIndex(ui->comboBox_pipeline_kin1->findText(settings.value(QString("Pipeline %1").arg(1),"").toString()));
-    ui->comboBox_pipeline_kin2->setCurrentIndex(ui->comboBox_pipeline_kin2->findText(settings.value(QString("Pipeline %1").arg(1),"").toString()));
+    ui->myKinectWidget1->setPipeline(settings.value(QString("Pipeline 0"),"").toString());
+    ui->myKinectWidget2->setPipeline(settings.value(QString("Pipeline 1"),"").toString());
 
     ui->comboBox_log->setCurrentIndex(ui->comboBox_log->findText(settings.value("LogLevel","").toString()));
 
@@ -228,39 +227,41 @@ void ServerWindow::newMessageReceived()
     if (message == QString(PROTOCOL_OPEN))
     {
         Answer.append(": ");
-        if (OpenKinect(0)== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget1->OpenKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
         Answer.append(" / ");
-        if (OpenKinect(1)== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget2->OpenKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
 
     }
     else if(message.contains(QString(PROTOCOL_CLOSE)))
     {
         Answer.append(": ");
-        if (CloseKinect(0)== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget1->CloseKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
         Answer.append(" / ");
-        if (CloseKinect(1)== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget2->CloseKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
 
     }
     else if(message.contains(QString(PROTOCOL_GRAB)))
     {
         Answer.append(": ");
-        if (GrabKinect(0)== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget1->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
         Answer.append(" / ");
-        if (GrabKinect(1)== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
     }
     else if(message.contains(QString(PROTOCOL_PIPELINE)))
     {
         const QString submess = message.remove(0,QString(PROTOCOL_PIPELINE).length());
         Answer.append(": " + submess);
-        int index = ui->comboBox_pipeline_kin1->findText(submess);
+        ui->myKinectWidget1->setPipeline(submess);
+        ui->myKinectWidget2->setPipeline(submess);
+        /*  int index = ui->comboBox_pipeline_kin1->findText(submess);
         ui->comboBox_pipeline_kin1->setCurrentIndex(index);
-        ui->comboBox_pipeline_kin2->setCurrentIndex(index);
+        ui->comboBox_pipeline_kin2->setCurrentIndex(index);*/
     }
     else if(message.contains(QString(PROTOCOL_SAVE)))
     {
@@ -277,182 +278,19 @@ void ServerWindow::newMessageReceived()
 
 
 
-// KINECT
-
-int ServerWindow::OpenKinect(int i)
-{
-    if (dev.at(i))
-    {
-        qWarning() << "Kinect is already open";
-        return ERROR;
-    }
-
-    /* if(freenect2.enumerateDevices() == 0)
-    {
-        qWarning() << tr("Error in opening Kinect, no Kinect connected");
-        return ERROR;
-    }*/
-
-    if (serials.at(i).isEmpty())
-    {
-        qWarning() << tr("Error in opening Kinect, please define a serial number");
-        return ERROR;
-    }
-
-
-    dev.replace(i, freenect2.openDevice(serials.at(i).toStdString(), pipeline.at(i)));
-
-
-
-    if(dev.at(i) == 0)
-    {
-        qWarning() << tr("Error in opening Kinect, failure opening the default one");
-        return ERROR;
-    }
-
-
-    dev.at(i)->setColorFrameListener(listener.at(i));
-    dev.at(i)->setIrAndDepthFrameListener(listener.at(i));
-    dev.at(i)->start();
-
-
-    // Color
-    registration.replace(i, new libfreenect2::Registration(dev.at(i)->getIrCameraParams(), dev.at(i)->getColorCameraParams()));
-
-
-    return SUCCESS;
-}
-
-int ServerWindow::GrabKinect(int i)
-{
-    if (dev.at(i) == 0)
-    {
-        qWarning() << "Kinect stream is not open";
-        return ERROR;
-    }
-
-
-    QTime t;
-    t.start();
-
-
-
-    // Acquire Frames
-    libfreenect2::FrameMap frames;
-    listener.at(i)->waitForNewFrame(frames);
-
-    QDateTime timestamp = QDateTime::currentDateTime();
-
-    libfreenect2::Frame *rgb = frames[libfreenect2::Frame::Color];
-    libfreenect2::Frame *depth = frames[libfreenect2::Frame::Depth];
-
-
-
-    // Undistort and register frames
-    libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4);
-    registration.at(i)->apply(rgb,depth,&undistorted,&registered);
-
-    const float *undistorted_data = (float*)undistorted.data;
-    const unsigned int *registered_data = (unsigned int*)registered.data;
-
-    listener.at(i)->release(frames);
-
-
-
-    // Initialize my Point Cloud
-    PointCloudT::Ptr PC(new PointCloudT);
-    //  PC.reset(new PointCloudT());
-    PC->resize(512*424); // set the memory size to allocate
-    PC->height = 424;        // set the height
-    PC->width = 512;          // set the width
-    PC->is_dense = false;                   // Kinect V2 returns organized and not dense point clouds
-    PC->header.stamp = timestamp.toMSecsSinceEpoch();                               // the stamp correspond to the acquisition time
-    //  PC->header.frame_id = QString("%1/PointClouds/Kinect%2_%3.pcd").arg(QDir::homePath()).arg(_serial.c_str()).arg(timestamp.toString("yyyy-MM-dd-HH:mm:ss:zzz")).toStdString();
-    PC->header.frame_id = serials.at(i).toStdString();
-
-
-    Eigen::Matrix4f mat4 = t_kin1.matrix();
-  //  output->sensor_origin_ = trans.block<4,1>(0,3);
-    PC->sensor_orientation_ = Eigen::Quaternionf(t_kin1.rotation());
-    PC->sensor_origin_ = mat4.block<4,1>(0,3);
-
-
-    libfreenect2::Freenect2Device::IrCameraParams IRparam = dev.at(i)->getIrCameraParams();
-
-    // Set data into my Point cloud
-    for (unsigned int i = 0; i < undistorted.height ;i++)
-    {
-        for (unsigned int j = 0; j < undistorted.width ;j++)
-        {
-            int index = i * undistorted.width + j;
-
-            float depth = undistorted_data[index] / 1000.0f;
-            unsigned int rgba = registered_data[index];
-
-            PointT P;
-
-            if ( depth != 0 && rgba != 0)
-            {
-                P.x = -depth * (IRparam.cx - j) / IRparam.fx;
-                P.y =  depth * (IRparam.cy - i) / IRparam.fy;
-                P.z =  depth;
-
-                P.a = (rgba >> 24) & 0xFF;
-                P.r = (rgba >> 16) & 0xFF;
-                P.g = (rgba >> 8)  & 0xFF;
-                P.b =  rgba        & 0xFF;
-            }
-            else
-            {
-                P.x = P.y = P.z = std::numeric_limits<float>::quiet_NaN();
-            }
-
-            PC->at(j,i) = P;
-        }
-    }
-
-
-    emit PCGrabbedsignal(PC);
-
-    return SUCCESS;
-}
-
-int ServerWindow::CloseKinect(int i)
-{
-
-    if (dev.at(i) == 0)
-    {
-        qWarning() << "Kinect already closed";
-        return ERROR;
-    }
-
-    //  _open = false;
-    // TODO: restarting ir stream doesn't work!
-    // TODO: bad things will happen, if frame listeners are freed before dev->stop() :(
-    dev.at(i)->stop();
-    dev.at(i)->close();
-    dev.replace(i, 0);
-
-
-
-    return SUCCESS;
-}
-
-
-void  ServerWindow::TransformationChanged(TransformT trans)
-{
-    //qDebug() << "Trasnformation changed";
-    t_kin1 = trans;
-    GrabKinect(0);
-}
-
 void ServerWindow::showPC(PointCloudT::Ptr PC)
 {
+
     pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
     viewer->removePointCloud(PC->header.frame_id);
     viewer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
+
+    Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
+    trans.block(0,0,3,3) = PC->sensor_orientation_.matrix();
+    trans.block(0,3,4,1) = PC->sensor_origin_;
     viewer->removeCoordinateSystem("kin1_refsyst");
-    viewer->addCoordinateSystem(0.2,Eigen::Affine3f(t_kin1.matrix()),"kin1_refsyst");
+    viewer->addCoordinateSystem(0.2,Eigen::Affine3f(trans),"kin1_refsyst");
+
     ui->qvtkwidget->update ();
 
 
@@ -476,79 +314,6 @@ void ServerWindow::savePC(PointCloudT::Ptr PC)
 
 
 
-// UI
-
-void ServerWindow::on_pushButton_Open_kin1_clicked()
-{
-    OpenKinect(0);
-}
-
-void ServerWindow::on_pushButton_Close_kin1_clicked()
-{
-    CloseKinect(0);
-}
-
-void ServerWindow::on_pushButton_Grab_kin1_clicked()
-{
-    GrabKinect(0);
-}
-
-void ServerWindow::on_pushButton_Open_kin2_clicked()
-{
-    OpenKinect(1);
-}
-
-void ServerWindow::on_pushButton_Close_kin2_clicked()
-{
-    CloseKinect(1);
-}
-
-void ServerWindow::on_pushButton_Grab_kin2_clicked()
-{
-    GrabKinect(1);
-}
-
-void ServerWindow::on_comboBox_KinectSerials_kin1_currentIndexChanged(const QString &arg1)
-{
-    serials.replace(0, arg1);
-}
-
-void ServerWindow::on_comboBox_KinectSerials_kin2_currentIndexChanged(const QString &arg1)
-{
-    serials.replace(1, arg1);
-}
-
-void ServerWindow::on_comboBox_pipeline_kin1_currentIndexChanged(const QString &arg1)
-{
-    if (arg1.compare("Cpu") == 0)           pipeline.replace(0, new libfreenect2::CpuPacketPipeline());
-#ifdef LIBFREENECT2_WITH_OPENGL_SUPPORT
-    else if (arg1.compare("OpenGL") == 0)   pipeline.replace(0, new libfreenect2::OpenGLPacketPipeline());
-#endif
-#ifdef LIBFREENECT2_WITH_OPENCL_SUPPORT
-    else if (arg1.compare("OpenCL") == 0)   pipeline.replace(0, new libfreenect2::OpenCLPacketPipeline());
-#endif
-    if (arg1.compare("Cpu") == 0)           pipeline.replace(0, new libfreenect2::CpuPacketPipeline());
-    else if (arg1.compare("OpenGL") == 0)   pipeline.replace(0, new libfreenect2::OpenGLPacketPipeline());
-    else if (arg1.compare("OpenCL") == 0)   pipeline.replace(0, new libfreenect2::OpenCLPacketPipeline());
-#ifdef LIBFREENECT2_WITH_CUDA_SUPPORT
-    else if (arg1.compare("Cuda") == 0)     pipeline.replace(0, new libfreenect2::CudaPacketPipeline());
-#endif
-}
-
-void ServerWindow::on_comboBox_pipeline_kin2_currentIndexChanged(const QString &arg1)
-{
-    if (arg1.compare("Cpu") == 0)           pipeline.replace(1, new libfreenect2::CpuPacketPipeline());
-#ifdef LIBFREENECT2_WITH_OPENGL_SUPPORT
-    else if (arg1.compare("OpenGL") == 0)   pipeline.replace(1, new libfreenect2::OpenGLPacketPipeline());
-#endif
-#ifdef LIBFREENECT2_WITH_OPENCL_SUPPORT
-    else if (arg1.compare("OpenCL") == 0)   pipeline.replace(1, new libfreenect2::OpenCLPacketPipeline());
-#endif
-#ifdef LIBFREENECT2_WITH_CUDA_SUPPORT
-    else if (arg1.compare("Cuda") == 0)     pipeline.replace(1, new libfreenect2::CudaPacketPipeline());
-#endif
-}
-
 void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
 {
     if (arg1.compare("None") == 0)          libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::None));
@@ -561,7 +326,13 @@ void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
 void ServerWindow::on_checkBox_save_clicked(bool checked)
 {
     if (checked)
-        QObject::connect(this, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+    {
+        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+    }
     else
-        QObject::disconnect(this, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+    {
+        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+    }
 }

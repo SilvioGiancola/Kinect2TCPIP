@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>909</width>
-    <height>723</height>
+    <width>910</width>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>909</width>
+     <width>910</width>
      <height>25</height>
     </rect>
    </property>
@@ -121,264 +121,78 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="0">
-      <widget class="QSplitter" name="splitter">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <widget class="QGroupBox" name="groupBox_Kinect1">
-        <property name="title">
-         <string>Kinect 1</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_Close_kin1">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Close</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QComboBox" name="comboBox_KinectSerials_kin1"/>
-         </item>
-         <item row="0" column="2">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_status_kin1">
-           <property name="text">
-            <string>Status</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_Grab_kin1">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Grab</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QPushButton" name="pushButton_Open_kin1">
-           <property name="text">
-            <string>Open</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QComboBox" name="comboBox_pipeline_kin1">
-           <item>
-            <property name="text">
-             <string>Cpu</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>OpenGL</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>OpenCL</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Cuda</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="4" column="0">
-          <widget class="TransformationWidget" name="myTransformationWidget" native="true">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>100</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QGroupBox" name="groupBox_Kinect2">
-        <property name="title">
-         <string>Kinect 2</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="4" column="0" colspan="2">
-          <widget class="QPushButton" name="pushButton_Grab_kin2">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Grab</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="0">
-          <widget class="QPushButton" name="pushButton_Open_kin2">
-           <property name="text">
-            <string>Open</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_Close_kin2">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Close</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QComboBox" name="comboBox_KinectSerials_kin2"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QComboBox" name="comboBox_pipeline_kin2">
-           <item>
-            <property name="text">
-             <string>Cpu</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>OpenGL</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>OpenCL</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Cuda</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="label_status_kin2">
-           <property name="text">
-            <string>Status</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
      <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
         <string>Libfreenect</string>
        </property>
-       <widget class="QComboBox" name="comboBox_log">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>20</y>
-          <width>85</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string>Debug</string>
-         </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QComboBox" name="comboBox_log">
+          <item>
+           <property name="text">
+            <string>Debug</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Info</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Warning</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Error</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>None</string>
+           </property>
+          </item>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>Info</string>
-         </property>
+        <item row="0" column="1">
+         <widget class="QCheckBox" name="checkBox_save">
+          <property name="text">
+           <string>Save</string>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>Warning</string>
-         </property>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>KinectWidget1</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="KinectWidget" name="myKinectWidget1" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>Error</string>
-         </property>
+        <item row="1" column="1">
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>KinectWidget2</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="KinectWidget" name="myKinectWidget2" native="true"/>
+           </item>
+          </layout>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>None</string>
-         </property>
-        </item>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_save">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>20</y>
-          <width>85</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Save</string>
-        </property>
-       </widget>
+       </layout>
+       <zorder>comboBox_log</zorder>
+       <zorder>checkBox_save</zorder>
+       <zorder>splitter</zorder>
+       <zorder>groupBox_2</zorder>
+       <zorder>groupBox_3</zorder>
       </widget>
      </item>
     </layout>
@@ -394,12 +208,14 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>TransformationWidget</class>
+   <class>KinectWidget</class>
    <extends>QWidget</extends>
-   <header>TransformationWidget.h</header>
+   <header>KinectWidget.h</header>
    <container>1</container>
    <slots>
-    <signal>matrixchanged(TransformT)</signal>
+    <slot>OpenKinect()</slot>
+    <slot>CloseKinect()</slot>
+    <slot>GrabKinect()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -408,112 +224,96 @@
   <connection>
    <sender>pushButton_openall</sender>
    <signal>clicked()</signal>
-   <receiver>pushButton_Open_kin1</receiver>
-   <slot>click()</slot>
+   <receiver>myKinectWidget1</receiver>
+   <slot>OpenKinect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>141</x>
-     <y>78</y>
+     <x>101</x>
+     <y>80</y>
     </hint>
     <hint type="destinationlabel">
-     <x>93</x>
-     <y>495</y>
+     <x>67</x>
+     <y>425</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_openall</sender>
    <signal>clicked()</signal>
-   <receiver>pushButton_Open_kin2</receiver>
-   <slot>click()</slot>
+   <receiver>myKinectWidget2</receiver>
+   <slot>OpenKinect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>239</x>
-     <y>76</y>
+     <x>114</x>
+     <y>79</y>
     </hint>
     <hint type="destinationlabel">
-     <x>369</x>
-     <y>495</y>
+     <x>188</x>
+     <y>359</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_closeall</sender>
    <signal>clicked()</signal>
-   <receiver>pushButton_Close_kin2</receiver>
-   <slot>click()</slot>
+   <receiver>myKinectWidget1</receiver>
+   <slot>CloseKinect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>373</x>
-     <y>78</y>
+     <x>237</x>
+     <y>70</y>
     </hint>
     <hint type="destinationlabel">
-     <x>460</x>
-     <y>495</y>
+     <x>127</x>
+     <y>346</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_closeall</sender>
    <signal>clicked()</signal>
-   <receiver>pushButton_Close_kin1</receiver>
-   <slot>click()</slot>
+   <receiver>myKinectWidget2</receiver>
+   <slot>CloseKinect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>74</y>
+     <x>258</x>
+     <y>79</y>
     </hint>
     <hint type="destinationlabel">
-     <x>216</x>
-     <y>495</y>
+     <x>254</x>
+     <y>360</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_graball</sender>
    <signal>clicked()</signal>
-   <receiver>pushButton_Grab_kin1</receiver>
-   <slot>click()</slot>
+   <receiver>myKinectWidget1</receiver>
+   <slot>GrabKinect()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>207</x>
+     <x>97</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_graball</sender>
+   <signal>clicked()</signal>
+   <receiver>myKinectWidget2</receiver>
+   <slot>GrabKinect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>127</x>
      <y>112</y>
     </hint>
     <hint type="destinationlabel">
-     <x>161</x>
-     <y>528</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>pushButton_graball</sender>
-   <signal>clicked()</signal>
-   <receiver>pushButton_Grab_kin2</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>215</x>
-     <y>105</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>460</x>
-     <y>528</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>myTransformationWidget</sender>
-   <signal>matrixchanged(TransformT)</signal>
-   <receiver>ServerWindow</receiver>
-   <slot>TransformationChanged(TransformT)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>92</x>
-     <y>595</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>609</x>
-     <y>601</y>
+     <x>222</x>
+     <y>348</y>
     </hint>
    </hints>
   </connection>

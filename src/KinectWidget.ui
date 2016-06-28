@@ -131,5 +131,76 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_Open</sender>
+   <signal>clicked()</signal>
+   <receiver>KinectWidget</receiver>
+   <slot>OpenKinect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>48</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>156</x>
+     <y>324</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_Close</sender>
+   <signal>clicked()</signal>
+   <receiver>KinectWidget</receiver>
+   <slot>CloseKinect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>154</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>276</x>
+     <y>94</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_Grab</sender>
+   <signal>clicked()</signal>
+   <receiver>KinectWidget</receiver>
+   <slot>GrabKinect()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>179</x>
+     <y>127</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>myTransformationWidget</sender>
+   <signal>matrixchanged(TransformT)</signal>
+   <receiver>KinectWidget</receiver>
+   <slot>TransformationChanged(TransformT)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>174</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>227</x>
+     <y>243</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>OpenKinect()</slot>
+  <slot>CloseKinect()</slot>
+  <slot>GrabKinect()</slot>
+  <slot>TransformationChanged(TransformT)</slot>
+ </slots>
 </ui>
