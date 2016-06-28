@@ -6,7 +6,7 @@
 #include <QSettings>
 #include <QCompleter>
 
-#include <ClientWindow.h>
+#include <ClientWidget.h>
 
 #include <define.h>
 

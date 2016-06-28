@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>797</width>
-    <height>666</height>
+    <width>909</width>
+    <height>723</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>797</width>
+     <width>909</width>
      <height>25</height>
     </rect>
    </property>
@@ -164,19 +164,6 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="3" column="0" colspan="2">
           <widget class="QPushButton" name="pushButton_Grab_kin1">
            <property name="enabled">
@@ -216,6 +203,29 @@
              <string>Cuda</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="4" column="0">
+          <widget class="TransformationWidget" name="myTransformationWidget" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>100</height>
+            </size>
+           </property>
           </widget>
          </item>
         </layout>
@@ -383,6 +393,15 @@
    <header>QVTKWidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>TransformationWidget</class>
+   <extends>QWidget</extends>
+   <header>TransformationWidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>matrixchanged(TransformT)</signal>
+   </slots>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -397,8 +416,8 @@
      <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>76</x>
-     <y>408</y>
+     <x>93</x>
+     <y>495</y>
     </hint>
    </hints>
   </connection>
@@ -413,8 +432,8 @@
      <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>308</x>
-     <y>408</y>
+     <x>369</x>
+     <y>495</y>
     </hint>
    </hints>
   </connection>
@@ -429,8 +448,8 @@
      <y>78</y>
     </hint>
     <hint type="destinationlabel">
-     <x>416</x>
-     <y>408</y>
+     <x>460</x>
+     <y>495</y>
     </hint>
    </hints>
   </connection>
@@ -445,8 +464,8 @@
      <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>189</x>
-     <y>406</y>
+     <x>216</x>
+     <y>495</y>
     </hint>
    </hints>
   </connection>
@@ -461,8 +480,8 @@
      <y>112</y>
     </hint>
     <hint type="destinationlabel">
-     <x>144</x>
-     <y>440</y>
+     <x>161</x>
+     <y>528</y>
     </hint>
    </hints>
   </connection>
@@ -477,8 +496,24 @@
      <y>105</y>
     </hint>
     <hint type="destinationlabel">
-     <x>433</x>
-     <y>440</y>
+     <x>460</x>
+     <y>528</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>myTransformationWidget</sender>
+   <signal>matrixchanged(TransformT)</signal>
+   <receiver>ServerWindow</receiver>
+   <slot>TransformationChanged(TransformT)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>595</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>609</x>
+     <y>601</y>
     </hint>
    </hints>
   </connection>
@@ -487,5 +522,6 @@
   <slot>OpenAllDevices()</slot>
   <slot>CloseAllDevices()</slot>
   <slot>GrabAllDevices()</slot>
+  <slot>TransformationChanged(TransformT)</slot>
  </slots>
 </ui>

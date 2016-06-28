@@ -131,6 +131,8 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
 }
 
 
+
+
 // Destructor
 ServerWindow::~ServerWindow()
 {
@@ -368,6 +370,13 @@ int ServerWindow::GrabKinect(int i)
     //  PC->header.frame_id = QString("%1/PointClouds/Kinect%2_%3.pcd").arg(QDir::homePath()).arg(_serial.c_str()).arg(timestamp.toString("yyyy-MM-dd-HH:mm:ss:zzz")).toStdString();
     PC->header.frame_id = serials.at(i).toStdString();
 
+
+    Eigen::Matrix4f mat4 = t_kin1.matrix();
+  //  output->sensor_origin_ = trans.block<4,1>(0,3);
+    PC->sensor_orientation_ = Eigen::Quaternionf(t_kin1.rotation());
+    PC->sensor_origin_ = mat4.block<4,1>(0,3);
+
+
     libfreenect2::Freenect2Device::IrCameraParams IRparam = dev.at(i)->getIrCameraParams();
 
     // Set data into my Point cloud
@@ -430,22 +439,29 @@ int ServerWindow::CloseKinect(int i)
 }
 
 
+void  ServerWindow::TransformationChanged(TransformT trans)
+{
+    //qDebug() << "Trasnformation changed";
+    t_kin1 = trans;
+    GrabKinect(0);
+}
 
 void ServerWindow::showPC(PointCloudT::Ptr PC)
 {
     pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
     viewer->removePointCloud(PC->header.frame_id);
     viewer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
+    viewer->removeCoordinateSystem("kin1_refsyst");
+    viewer->addCoordinateSystem(0.2,Eigen::Affine3f(t_kin1.matrix()),"kin1_refsyst");
     ui->qvtkwidget->update ();
 
 
-    qDebug() << QString::fromStdString(PC->header.frame_id);
 }
 
 void ServerWindow::savePC(PointCloudT::Ptr PC)
 {
     QString DIR = QDir::homePath() + "/PointClouds/" + QString::fromStdString(PC->header.frame_id) + "/";
-    QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(dateFormat);
+    QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(DATEFORMAT);
 
     QDir dir;
     if (!QDir(DIR).exists())

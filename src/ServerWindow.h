@@ -24,6 +24,10 @@
 #include <vtkRenderWindow.h> // qvtk
 #include <pcl/io/pcd_io.h>
 
+
+#include <pcl/common/transforms.h>  // transform point cloud
+#include <pcl/common/io.h> // copy point cloud
+
 namespace Ui {
 class ServerWindow;
 }
@@ -73,6 +77,9 @@ private slots:
 
     void on_checkBox_save_clicked(bool checked);
 
+   void  TransformationChanged(TransformT);
+
+
 signals:
     void PCGrabbedsignal(PointCloudT::Ptr);
 
@@ -95,6 +102,8 @@ private:
     QList<libfreenect2::Registration*> registration;
     QList<libfreenect2::PacketPipeline*> pipeline;
     QList<QString> serials;
+
+    TransformT t_kin1;
 
 
 
