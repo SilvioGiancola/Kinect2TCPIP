@@ -20,11 +20,7 @@
 #include <libfreenect2/packet_pipeline.h>
 #include <libfreenect2/logger.h>
 
-#include <pcl/visualization/pcl_visualizer.h> // viewer
-#include <vtkRenderWindow.h> // qvtk
 #include <pcl/io/pcd_io.h>
-
-
 #include <pcl/common/transforms.h>  // transform point cloud
 #include <pcl/common/io.h> // copy point cloud
 
@@ -40,49 +36,18 @@ public:
     explicit ServerWindow(QWidget *parent = 0);
     ~ServerWindow();
 
-
-  /*  int OpenKinect(int i);
-    int GrabKinect(int i);
-    int CloseKinect(int i);
-*/
 private slots:
-
     void newTCPIPConnection();
     void newMessageReceived();
     void clientStateChanged(QAbstractSocket::SocketState);
 
-    void showPC(PointCloudT::Ptr);
     void savePC(PointCloudT::Ptr);
 
-/*
-    void on_pushButton_Open_kin1_clicked();
-    void on_pushButton_Close_kin1_clicked();
-    void on_pushButton_Grab_kin1_clicked();
-
-    void on_pushButton_Open_kin2_clicked();
-    void on_pushButton_Close_kin2_clicked();
-    void on_pushButton_Grab_kin2_clicked();
-
-
-    void on_comboBox_KinectSerials_kin1_currentIndexChanged(const QString &arg1);
-    void on_comboBox_KinectSerials_kin2_currentIndexChanged(const QString &arg1);
-
-    //  void on_comboBox_pipeline_currentIndexChanged(const QString &arg1);
-
-    void on_comboBox_pipeline_kin1_currentIndexChanged(const QString &arg1);
-    void on_comboBox_pipeline_kin2_currentIndexChanged(const QString &arg1);
-*/
     void on_comboBox_log_currentIndexChanged(const QString &arg1);
-
-
     void on_checkBox_save_clicked(bool checked);
 
-  // void  TransformationChanged(TransformT);
 
-
-signals:
- //   void PCGrabbedsignal(PointCloudT::Ptr);
-
+    void on_pushButton_registrer_clicked();
 
 private:
     Ui::ServerWindow *ui;
@@ -92,24 +57,9 @@ private:
     QTcpSocket *socket;
     int _port;
 
-    // pcl 3D Viewer
-    pcl::visualization::PCLVisualizer::Ptr viewer;
-/*
-    // Libfreenect2
-    libfreenect2::Freenect2 freenect2;
-    QList<libfreenect2::Freenect2Device*> dev;
-    QList<libfreenect2::SyncMultiFrameListener*> listener;
-    QList<libfreenect2::Registration*> registration;
-    QList<libfreenect2::PacketPipeline*> pipeline;
-    QList<QString> serials;
-
-    TransformT t_kin1;
-*/
-
 
     void writeSettings();
     void readSettings();
-
 
 };
 #endif // SERVERWINDOW_H

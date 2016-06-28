@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CloudViewer</class>
+ <widget class="QWidget" name="CloudViewer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>200</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout"/>
+ </widget>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>OpenKinect()</slot>
+  <slot>CloseKinect()</slot>
+  <slot>GrabKinect()</slot>
+  <slot>TransformationChanged(TransformT)</slot>
+ </slots>
+</ui>

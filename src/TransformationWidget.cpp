@@ -15,28 +15,24 @@ TransformationWidget::~TransformationWidget()
 
 
 
-TransformT TransformationWidget::getTransform()
+Transform TransformationWidget::getTransform()
 {
-    Eigen::Translation<float,3> translation (ui->TranslationX->value(), ui->TranslationY->value(), ui->TranslationZ->value());
-    Eigen::AngleAxis<float> alfa (ui->RotationX->value()/180.0*M_PI, Eigen::Vector3f(1,0,0));
-    Eigen::AngleAxis<float> beta (ui->RotationY->value()/180.0*M_PI, Eigen::Vector3f(0,1,0));
-    Eigen::AngleAxis<float> gamma (ui->RotationZ->value()/180.0*M_PI, Eigen::Vector3f(0,0,1));
-
-    TransformT transformation = translation * alfa * beta * gamma;
-
-    return transformation;
+    return Transform(ui->TranslationX->value(),
+                     ui->TranslationY->value(),
+                     ui->TranslationZ->value(),
+                     ui->RotationX->value()*M_PI/180.0,
+                     ui->RotationY->value()*M_PI/180.0,
+                     ui->RotationZ->value()*M_PI/180.0);
 }
 
-void TransformationWidget::setTransform(TransformT transform)
+void TransformationWidget::setTransform(Transform transform)
 {
-    Eigen::Vector3f t = transform.translation();
-    ui->TranslationX->setValue(t.x());
-    ui->TranslationY->setValue(t.y());
-    ui->TranslationZ->setValue(t.z());
+    Eigen::Vector4f orig = transform.getOrigin4();
+    ui->TranslationX->setValue(orig(0));
+    ui->TranslationY->setValue(orig(1));
+    ui->TranslationZ->setValue(orig(2));
 
-
-    Eigen::Matrix3f mat = transform.rotation();
-    Eigen::Vector3f ea = mat.eulerAngles(0, 1, 2);
+    Eigen::Vector3f ea = transform.getEulerAngles();
     ui->RotationX->setValue(ea(0)*180.0/M_PI);
     ui->RotationY->setValue(ea(1)*180.0/M_PI);
     ui->RotationZ->setValue(ea(2)*180.0/M_PI);
@@ -45,3 +41,8 @@ void TransformationWidget::setTransform(TransformT transform)
 }
 
 
+
+void TransformationWidget::on_pushButton_reset_clicked()
+{
+    setTransform(Transform());
+}

@@ -10,63 +10,8 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
     ui->centralWidget->setVisible(false);
 
 
-    /*    // Init intern parameters
-    for (int i = 0; i < 2 ; i++)
-    {
-        serials.append(QString(""));
-        dev.append(0);
-        listener.append(new libfreenect2::SyncMultiFrameListener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth));
-        registration.append(new libfreenect2::Registration(libfreenect2::Freenect2Device::IrCameraParams(), libfreenect2::Freenect2Device::ColorCameraParams()));
-        pipeline.append(new libfreenect2::CpuPacketPipeline());
-    }
-
-
-
-    // define serial numbers
-    int n = freenect2.enumerateDevices();
-    for (int i = 0; i < n; i++)
-    {
-        ui->comboBox_KinectSerials_kin1->addItem(QString::fromStdString(freenect2.getDeviceSerialNumber(i)));
-        ui->comboBox_KinectSerials_kin2->addItem(QString::fromStdString(freenect2.getDeviceSerialNumber(i)));
-    }
-*/
-
-
-
     // Settings
     readSettings();
-
-
-    /*
-
-#ifndef LIBFREENECT2_WITH_OPENGL_SUPPORT
-    ui->comboBox_pipeline_kin1->model()->setData(ui->comboBox_pipeline_kin1->model()->index(1,0), 0, Qt::UserRole - 1);
-    ui->comboBox_pipeline_kin2->model()->setData(ui->comboBox_pipeline_kin2->model()->index(1,0), 0, Qt::UserRole - 1);
-#endif
-#ifndef LIBFREENECT2_WITH_OPENCL_SUPPORT
-    ui->comboBox_pipeline_kin1->model()->setData(ui->comboBox_pipeline_kin1->model()->index(2,0), 0, Qt::UserRole - 1);
-    ui->comboBox_pipeline_kin2->model()->setData(ui->comboBox_pipeline_kin2->model()->index(2,0), 0, Qt::UserRole - 1);
-#endif
-#ifndef LIBFREENECT2_WITH_CUDA_SUPPORT
-    ui->comboBox_pipeline_kin1->model()->setData(ui->comboBox_pipeline_kin1->model()->index(3,0), 0, Qt::UserRole - 1);
-    ui->comboBox_pipeline_kin2->model()->setData(ui->comboBox_pipeline_kin2->model()->index(3,0), 0, Qt::UserRole - 1);
-#endif
-*/
-
-
-
-    QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
-    QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
-    // QObject::connect(Kinect2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(showPC(PointCloudT::Ptr)));
-
-
-
-
-
-
-
-
-
 
 
     // initializza il Server TCPIP
@@ -102,59 +47,20 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
         }
     }
 
-
-
-
-
-
-
-
-
-    // set Viewer
-    viewer.reset(new pcl::visualization::PCLVisualizer("Viewer",false));
-    ui->qvtkwidget->SetRenderWindow(viewer->getRenderWindow());
-
-    viewer->addCoordinateSystem(1.0);
-    // on_pushButton_CleanViewer_clicked();
-    viewer->setCameraPosition(-3.5,1,1, // mi posiziono dietro ad un Kinect
-                              0.5,0.5,0.5, // guardo un punto centrale
-                              0,0,1);   // orientato con la z verso l'alto
-    viewer->setCameraClipDistances(-10,10);
-    viewer->setBackgroundColor (0.5, 0.5, 0.5);
-    ui->qvtkwidget->update ();
-
-    viewer->setupInteractor(ui->qvtkwidget->GetInteractor(),ui->qvtkwidget->GetRenderWindow());
-    viewer->getInteractorStyle()->setKeyboardModifier(pcl::visualization::INTERACTOR_KB_MOD_SHIFT);
-
-
-
-
 }
-
-
-
 
 // Destructor
 ServerWindow::~ServerWindow()
 {
     writeSettings();
 
-    /* for (int i = 0; i <dev.size();i++)
-        CloseKinect(i);
-
-    dev.clear();
-    listener.clear();
-    registration.clear();
-    pipeline.clear();
-*/
-    //  viewer.
     delete server;
     delete socket;
     delete ui;
 }
 
 
-
+// QSettings
 void ServerWindow::writeSettings()
 {
     QSettings settings("SilvioGiancola", "Kinect 2 TCPIP");
@@ -165,10 +71,14 @@ void ServerWindow::writeSettings()
     settings.setValue("Serial Kinect 1", ui->myKinectWidget2->getSerial());
 
 
-    if (!ui->myKinectWidget1->getPipeline().compare("") == 0)
-        settings.setValue("Pipeline 0", ui->myKinectWidget1->getPipeline());
-    if (!ui->myKinectWidget2->getPipeline().compare("") == 0)
-        settings.setValue("Pipeline 1", ui->myKinectWidget2->getPipeline());
+    if (!ui->myKinectWidget1->getPipeline().compare("") == 0)   settings.setValue("Pipeline 0", ui->myKinectWidget1->getPipeline());
+    if (!ui->myKinectWidget2->getPipeline().compare("") == 0)   settings.setValue("Pipeline 1", ui->myKinectWidget2->getPipeline());
+
+    settings.setValue("Origin 0", ui->myKinectWidget1->getTransform().getOriginQVector3D());
+    settings.setValue("Origin 1", ui->myKinectWidget2->getTransform().getOriginQVector3D());
+
+    settings.setValue("Euler 0", ui->myKinectWidget1->getTransform().getEulerAnglesQVector3D());
+    settings.setValue("Euler 1", ui->myKinectWidget2->getTransform().getEulerAnglesQVector3D());
 
     settings.setValue("LogLevel", ui->comboBox_log->currentText());
 
@@ -186,6 +96,17 @@ void ServerWindow::readSettings()
 
     ui->myKinectWidget1->setPipeline(settings.value(QString("Pipeline 0"),"").toString());
     ui->myKinectWidget2->setPipeline(settings.value(QString("Pipeline 1"),"").toString());
+
+    QVector3D Orig0= settings.value(QString("Origin 0"),"").value<QVector3D>();
+    QVector3D Euler0= settings.value(QString("Euler 0"),"").value<QVector3D>();
+    ui->myKinectWidget1->setTransform(Transform(Orig0, Euler0));
+
+
+    QVector3D Orig1 = settings.value(QString("Origin 1"),"").value<QVector3D>();
+    QVector3D Euler1 = settings.value(QString("Euler 1"),"").value<QVector3D>();
+    ui->myKinectWidget2->setTransform(Transform(Orig1, Euler1));
+
+    //  ui->myKinectWidget2->setTransform(settings.value(QString("Origin 1"),"").toString());
 
     ui->comboBox_log->setCurrentIndex(ui->comboBox_log->findText(settings.value("LogLevel","").toString()));
 
@@ -278,24 +199,7 @@ void ServerWindow::newMessageReceived()
 
 
 
-void ServerWindow::showPC(PointCloudT::Ptr PC)
-{
-
-    pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
-    viewer->removePointCloud(PC->header.frame_id);
-    viewer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
-
-    Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
-    trans.block(0,0,3,3) = PC->sensor_orientation_.matrix();
-    trans.block(0,3,4,1) = PC->sensor_origin_;
-    viewer->removeCoordinateSystem("kin1_refsyst");
-    viewer->addCoordinateSystem(0.2,Eigen::Affine3f(trans),"kin1_refsyst");
-
-    ui->qvtkwidget->update ();
-
-
-}
-
+// Application
 void ServerWindow::savePC(PointCloudT::Ptr PC)
 {
     QString DIR = QDir::homePath() + "/PointClouds/" + QString::fromStdString(PC->header.frame_id) + "/";
@@ -311,6 +215,131 @@ void ServerWindow::savePC(PointCloudT::Ptr PC)
     qDebug() << "saved in: " << path ;
 }
 
+#include <pcl/features/integral_image_normal.h>
+#include <pcl/filters/filter.h>
+#include <pcl/registration/icp.h> //RegistrationICP
+#include <pcl/registration/correspondence_estimation_organized_projection.h>
+#include <pcl/registration/correspondence_rejection_one_to_one.h>
+#include <pcl/registration/correspondence_rejection_median_distance.h>
+#include <pcl/registration/transformation_estimation_point_to_plane.h>
+
+void ServerWindow::on_pushButton_registrer_clicked()
+{
+    ui->myKinectWidget1->GrabKinect();
+    ui->myKinectWidget2->GrabKinect();
+    PointCloudT::Ptr PC1 = ui->myKinectWidget1->getPointCloud();
+    PointCloudT::Ptr PC2 = ui->myKinectWidget2->getPointCloud();
+
+
+    try
+    {
+
+        // NORMAL
+        pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
+        ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
+        //  ne.setMaxDepthChangeFactor(ui->doubleSpinBox_MaxDepthChangeFactor->value());
+        // ne.setNormalSmoothingSize(ui->doubleSpinBox_NormalSmoothingSize->value());
+
+        ne.setInputCloud(PC1);
+        ne.compute(*PC1);
+        ne.setInputCloud(PC2);
+        ne.compute(*PC2);
+
+
+        // TRANSFORM
+
+        pcl::transformPointCloud(*PC1, *PC1, PC1->sensor_origin_.head(3), PC1->sensor_orientation_);
+        pcl::transformPointCloud(*PC2, *PC2, PC2->sensor_origin_.head(3), PC2->sensor_orientation_);
+
+
+        //REMOVE NAN
+        std::vector<int> ind;
+        pcl::removeNaNFromPointCloud(*PC1, *PC1, ind);
+        pcl::removeNaNNormalsFromPointCloud(*PC1, *PC1, ind);
+        pcl::removeNaNFromPointCloud(*PC2, *PC2, ind);
+        pcl::removeNaNNormalsFromPointCloud(*PC2, *PC2, ind);
+
+
+
+
+        // Creo il mio elemento ICP
+        pcl::IterativeClosestPoint<PointT, PointT> icp;
+
+
+
+
+        // Corrispondence Estimation
+        // Scelgo il mia stima dei accopiamenti
+        pcl::registration::CorrespondenceEstimationBase<PointT, PointT>::Ptr cens;
+        cens.reset(new pcl::registration::CorrespondenceEstimationOrganizedProjection<PointT, PointT>);
+
+        cens->setInputTarget (PC1);
+        cens->setInputSource (PC2);
+
+        icp.setCorrespondenceEstimation (cens);
+
+
+
+
+        // Rejection
+
+        pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
+        cor_rej_med->setInputTarget<PointT> (PC1);
+        cor_rej_med->setInputSource<PointT> (PC2);
+        icp.addCorrespondenceRejector (cor_rej_med);
+
+
+
+        //  pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
+        //  icp.addCorrespondenceRejector (cor_rej_o2o);
+
+
+
+
+
+
+
+
+
+        // Transformation Estimation
+        // Scelgo un metodo per risolvere il problema
+        pcl::registration::TransformationEstimation<PointT, PointT>::Ptr te;
+        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointT, PointT>);
+
+        icp.setTransformationEstimation (te);
+
+
+
+
+
+        icp.setInputSource(PC2);
+        icp.setInputTarget(PC1);
+
+
+        // Modalità di fine ICP
+        //icp.setEuclideanFitnessEpsilon(10E-9);
+        //icp.setTransformationEpsilon(10E-9);
+        icp.setMaximumIterations(1);
+
+
+        PointCloudT::Ptr Final(new PointCloudT);
+        icp.align(*Final);
+        qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
+
+
+        Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
+        std::cout << ICPtransformation  << std::endl;
+
+
+        //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
+        //          result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
+
+    }
+    catch (exception& ex)
+    {
+        qDebug() << ex.what();
+    }
+}
 
 
 
@@ -327,12 +356,12 @@ void ServerWindow::on_checkBox_save_clicked(bool checked)
 {
     if (checked)
     {
-        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
-        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
     }
     else
     {
-        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
-        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
     }
 }

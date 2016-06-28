@@ -5,11 +5,19 @@
 #include <pcl/point_types.h>
 
 #include <Eigen/Dense>
+#include <QDebug>
+#include "Transform.h"
+#include <stdio.h>
+
+
+// exceptions
+#include <iostream>
+#include <exception>
 
 typedef pcl::PointXYZRGBNormal PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 
-typedef Eigen::Transform<float,3,Eigen::Affine> TransformT;
+//typedef Eigen::Transform<float,3,Eigen::Affine> TransformT;
 
 #define SUCCESS 0
 #define ERROR 1

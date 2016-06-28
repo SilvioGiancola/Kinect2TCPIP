@@ -10,9 +10,9 @@ KinectWidget::KinectWidget(QWidget *parent) :
 
     serial = QString("");
     dev = 0;
-    listener  =new libfreenect2::SyncMultiFrameListener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth);
-    registration=new libfreenect2::Registration(libfreenect2::Freenect2Device::IrCameraParams(), libfreenect2::Freenect2Device::ColorCameraParams());
-    pipeline=new libfreenect2::CpuPacketPipeline();
+    listener = new libfreenect2::SyncMultiFrameListener(libfreenect2::Frame::Color | libfreenect2::Frame::Ir | libfreenect2::Frame::Depth);
+    registration = new libfreenect2::Registration(libfreenect2::Freenect2Device::IrCameraParams(), libfreenect2::Freenect2Device::ColorCameraParams());
+    pipeline = new libfreenect2::CpuPacketPipeline();
 
 
     // define serial numbers
@@ -31,14 +31,12 @@ KinectWidget::KinectWidget(QWidget *parent) :
     ui->comboBox_pipeline->model()->setData(ui->comboBox_pipeline->model()->index(3,0), 0, Qt::UserRole - 1);
 #endif
 
+    // PointCloud
     PC.reset(new PointCloudT);
     PC->resize(512*424); // set the memory size to allocate
     PC->height = 424;        // set the height
     PC->width = 512;          // set the width
     PC->is_dense = false;                   // Kinect V2 returns organized and not dense point clouds
-
-
-
 }
 
 KinectWidget::~KinectWidget()
@@ -53,7 +51,7 @@ KinectWidget::~KinectWidget()
 
 int KinectWidget::OpenKinect()
 {
-    if (dev)
+    if (isOpened())
     {
         qWarning() << "Kinect is already open";
         return ERROR;
@@ -71,7 +69,7 @@ int KinectWidget::OpenKinect()
 
 
 
-    if(dev == 0)
+    if(isClosed())
     {
         qWarning() << tr("Error in opening Kinect, failure opening the default one");
         return ERROR;
@@ -89,10 +87,9 @@ int KinectWidget::OpenKinect()
 
     return SUCCESS;
 }
-
 int KinectWidget::GrabKinect()
 {
-    if (dev == 0)
+    if (isClosed())
     {
         qWarning() << "Kinect stream is not open";
         return ERROR;
@@ -174,53 +171,39 @@ int KinectWidget::GrabKinect()
 
     return SUCCESS;
 }
-
 int KinectWidget::CloseKinect()
 {
-
-    if (dev == 0)
+    if (isClosed())
     {
         qWarning() << "Kinect already closed";
         return ERROR;
     }
 
-    //  _open = false;
-    // TODO: restarting ir stream doesn't work!
-    // TODO: bad things will happen, if frame listeners are freed before dev->stop() :(
     dev->stop();
     dev->close();
     dev = 0;
 
-
-
     return SUCCESS;
 }
 
+void  KinectWidget::TransformationChanged(Transform trans)
+{
+    PC->sensor_orientation_ = trans.getQuaternion();
+    PC->sensor_origin_ = trans.getOrigin4();
+    GrabKinect();
+}
 
 
 // get Set Parameters
-void KinectWidget::setPipeline(QString string)
-{
-    ui->comboBox_pipeline->setCurrentIndex(ui->comboBox_pipeline->findText(string));
-}
-
-void KinectWidget::setSerial(QString string)
-{
-    ui->comboBox_KinectSerials->setCurrentIndex(ui->comboBox_KinectSerials->findText(string));
-}
+void KinectWidget::setPipeline(QString string)      {ui->comboBox_pipeline->setCurrentIndex(ui->comboBox_pipeline->findText(string));}
+void KinectWidget::setSerial(QString string)        {ui->comboBox_KinectSerials->setCurrentIndex(ui->comboBox_KinectSerials->findText(string));}
+void KinectWidget::setTransform(Transform transf)   {ui->myTransformationWidget->setTransform(transf);}
 
 
-QString KinectWidget::getPipeline()
-{
-    return ui->comboBox_pipeline->currentText();
-}
-
-QString KinectWidget::getSerial()
-{
-    return ui->comboBox_KinectSerials->currentText();
-}
-
-
+QString KinectWidget::getPipeline()     {return ui->comboBox_pipeline->currentText();}
+QString KinectWidget::getSerial()       {return ui->comboBox_KinectSerials->currentText();}
+Transform KinectWidget::getTransform()  {return ui->myTransformationWidget->getTransform();}
+PointCloudT::Ptr KinectWidget::getPointCloud(){ PointCloudT::Ptr _PC; pcl::copyPointCloud(*PC, *_PC); return _PC;}
 
 
 // Event Handling
@@ -240,7 +223,6 @@ void KinectWidget::on_comboBox_pipeline_currentIndexChanged(const QString &arg1)
     else if (arg1.compare("Cuda") == 0)     pipeline = new libfreenect2::CudaPacketPipeline();
 #endif
 }
-
 void KinectWidget::on_comboBox_KinectSerials_currentIndexChanged(const QString &arg1)
 {
     serial = arg1;
@@ -248,13 +230,3 @@ void KinectWidget::on_comboBox_KinectSerials_currentIndexChanged(const QString &
 
 
 
-void  KinectWidget::TransformationChanged(TransformT trans)
-{
-
-  //  Eigen::Matrix4f mat4 = trans.matrix();
-    //  output->sensor_origin_ = trans.block<4,1>(0,3);
-    PC->sensor_orientation_ = Eigen::Quaternionf(trans.rotation());
-    PC->sensor_origin_ = trans.matrix().block<4,1>(0,3);
-   // t_kin1 = trans;
-    GrabKinect();
-}

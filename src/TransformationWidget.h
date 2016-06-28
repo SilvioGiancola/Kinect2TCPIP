@@ -2,6 +2,7 @@
 #define TransformationWidget_H
 
 #include <QWidget>
+#include <Transform.h>
 #include "define.h"
 
 namespace Ui {
@@ -16,11 +17,11 @@ public:
     explicit TransformationWidget(QWidget *parent = 0);
     ~TransformationWidget();
 
-    TransformT getTransform();
-    void setTransform(TransformT);
+    Transform getTransform();
+    void setTransform(Transform);
 
 signals:
-    void matrixchanged(TransformT mat);
+    void matrixchanged(Transform mat);
 
 private slots:
     void on_TranslationX_valueChanged(double arg1){ emit matrixchanged(getTransform());}
@@ -29,6 +30,8 @@ private slots:
     void on_RotationX_valueChanged(double arg1){ emit matrixchanged(getTransform());}
     void on_RotationY_valueChanged(double arg1){ emit matrixchanged(getTransform());}
     void on_RotationZ_valueChanged(double arg1){ emit matrixchanged(getTransform());}
+
+    void on_pushButton_reset_clicked();
 
 private:
     Ui::TransformationWidget *ui;

@@ -7,6 +7,8 @@
 
 #include "define.h"
 
+#include <pcl/common/io.h> // copy point cloud
+
 #include <libfreenect2/libfreenect2.hpp>
 #include <libfreenect2/frame_listener_impl.h>
 #include <libfreenect2/registration.h>
@@ -27,9 +29,16 @@ public:
 
     void setPipeline(QString Pipe);
     void setSerial(QString serial);
+    void setTransform(Transform transf);
 
     QString getPipeline();
     QString getSerial();
+    Transform getTransform();
+    PointCloudT::Ptr getPointCloud();
+
+    bool isClosed(){return (dev==0);}
+    bool isOpened(){return !isClosed();}
+
 
 signals:
     void PCGrabbedsignal(PointCloudT::Ptr);
@@ -42,7 +51,7 @@ public slots:
 private slots:
     void on_comboBox_pipeline_currentIndexChanged(const QString &arg1);
     void on_comboBox_KinectSerials_currentIndexChanged(const QString &arg1);
-    void TransformationChanged(TransformT);
+    void TransformationChanged(Transform);
 
 private:
     Ui::KinectWidget *ui;
