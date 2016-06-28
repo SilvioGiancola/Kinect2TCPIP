@@ -233,112 +233,120 @@ void ServerWindow::on_pushButton_registrer_clicked()
 
     try
     {
+        try
+        {
 
-        // NORMAL
-        pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
-        ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
-        //  ne.setMaxDepthChangeFactor(ui->doubleSpinBox_MaxDepthChangeFactor->value());
-        // ne.setNormalSmoothingSize(ui->doubleSpinBox_NormalSmoothingSize->value());
+            // NORMAL
+            pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
+            ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
+            //  ne.setMaxDepthChangeFactor(ui->doubleSpinBox_MaxDepthChangeFactor->value());
+            // ne.setNormalSmoothingSize(ui->doubleSpinBox_NormalSmoothingSize->value());
 
-        ne.setInputCloud(PC1);
-        ne.compute(*PC1);
-        ne.setInputCloud(PC2);
-        ne.compute(*PC2);
-
-
-        // TRANSFORM
-
-        pcl::transformPointCloud(*PC1, *PC1, PC1->sensor_origin_.head(3), PC1->sensor_orientation_);
-        pcl::transformPointCloud(*PC2, *PC2, PC2->sensor_origin_.head(3), PC2->sensor_orientation_);
+            ne.setInputCloud(PC1);
+            ne.compute(*PC1);
+            ne.setInputCloud(PC2);
+            ne.compute(*PC2);
 
 
-        //REMOVE NAN
-        std::vector<int> ind;
-        pcl::removeNaNFromPointCloud(*PC1, *PC1, ind);
-        pcl::removeNaNNormalsFromPointCloud(*PC1, *PC1, ind);
-        pcl::removeNaNFromPointCloud(*PC2, *PC2, ind);
-        pcl::removeNaNNormalsFromPointCloud(*PC2, *PC2, ind);
+            // TRANSFORM
+
+            pcl::transformPointCloud(*PC1, *PC1, PC1->sensor_origin_.head(3), PC1->sensor_orientation_);
+            pcl::transformPointCloud(*PC2, *PC2, PC2->sensor_origin_.head(3), PC2->sensor_orientation_);
 
 
-
-
-        // Creo il mio elemento ICP
-        pcl::IterativeClosestPoint<PointT, PointT> icp;
+            //REMOVE NAN
+            std::vector<int> ind;
+            pcl::removeNaNFromPointCloud(*PC1, *PC1, ind);
+            pcl::removeNaNNormalsFromPointCloud(*PC1, *PC1, ind);
+            pcl::removeNaNFromPointCloud(*PC2, *PC2, ind);
+            pcl::removeNaNNormalsFromPointCloud(*PC2, *PC2, ind);
 
 
 
 
-        // Corrispondence Estimation
-        // Scelgo il mia stima dei accopiamenti
-        pcl::registration::CorrespondenceEstimationBase<PointT, PointT>::Ptr cens;
-        cens.reset(new pcl::registration::CorrespondenceEstimationOrganizedProjection<PointT, PointT>);
-
-        cens->setInputTarget (PC1);
-        cens->setInputSource (PC2);
-
-        icp.setCorrespondenceEstimation (cens);
+            // Creo il mio elemento ICP
+            pcl::IterativeClosestPoint<PointT, PointT> icp;
 
 
 
 
-        // Rejection
+            // Corrispondence Estimation
+            // Scelgo il mia stima dei accopiamenti
+            pcl::registration::CorrespondenceEstimationBase<PointT, PointT>::Ptr cens;
+            cens.reset(new pcl::registration::CorrespondenceEstimationOrganizedProjection<PointT, PointT>);
 
-        pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
-        cor_rej_med->setInputTarget<PointT> (PC1);
-        cor_rej_med->setInputSource<PointT> (PC2);
-        icp.addCorrespondenceRejector (cor_rej_med);
+            cens->setInputTarget (PC1);
+            cens->setInputSource (PC2);
 
-
-
-        //  pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
-        //  icp.addCorrespondenceRejector (cor_rej_o2o);
+            icp.setCorrespondenceEstimation (cens);
 
 
 
 
+            // Rejection
+
+            pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
+            cor_rej_med->setInputTarget<PointT> (PC1);
+            cor_rej_med->setInputSource<PointT> (PC2);
+            icp.addCorrespondenceRejector (cor_rej_med);
+
+
+
+            //  pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
+            //  icp.addCorrespondenceRejector (cor_rej_o2o);
 
 
 
 
 
-        // Transformation Estimation
-        // Scelgo un metodo per risolvere il problema
-        pcl::registration::TransformationEstimation<PointT, PointT>::Ptr te;
-        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointT, PointT>);
-
-        icp.setTransformationEstimation (te);
 
 
 
 
+            // Transformation Estimation
+            // Scelgo un metodo per risolvere il problema
+            pcl::registration::TransformationEstimation<PointT, PointT>::Ptr te;
+            te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointT, PointT>);
 
-        icp.setInputSource(PC2);
-        icp.setInputTarget(PC1);
-
-
-        // Modalità di fine ICP
-        //icp.setEuclideanFitnessEpsilon(10E-9);
-        //icp.setTransformationEpsilon(10E-9);
-        icp.setMaximumIterations(1);
+            icp.setTransformationEstimation (te);
 
 
-        PointCloudT::Ptr Final(new PointCloudT);
-        icp.align(*Final);
-        qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
 
 
-        Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
-        std::cout << ICPtransformation  << std::endl;
+
+            icp.setInputSource(PC2);
+            icp.setInputTarget(PC1);
 
 
-        //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
-        //          result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
+            // Modalità di fine ICP
+            //icp.setEuclideanFitnessEpsilon(10E-9);
+            //icp.setTransformationEpsilon(10E-9);
+            icp.setMaximumIterations(1);
 
+
+            PointCloudT::Ptr Final(new PointCloudT);
+            icp.align(*Final);
+            qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
+
+
+            Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
+            std::cout << ICPtransformation  << std::endl;
+
+
+            //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
+            //          result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
+
+        }
+        catch (std::exception& ex)
+        {
+            qDebug() << ex.what();
+        }
     }
-    catch (exception& ex)
+    catch (int i)
     {
-        qDebug() << ex.what();
+        qDebug() << "Unknown Error " << i;
     }
+
 }
 
 
