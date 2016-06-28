@@ -165,7 +165,7 @@ void ClientWidget::plotState(QAbstractSocket::SocketState state)
 void ClientWidget::newMessageReceived()
 {
     QString message = QString(mySocket->readAll());
-    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(dateFormat)).arg(message));
+    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(DATEFORMAT)).arg(message));
 }
 
 void ClientWidget::WriteMessage(QString message)
