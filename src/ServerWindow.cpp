@@ -166,6 +166,10 @@ void ServerWindow::newMessageReceived()
         else Answer.append("ERR");
 
     }
+    else if(message.contains(QString(PROTOCOL_SAVE_SETTINGS)))
+    {
+        writeSettings();
+    }
     else if(message.contains(QString(PROTOCOL_GRAB)))
     {
         Answer.append(": ");
@@ -234,14 +238,14 @@ void ServerWindow::savePC(PointCloudT::Ptr PC)
 
 void ServerWindow::on_pushButton_registrer_clicked()
 {
-    ui->myKinectWidget1->GrabKinect();
-    ui->myKinectWidget2->GrabKinect();
-    PointCloudT::Ptr PC1 = ui->myKinectWidget1->getPointCloud();
-    PointCloudT::Ptr PC2 = ui->myKinectWidget2->getPointCloud();
-
-
     try
     {
+        ui->myKinectWidget1->GrabKinect();
+        ui->myKinectWidget2->GrabKinect();
+        PointCloudT::Ptr PC1 = ui->myKinectWidget1->getPointCloud();
+        PointCloudT::Ptr PC2 = ui->myKinectWidget2->getPointCloud();
+
+
         // NORMAL
         qDebug() << "NORMAL: " << PC1->size();
         pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
@@ -301,7 +305,7 @@ void ServerWindow::on_pushButton_registrer_clicked()
         pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
         icp.addCorrespondenceRejector (cor_rej_o2o);
 
-/*
+        /*
         pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
         cor_rej_med->setInputTarget<PointT> (PC1);
         cor_rej_med->setInputSource<PointT> (PC2);
@@ -357,11 +361,18 @@ void ServerWindow::on_pushButton_registrer_clicked()
         //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
         //  result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
 
+        writeSettings();
+
+        ui->myKinectWidget1->GrabKinect();
+        ui->myKinectWidget2->GrabKinect();
     }
     catch (std::exception& ex)
     {
         qDebug() << ex.what();
     }
+
+
+
 
 
 }

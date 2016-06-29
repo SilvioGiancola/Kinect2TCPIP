@@ -14,11 +14,10 @@
 
 
 /// TO DO:
-/// ADD position matrix handle -> Can be saved in PC and can be opened / saved from 7 doubles
 /// ADD Registration handle with fixed number of iteration and at every grab
 /// ADD REgistration based on closest BRISK point ?
 /// ADD opencv handling (check RTABMAP)
-/// ADD Grab Multi index kinect in parallel
+
 
 
 namespace Ui {
@@ -58,7 +57,7 @@ private slots:
 
 
 
-    void on_checkBox_ExpertMode_toggled(bool checked);
+    void on_groupBox_ExpertMode_toggled(bool checked);
     void on_pushButton_SSHReboot_clicked();
     void on_pushButton_SSHUpdate_clicked();
     void on_pushButton_SSHClientCompile_clicked();
@@ -68,6 +67,9 @@ private slots:
     void on_checkBox_savePC_clicked(bool checked);
 
     void on_pushButton_Register_clicked();
+
+
+    void on_pushButton_Save_Settings_clicked();
 
 private:
     Ui::ClientWidget *ui;

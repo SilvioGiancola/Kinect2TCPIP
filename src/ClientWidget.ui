@@ -20,6 +20,41 @@
       <string>TCP/IP Client</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="6" column="1">
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="lineEdit_Port">
+        <property name="text">
+         <string>0000</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="pushButton_Disconnect">
+        <property name="text">
+         <string>Disconnnect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="lineEdit_Message">
+        <property name="text">
+         <string>Hello World! :)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>Clear</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -31,77 +66,6 @@
        <widget class="QPushButton" name="pushButton_Send">
         <property name="text">
          <string>Send Message</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_IP">
-        <property name="text">
-         <string>0.0.0.0</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="pushButton_Disconnect">
-        <property name="text">
-         <string>Disconnnect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="1" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="pushButton_SSHUpdate">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Update</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_SSHClientCompile">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Compile</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_SSHReboot">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Reboot</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="5" column="1">
-       <widget class="QPlainTextEdit" name="plainTextEdit_sent"/>
-      </item>
-      <item row="5" column="2">
-       <widget class="QPlainTextEdit" name="plainTextEdit_received"/>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Port</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1" colspan="2">
-       <widget class="QCheckBox" name="checkBox_ExpertMode">
-        <property name="text">
-         <string>SSH Mode (Expert Only)</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -119,31 +83,23 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="lineEdit_Port">
+      <item row="5" column="1">
+       <widget class="QPlainTextEdit" name="plainTextEdit_sent"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>0000</string>
+         <string>Port</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="lineEdit_Message">
-        <property name="text">
-         <string>Hello World! :)</string>
-        </property>
-       </widget>
+      <item row="5" column="2">
+       <widget class="QPlainTextEdit" name="plainTextEdit_received"/>
       </item>
-      <item row="6" column="1">
-       <widget class="QPushButton" name="pushButton">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit_IP">
         <property name="text">
-         <string>Clear</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="2">
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>Clear</string>
+         <string>0.0.0.0</string>
         </property>
        </widget>
       </item>
@@ -197,6 +153,13 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="pushButton_Register">
+        <property name="text">
+         <string>Register</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QPushButton" name="pushButton_Connect_Devices">
         <property name="text">
@@ -211,12 +174,61 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="pushButton_Register">
+      <item row="4" column="0">
+       <widget class="QPushButton" name="pushButton_Save_Settings">
         <property name="text">
-         <string>Register</string>
+         <string>Save Settings</string>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_ExpertMode">
+     <property name="title">
+      <string>SSH Mode (Expert only)</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButton_SSHUpdate">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Update</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_SSHClientCompile">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Compile</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_SSHReboot">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Reboot</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

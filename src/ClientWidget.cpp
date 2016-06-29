@@ -7,7 +7,7 @@ ClientWidget::ClientWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->checkBox_ExpertMode->setChecked(false);
+    ui->groupBox_ExpertMode->setChecked(false);
 
     mySocket = new QTcpSocket();
     mySocket->setReadBufferSize(0);
@@ -73,6 +73,7 @@ void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage
 void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
 void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
 void ClientWidget::on_pushButton_Register_clicked()             {   WriteMessage(QString(PROTOCOL_REGISTER));}
+void ClientWidget::on_pushButton_Save_Settings_clicked()        {   WriteMessage(QString(PROTOCOL_SAVE_SETTINGS));}
 void ClientWidget::on_comboBox_activated(const QString &arg1)   {   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
 void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage(QString("%1%2").arg(PROTOCOL_SAVE).arg((int)checked));}
 
@@ -81,7 +82,9 @@ void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage
 
 // SSH communication
 
-void ClientWidget::on_checkBox_ExpertMode_toggled(bool checked)
+
+
+void ClientWidget::on_groupBox_ExpertMode_toggled(bool checked)
 {
     if (checked)
     {
@@ -96,6 +99,7 @@ void ClientWidget::on_checkBox_ExpertMode_toggled(bool checked)
         ui->pushButton_SSHClientCompile->setVisible(false);
     }
 }
+
 
 void ClientWidget::on_pushButton_SSHReboot_clicked()
 {
