@@ -7,8 +7,6 @@
 
 #include "define.h"
 
-//using namespace Eigen;
-
 class Transform
 {
 public:
@@ -33,6 +31,7 @@ public:
     void setOrigin3(Eigen::Vector3f orig){_transformation.matrix().block(0,3,3,1) = orig;}
     void setQuaternion(Eigen::Quaternionf quat){_transformation.matrix().block(0,0,3,3) = quat.matrix();}
     void setEulerAngles(Eigen::Vector3f ea){_transformation.matrix().block(0,0,3,3) = (Eigen::AngleAxisf(ea[0], Eigen::Vector3f::UnitX()) * Eigen::AngleAxisf(ea[1], Eigen::Vector3f::UnitY()) * Eigen::AngleAxisf(ea[2], Eigen::Vector3f::UnitZ())).matrix();}
+    void setMatrix3(Eigen::Matrix3f mat){_transformation.matrix().block(0,0,3,3) = mat;}
 
     void setOriginFromQVector3D(QVector3D vect){setOrigin3(Eigen::Vector3f(vect.x(),vect.y(), vect.z()));}
     void setEulerAnglesFromQVector3D(QVector3D vect){setEulerAngles(Eigen::Vector3f(vect.x(),vect.y(), vect.z()));}

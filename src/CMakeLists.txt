@@ -29,7 +29,7 @@ set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
 
 # SERVER SOLUTION (Kinect V2 Handler)
 set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp TransformationWidget.cpp CloudViewer.cpp Transform.cpp)
-set  (server_HEADERS ServerWindow.h KinectWidget.h TransformationWidget.h CloudViewer.h define.h Transform.h )
+set  (server_HEADERS ServerWindow.h KinectWidget.h TransformationWidget.h CloudViewer.h define.h Transform.h  )
 set  (server_FORMS   ServerWindow.ui KinectWidget.ui TransformationWidget.ui CloudViewer.ui)
 
 

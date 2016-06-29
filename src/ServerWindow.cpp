@@ -47,6 +47,7 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
         }
     }
 
+
 }
 
 // Destructor
@@ -174,15 +175,17 @@ void ServerWindow::newMessageReceived()
         if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
     }
+    else if(message.contains(QString(PROTOCOL_REGISTER)))
+    {
+        on_pushButton_registrer_clicked();
+        Answer.append(": OK");
+    }
     else if(message.contains(QString(PROTOCOL_PIPELINE)))
     {
         const QString submess = message.remove(0,QString(PROTOCOL_PIPELINE).length());
         Answer.append(": " + submess);
         ui->myKinectWidget1->setPipeline(submess);
         ui->myKinectWidget2->setPipeline(submess);
-        /*  int index = ui->comboBox_pipeline_kin1->findText(submess);
-        ui->comboBox_pipeline_kin1->setCurrentIndex(index);
-        ui->comboBox_pipeline_kin2->setCurrentIndex(index);*/
     }
     else if(message.contains(QString(PROTOCOL_SAVE)))
     {
@@ -191,7 +194,6 @@ void ServerWindow::newMessageReceived()
         int index = submess.toInt();
         ui->checkBox_save->setChecked((bool)index);
     }
-
 
     socket->write(Answer.toLocal8Bit());
 
@@ -202,8 +204,8 @@ void ServerWindow::newMessageReceived()
 // Application
 void ServerWindow::savePC(PointCloudT::Ptr PC)
 {
-    QString DIR = QDir::homePath() + "/PointClouds/" + QString::fromStdString(PC->header.frame_id) + "/";
-    QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(DATEFORMAT);
+    QString DIR = QDir::homePath() + "/PointClouds/" + QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(DATEFORMAT) + "/";
+    QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(TIMEFORMAT) + "_" + QString::fromStdString(PC->header.frame_id);
 
     QDir dir;
     if (!QDir(DIR).exists())
@@ -215,13 +217,20 @@ void ServerWindow::savePC(PointCloudT::Ptr PC)
     qDebug() << "saved in: " << path ;
 }
 
+
+
+// TODO : Verify Registration
+
 #include <pcl/features/integral_image_normal.h>
 #include <pcl/filters/filter.h>
 #include <pcl/registration/icp.h> //RegistrationICP
 #include <pcl/registration/correspondence_estimation_organized_projection.h>
+#include <pcl/registration/correspondence_estimation_normal_shooting.h>
 #include <pcl/registration/correspondence_rejection_one_to_one.h>
 #include <pcl/registration/correspondence_rejection_median_distance.h>
 #include <pcl/registration/transformation_estimation_point_to_plane.h>
+
+
 
 void ServerWindow::on_pushButton_registrer_clicked()
 {
@@ -233,119 +242,127 @@ void ServerWindow::on_pushButton_registrer_clicked()
 
     try
     {
-        try
-        {
+        // NORMAL
+        qDebug() << "NORMAL: " << PC1->size();
+        pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
+        ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
+        ne.setMaxDepthChangeFactor(0.02);
+        ne.setNormalSmoothingSize(10.0);
 
-            // NORMAL
-            pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
-            ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
-            //  ne.setMaxDepthChangeFactor(ui->doubleSpinBox_MaxDepthChangeFactor->value());
-            // ne.setNormalSmoothingSize(ui->doubleSpinBox_NormalSmoothingSize->value());
-
-            ne.setInputCloud(PC1);
-            ne.compute(*PC1);
-            ne.setInputCloud(PC2);
-            ne.compute(*PC2);
+        ne.setInputCloud(PC1);
+        ne.compute(*PC1);
+        ne.setInputCloud(PC2);
+        ne.compute(*PC2);
 
 
-            // TRANSFORM
-
-            pcl::transformPointCloud(*PC1, *PC1, PC1->sensor_origin_.head(3), PC1->sensor_orientation_);
-            pcl::transformPointCloud(*PC2, *PC2, PC2->sensor_origin_.head(3), PC2->sensor_orientation_);
-
-
-            //REMOVE NAN
-            std::vector<int> ind;
-            pcl::removeNaNFromPointCloud(*PC1, *PC1, ind);
-            pcl::removeNaNNormalsFromPointCloud(*PC1, *PC1, ind);
-            pcl::removeNaNFromPointCloud(*PC2, *PC2, ind);
-            pcl::removeNaNNormalsFromPointCloud(*PC2, *PC2, ind);
+        // TRANSFORM
+        qDebug() << "TRANSFORM: " << PC1->size();
+        pcl::transformPointCloud(*PC1, *PC1, PC1->sensor_origin_.head(3), PC1->sensor_orientation_);
+        pcl::transformPointCloud(*PC2, *PC2, PC2->sensor_origin_.head(3), PC2->sensor_orientation_);
 
 
-
-
-            // Creo il mio elemento ICP
-            pcl::IterativeClosestPoint<PointT, PointT> icp;
+        //REMOVE NAN
+        qDebug() << "REMOVE NAN: " << PC1->size();
+        std::vector<int> ind;
+        pcl::removeNaNFromPointCloud(*PC1, *PC1, ind);
+        pcl::removeNaNNormalsFromPointCloud(*PC1, *PC1, ind);
+        pcl::removeNaNFromPointCloud(*PC2, *PC2, ind);
+        pcl::removeNaNNormalsFromPointCloud(*PC2, *PC2, ind);
 
 
 
 
-            // Corrispondence Estimation
-            // Scelgo il mia stima dei accopiamenti
-            pcl::registration::CorrespondenceEstimationBase<PointT, PointT>::Ptr cens;
-            cens.reset(new pcl::registration::CorrespondenceEstimationOrganizedProjection<PointT, PointT>);
-
-            cens->setInputTarget (PC1);
-            cens->setInputSource (PC2);
-
-            icp.setCorrespondenceEstimation (cens);
+        // Creo il mio elemento ICP
+        qDebug() << "ICP: " << PC1->size();
+        pcl::IterativeClosestPoint<PointT, PointT> icp;
 
 
 
 
-            // Rejection
+        // Corrispondence Estimation
+        // Scelgo il mia stima dei accopiamenti
+        qDebug() << "Corrispondence Estimation";
+        pcl::registration::CorrespondenceEstimationBase<PointT, PointT>::Ptr cens;
+        cens.reset(new pcl::registration::CorrespondenceEstimationNormalShooting<PointT, PointT,PointT>);
 
-            pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
-            cor_rej_med->setInputTarget<PointT> (PC1);
-            cor_rej_med->setInputSource<PointT> (PC2);
-            icp.addCorrespondenceRejector (cor_rej_med);
+        cens->setInputTarget (PC1);
+        cens->setInputSource (PC2);
 
-
-
-            //  pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
-            //  icp.addCorrespondenceRejector (cor_rej_o2o);
-
+        icp.setCorrespondenceEstimation (cens);
 
 
 
 
+        // Corrispondence Rejection
+        qDebug() << "Corrispondence Rejection";
 
 
 
+        pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
+        icp.addCorrespondenceRejector (cor_rej_o2o);
 
-            // Transformation Estimation
-            // Scelgo un metodo per risolvere il problema
-            pcl::registration::TransformationEstimation<PointT, PointT>::Ptr te;
-            te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointT, PointT>);
-
-            icp.setTransformationEstimation (te);
+/*
+        pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
+        cor_rej_med->setInputTarget<PointT> (PC1);
+        cor_rej_med->setInputSource<PointT> (PC2);
+        icp.addCorrespondenceRejector (cor_rej_med);*/
 
 
 
 
 
-            icp.setInputSource(PC2);
-            icp.setInputTarget(PC1);
 
 
-            // Modalità di fine ICP
-            //icp.setEuclideanFitnessEpsilon(10E-9);
-            //icp.setTransformationEpsilon(10E-9);
-            icp.setMaximumIterations(1);
+
+        // Transformation Estimation
+        // Scelgo un metodo per risolvere il problema
+        qDebug() << "Transformation Estimation";
+        pcl::registration::TransformationEstimation<PointT, PointT>::Ptr te;
+        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointT, PointT>);
+
+        icp.setTransformationEstimation (te);
 
 
-            PointCloudT::Ptr Final(new PointCloudT);
-            icp.align(*Final);
-            qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
 
 
-            Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
-            std::cout << ICPtransformation  << std::endl;
+
+        icp.setInputSource(PC2);
+        icp.setInputTarget(PC1);
 
 
-            //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
-            //          result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
+        // Modalità di fine ICP
+        //icp.setEuclideanFitnessEpsilon(10E-9);
+        //icp.setTransformationEpsilon(10E-9);
+        icp.setMaximumIterations(1);
 
-        }
-        catch (std::exception& ex)
-        {
-            qDebug() << ex.what();
-        }
+
+        qDebug() << "Align";
+        PointCloudT::Ptr Final(new PointCloudT);
+        icp.align(*Final);
+        qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
+
+
+        Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
+        std::cout << ICPtransformation  << std::endl;
+
+
+        Transform T;
+        PointCloudT::Ptr PCnew = ui->myKinectWidget2->getPointCloud();
+        T.setOrigin4(ICPtransformation.block<4,1>(0,3) + PCnew->sensor_origin_);
+        T.setQuaternion(Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PCnew->sensor_orientation_);
+
+        T.print();
+
+        ui->myKinectWidget2->setTransform(T);
+        //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
+        //  result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
+
     }
-    catch (int i)
+    catch (std::exception& ex)
     {
-        qDebug() << "Unknown Error " << i;
+        qDebug() << ex.what();
     }
+
 
 }
 
@@ -364,12 +381,12 @@ void ServerWindow::on_checkBox_save_clicked(bool checked)
 {
     if (checked)
     {
-        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
-        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
     }
     else
     {
-        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
-        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myCloudViewer, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
     }
 }

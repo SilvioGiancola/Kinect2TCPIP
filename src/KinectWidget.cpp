@@ -203,7 +203,7 @@ void KinectWidget::setTransform(Transform transf)   {ui->myTransformationWidget-
 QString KinectWidget::getPipeline()     {return ui->comboBox_pipeline->currentText();}
 QString KinectWidget::getSerial()       {return ui->comboBox_KinectSerials->currentText();}
 Transform KinectWidget::getTransform()  {return ui->myTransformationWidget->getTransform();}
-PointCloudT::Ptr KinectWidget::getPointCloud(){ PointCloudT::Ptr _PC; pcl::copyPointCloud(*PC, *_PC); return _PC;}
+PointCloudT::Ptr KinectWidget::getPointCloud(){PointCloudT::Ptr _PC(new PointCloudT()); pcl::copyPointCloud(*PC, *_PC); return _PC;}
 
 
 // Event Handling

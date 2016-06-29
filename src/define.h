@@ -27,8 +27,10 @@ typedef pcl::PointCloud<PointT> PointCloudT;
 #define PROTOCOL_CLOSE "Close"
 #define PROTOCOL_PIPELINE "Pipeline_"
 #define PROTOCOL_SAVE "SAVE_"
+#define PROTOCOL_REGISTER "Register"
 
-#define DATEFORMAT "yyyy.MM.dd_hh.mm.ss.zzz"
+#define DATEFORMAT "yyyy.MMM.dd"
+#define TIMEFORMAT "hh.mm.ss.zzz"
 
 
 #endif // DEFINE_H

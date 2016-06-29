@@ -78,7 +78,7 @@
    <item row="1" column="2">
     <widget class="QDoubleSpinBox" name="RotationX">
      <property name="decimals">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="minimum">
       <double>-180.000000000000000</double>
@@ -135,7 +135,7 @@
    <item row="2" column="2">
     <widget class="QDoubleSpinBox" name="RotationY">
      <property name="decimals">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="minimum">
       <double>-180.000000000000000</double>
@@ -154,7 +154,7 @@
    <item row="3" column="2">
     <widget class="QDoubleSpinBox" name="RotationZ">
      <property name="decimals">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="minimum">
       <double>-180.000000000000000</double>

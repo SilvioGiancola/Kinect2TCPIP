@@ -72,8 +72,10 @@ void ClientWidget::on_pushButton_Send_clicked()                 {   WriteMessage
 void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage(QString(PROTOCOL_OPEN));}
 void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
 void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
+void ClientWidget::on_pushButton_Register_clicked()             {   WriteMessage(QString(PROTOCOL_REGISTER));}
 void ClientWidget::on_comboBox_activated(const QString &arg1)   {   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
 void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage(QString("%1%2").arg(PROTOCOL_SAVE).arg((int)checked));}
+
 
 
 
@@ -165,7 +167,7 @@ void ClientWidget::plotState(QAbstractSocket::SocketState state)
 void ClientWidget::newMessageReceived()
 {
     QString message = QString(mySocket->readAll());
-    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(DATEFORMAT)).arg(message));
+    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(TIMEFORMAT)).arg(message));
 }
 
 void ClientWidget::WriteMessage(QString message)

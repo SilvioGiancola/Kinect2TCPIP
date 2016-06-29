@@ -67,6 +67,8 @@ private slots:
 
     void on_checkBox_savePC_clicked(bool checked);
 
+    void on_pushButton_Register_clicked();
+
 private:
     Ui::ClientWidget *ui;
     QStringList * IPhistory;
