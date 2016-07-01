@@ -17,12 +17,18 @@ ClientWidget::ClientWidget(QWidget *parent) :
     //SSH stuff
     connect(&proc, SIGNAL(readyReadStandardOutput()), this, SLOT(SSHlog()));
     connect(&proc, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(showProcState(QProcess::ProcessState)));
+
+
+
+    PointCloudDecoder = new pcl::io::OctreePointCloudCompression<PointT> ();
+
 }
 
 
 
 ClientWidget::~ClientWidget()
 {
+    delete (PointCloudDecoder);
     mySocket->disconnectFromHost();
     delete ui;
 }
@@ -101,7 +107,7 @@ void ClientWidget::on_pushButton_SSHReboot_clicked()
     proc.start(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
         ui->plainTextEdit_SSHLog->appendPlainText("Reboot Timeout reached");
-    else   ui->plainTextEdit_SSHLog->appendPlainText("Reboot Done");
+    else   ui->plainTextEdit_SSHLog->appendPlainText("Reboot Sent");
 }
 
 void ClientWidget::on_pushButton_SSHUpdate_clicked()
@@ -114,7 +120,13 @@ void ClientWidget::on_pushButton_SSHUpdate_clicked()
     }
 
 
-    proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP/build-Server").arg(ui->lineEdit_IP->text()));
+    proc.start(QString("ssh sineco@%1 rm -r /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
+    if (proc.waitForFinished() == false)
+        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
+    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
+
+
+    proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
         ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
     else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
@@ -183,11 +195,47 @@ void ClientWidget::plotState(QAbstractSocket::SocketState state)
     qDebug() << state;
 }
 
+
 void ClientWidget::newMessageReceived()
 {
-    QString message = QString(mySocket->readAll());
+    QString message = QString::fromLocal8Bit(mySocket->readAll());
     ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(TIMEFORMAT)).arg(message));
+
+    if (message.contains("MY_"))
+    {
+        PCmode = false;
+    }
+
+    if (message.contains("<PCL-OCT-COMPRESSED>"))
+    {
+        PCmode = true;
+        compressedDataPart = QString();
+    }
+
+    if (PCmode == true)
+    {
+        compressedDataPart = compressedDataPart.append(message);
+    }
+
 }
+
+
+void ClientWidget::on_pushButton_ShowArrived_clicked()
+{
+    qDebug() << "PC detected";
+    qDebug() << compressedDataPart;
+    // decompress point cloud
+    std::stringstream compressedData;
+    compressedData.str(compressedDataPart.toStdString());
+    PointCloudT::Ptr cloudOut (new PointCloudT ());
+    qDebug() << "before decoding";
+    PointCloudDecoder->decodePointCloud (compressedData, cloudOut);
+    qDebug() << "decoded";
+
+
+  //  emit PCtransmitted(cloudOut);
+}
+
 
 void ClientWidget::WriteMessage(QString message)
 {

@@ -62,8 +62,8 @@ ServerWindow::~ServerWindow()
 {
     writeSettings();
 
-    delete (PointCloudEncoder);
     delete (PointCloudDecoder);
+    delete (PointCloudEncoder);
 
     delete server;
     delete socket;
@@ -166,7 +166,7 @@ void ServerWindow::newMessageReceived()
         else Answer.append("ERR");
 
     }
-    else if(message.contains(QString(PROTOCOL_CLOSE)))
+    else if(message == QString(PROTOCOL_CLOSE))
     {
         Answer.append(": ");
         if (ui->myKinectWidget1->CloseKinect()== SUCCESS) Answer.append("OK");
@@ -176,11 +176,11 @@ void ServerWindow::newMessageReceived()
         else Answer.append("ERR");
 
     }
-    else if(message.contains(QString(PROTOCOL_SAVE_SETTINGS)))
+    else if(message == QString(PROTOCOL_SAVE_SETTINGS))
     {
         writeSettings();
     }
-    else if(message.contains(QString(PROTOCOL_GRAB)))
+    else if(message == QString(PROTOCOL_GRAB))
     {
         Answer.append(": ");
         if (ui->myKinectWidget1->GrabKinect()== SUCCESS) Answer.append("OK");
@@ -189,36 +189,35 @@ void ServerWindow::newMessageReceived()
         if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
     }
-    else if(message.contains(QString(PROTOCOL_GRAB_TRANSMIT)))
-    {
+    else if(message == QString(PROTOCOL_GRAB_TRANSMIT))
+    {/*
         Answer.append(": ");
         if (ui->myKinectWidget1->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
         Answer.append(" / ");
         if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
-
-        PointCloudT::Ptr cloud = ui->myKinectWidget2->getPointCloud();
+*/
+        PointCloudT::Ptr cloud = ui->myKinectWidget1->getPointCloud();
 
         // compress point cloud
-        std::stringstream compressedData;
+        std::stringstream compressedDataSent;
 
 
-        PointCloudEncoder->encodePointCloud (cloud, compressedData);
+        PointCloudEncoder->encodePointCloud (cloud, compressedDataSent);
 
-        // decompress point cloud
-        PointCloudT::Ptr cloudOut (new PointCloudT ());
-        PointCloudDecoder->decodePointCloud (compressedData, cloudOut);
+        QString compressedDataQT = QString::fromStdString(compressedDataSent.str());
 
-
-
+/*
         ui->myCloudViewer->clear();
-        ui->myCloudViewer->showPC(cloudOut);
+        ui->myCloudViewer->showPC(cloudOut);*/
 
-     //   socket->write(PC->);
+
+       // QString::fromStdString()
+        socket->write(compressedDataQT.toLocal8Bit());
         return;
     }
-    else if(message.contains(QString(PROTOCOL_REGISTER)))
+    else if(message == QString(PROTOCOL_REGISTER))
     {
         on_pushButton_registrer_clicked();
         Answer.append(": OK");
@@ -443,20 +442,36 @@ void ServerWindow::on_checkBox_save_toggled(bool checked)
 
 void ServerWindow::on_pushButton_compress_clicked()
 {
-    PointCloudT::Ptr cloud = ui->myKinectWidget2->getPointCloud();
+    PointCloudT::Ptr cloud = ui->myKinectWidget1->getPointCloud();
 
     // compress point cloud
-    std::stringstream compressedData;
+    std::stringstream compressedDataSent;
 
 
-    PointCloudEncoder->encodePointCloud (cloud, compressedData);
+    PointCloudEncoder->encodePointCloud (cloud, compressedDataSent);
+
+    QString compressedDataSentQString = QString::fromStdString(compressedDataSent.str());
+
+
+    qDebug() << compressedDataSentQString;
+
+    QByteArray array = compressedDataSentQString.toLocal8Bit();
+
+
+    QString compressedDataReceivedQString = QString::fromLocal8Bit(array);
 
     // decompress point cloud
+
+
+    std::stringstream compressedDataReceived;
+    compressedDataReceived.str(compressedDataReceivedQString.toStdString());
     PointCloudT::Ptr cloudOut (new PointCloudT ());
-    PointCloudDecoder->decodePointCloud (compressedData, cloudOut);
+    qDebug() << "before decoding";
+    PointCloudDecoder->decodePointCloud (compressedDataReceived, cloudOut);
 
-
-
+     qDebug() << "showing";
     ui->myCloudViewer->clear();
     ui->myCloudViewer->showPC(cloudOut);
+
+
 }

@@ -12,6 +12,11 @@
 
 #include <define.h>
 
+#include <pcl/compression/octree_pointcloud_compression.h>
+
+#include <string>       // std::string
+#include <iostream>     // std::cout
+#include <sstream>      // std::stringstream, std::stringbuf
 
 /// TO DO:
 /// ADD Registration handle with fixed number of iteration and at every grab
@@ -74,12 +79,22 @@ private slots:
 
     void on_pushButton_GrabAndTransmit_clicked();
 
+
+    void on_pushButton_ShowArrived_clicked();
+
+signals:
+    void PCtransmitted(PointCloudT::Ptr);
+
 private:
     Ui::ClientWidget *ui;
     QStringList * IPhistory;
 
     // SSH stuff
     QProcess proc;
+
+    bool PCmode = false;
+    QString compressedDataPart;
+    pcl::io::OctreePointCloudCompression<PointT>* PointCloudDecoder;
 
 };
 
