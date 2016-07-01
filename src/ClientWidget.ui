@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>325</width>
-    <height>604</height>
+    <height>666</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -181,6 +181,13 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="pushButton_GrabAndTransmit">
+        <property name="text">
+         <string>GrabAndTransmit</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -197,40 +204,61 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="pushButton_SSHUpdate">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Update</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_SSHClientCompile">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Compile</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_SSHReboot">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Reboot</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QWidget" name="Layout_ExpertMode" native="true">
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <widget class="QPushButton" name="pushButton_SSHUpdate">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Update</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_SSHClientCompile">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Compile</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="pushButton_SSHReboot">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Reboot</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="3">
+          <widget class="QLabel" name="label_State">
+           <property name="text">
+            <string>State</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="3">
+          <widget class="QPlainTextEdit" name="plainTextEdit_SSHLog">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>100</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
+     <zorder>pushButton_SSHClientCompile</zorder>
+     <zorder>Layout_ExpertMode</zorder>
     </widget>
    </item>
   </layout>
@@ -245,12 +273,12 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>84</x>
-     <y>371</y>
+     <x>110</x>
+     <y>237</y>
     </hint>
     <hint type="destinationlabel">
-     <x>75</x>
-     <y>311</y>
+     <x>101</x>
+     <y>205</y>
     </hint>
    </hints>
   </connection>
@@ -261,12 +289,28 @@
    <slot>clear()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>272</x>
-     <y>363</y>
+     <x>306</x>
+     <y>237</y>
     </hint>
     <hint type="destinationlabel">
-     <x>261</x>
-     <y>322</y>
+     <x>306</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>groupBox_ExpertMode</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Layout_ExpertMode</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>458</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>478</y>
     </hint>
    </hints>
   </connection>

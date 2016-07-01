@@ -36,6 +36,7 @@ void CloudViewer::clear()
     _visualizer->removeAllCoordinateSystems();
     _visualizer->removeAllPointClouds();
     _visualizer->removeAllShapes();
+    this->update ();
 }
 
 

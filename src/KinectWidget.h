@@ -35,6 +35,7 @@ public:
     QString getSerial();
     Transform getTransform();
     PointCloudT::Ptr getPointCloud();
+    PointCloudNormalT::Ptr getPointCloudNormal();
 
     bool isClosed(){return (dev==0);}
     bool isOpened(){return !isClosed();}

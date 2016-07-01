@@ -47,6 +47,13 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
         }
     }
 
+    bool showStatistics = true;
+
+    // for a full list of profiles see: /io/include/pcl/compression/compression_profiles.h
+    pcl::io::compression_Profiles_e compressionProfile = pcl::io::MED_RES_ONLINE_COMPRESSION_WITH_COLOR;
+
+    PointCloudEncoder = new pcl::io::OctreePointCloudCompression<PointT> (compressionProfile, showStatistics);
+    PointCloudDecoder = new pcl::io::OctreePointCloudCompression<PointT> ();
 
 }
 
@@ -54,6 +61,9 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
 ServerWindow::~ServerWindow()
 {
     writeSettings();
+
+    delete (PointCloudEncoder);
+    delete (PointCloudDecoder);
 
     delete server;
     delete socket;
@@ -179,6 +189,35 @@ void ServerWindow::newMessageReceived()
         if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
     }
+    else if(message.contains(QString(PROTOCOL_GRAB_TRANSMIT)))
+    {
+        Answer.append(": ");
+        if (ui->myKinectWidget1->GrabKinect()== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
+        Answer.append(" / ");
+        if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
+        else Answer.append("ERR");
+
+        PointCloudT::Ptr cloud = ui->myKinectWidget2->getPointCloud();
+
+        // compress point cloud
+        std::stringstream compressedData;
+
+
+        PointCloudEncoder->encodePointCloud (cloud, compressedData);
+
+        // decompress point cloud
+        PointCloudT::Ptr cloudOut (new PointCloudT ());
+        PointCloudDecoder->decodePointCloud (compressedData, cloudOut);
+
+
+
+        ui->myCloudViewer->clear();
+        ui->myCloudViewer->showPC(cloudOut);
+
+     //   socket->write(PC->);
+        return;
+    }
     else if(message.contains(QString(PROTOCOL_REGISTER)))
     {
         on_pushButton_registrer_clicked();
@@ -242,13 +281,13 @@ void ServerWindow::on_pushButton_registrer_clicked()
     {
         ui->myKinectWidget1->GrabKinect();
         ui->myKinectWidget2->GrabKinect();
-        PointCloudT::Ptr PC1 = ui->myKinectWidget1->getPointCloud();
-        PointCloudT::Ptr PC2 = ui->myKinectWidget2->getPointCloud();
+        PointCloudNormalT::Ptr PC1 = ui->myKinectWidget1->getPointCloudNormal();
+        PointCloudNormalT::Ptr PC2 = ui->myKinectWidget2->getPointCloudNormal();
 
 
         // NORMAL
         qDebug() << "NORMAL: " << PC1->size();
-        pcl::IntegralImageNormalEstimation<PointT, PointT> ne;
+        pcl::IntegralImageNormalEstimation<PointNormalT, PointNormalT> ne;
         ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
         ne.setMaxDepthChangeFactor(0.02);
         ne.setNormalSmoothingSize(10.0);
@@ -278,7 +317,7 @@ void ServerWindow::on_pushButton_registrer_clicked()
 
         // Creo il mio elemento ICP
         qDebug() << "ICP: " << PC1->size();
-        pcl::IterativeClosestPoint<PointT, PointT> icp;
+        pcl::IterativeClosestPoint<PointNormalT, PointNormalT> icp;
 
 
 
@@ -286,8 +325,8 @@ void ServerWindow::on_pushButton_registrer_clicked()
         // Corrispondence Estimation
         // Scelgo il mia stima dei accopiamenti
         qDebug() << "Corrispondence Estimation";
-        pcl::registration::CorrespondenceEstimationBase<PointT, PointT>::Ptr cens;
-        cens.reset(new pcl::registration::CorrespondenceEstimationNormalShooting<PointT, PointT,PointT>);
+        pcl::registration::CorrespondenceEstimationBase<PointNormalT, PointNormalT>::Ptr cens;
+        cens.reset(new pcl::registration::CorrespondenceEstimationNormalShooting<PointNormalT, PointNormalT,PointNormalT>);
 
         cens->setInputTarget (PC1);
         cens->setInputSource (PC2);
@@ -307,8 +346,8 @@ void ServerWindow::on_pushButton_registrer_clicked()
 
         /*
         pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
-        cor_rej_med->setInputTarget<PointT> (PC1);
-        cor_rej_med->setInputSource<PointT> (PC2);
+        cor_rej_med->setInputTarget<PointNormalT> (PC1);
+        cor_rej_med->setInputSource<PointNormalT> (PC2);
         icp.addCorrespondenceRejector (cor_rej_med);*/
 
 
@@ -321,8 +360,8 @@ void ServerWindow::on_pushButton_registrer_clicked()
         // Transformation Estimation
         // Scelgo un metodo per risolvere il problema
         qDebug() << "Transformation Estimation";
-        pcl::registration::TransformationEstimation<PointT, PointT>::Ptr te;
-        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointT, PointT>);
+        pcl::registration::TransformationEstimation<PointNormalT, PointNormalT>::Ptr te;
+        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointNormalT, PointNormalT>);
 
         icp.setTransformationEstimation (te);
 
@@ -341,7 +380,7 @@ void ServerWindow::on_pushButton_registrer_clicked()
 
 
         qDebug() << "Align";
-        PointCloudT::Ptr Final(new PointCloudT);
+        PointCloudNormalT::Ptr Final(new PointCloudNormalT);
         icp.align(*Final);
         qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
 
@@ -388,7 +427,7 @@ void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
     else if (arg1.compare("Error") == 0)    libfreenect2::setGlobalLogger(libfreenect2::createConsoleLogger(libfreenect2::Logger::Error));
 }
 
-void ServerWindow::on_checkBox_save_clicked(bool checked)
+void ServerWindow::on_checkBox_save_toggled(bool checked)
 {
     if (checked)
     {
@@ -400,4 +439,24 @@ void ServerWindow::on_checkBox_save_clicked(bool checked)
         QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
         QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
     }
+}
+
+void ServerWindow::on_pushButton_compress_clicked()
+{
+    PointCloudT::Ptr cloud = ui->myKinectWidget2->getPointCloud();
+
+    // compress point cloud
+    std::stringstream compressedData;
+
+
+    PointCloudEncoder->encodePointCloud (cloud, compressedData);
+
+    // decompress point cloud
+    PointCloudT::Ptr cloudOut (new PointCloudT ());
+    PointCloudDecoder->decodePointCloud (compressedData, cloudOut);
+
+
+
+    ui->myCloudViewer->clear();
+    ui->myCloudViewer->showPC(cloudOut);
 }

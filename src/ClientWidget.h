@@ -57,10 +57,11 @@ private slots:
 
 
 
-    void on_groupBox_ExpertMode_toggled(bool checked);
     void on_pushButton_SSHReboot_clicked();
     void on_pushButton_SSHUpdate_clicked();
     void on_pushButton_SSHClientCompile_clicked();
+    void SSHlog();
+    void showProcState(QProcess::ProcessState newState);
 
     void on_comboBox_activated(const QString &arg1);
 
@@ -71,9 +72,14 @@ private slots:
 
     void on_pushButton_Save_Settings_clicked();
 
+    void on_pushButton_GrabAndTransmit_clicked();
+
 private:
     Ui::ClientWidget *ui;
     QStringList * IPhistory;
+
+    // SSH stuff
+    QProcess proc;
 
 };
 

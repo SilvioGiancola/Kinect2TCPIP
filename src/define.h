@@ -14,15 +14,18 @@
 #include <iostream>
 #include <exception>
 
-typedef pcl::PointXYZRGBNormal PointT;
+typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloudT;
 
-//typedef Eigen::Transform<float,3,Eigen::Affine> TransformT;
+typedef pcl::PointXYZRGBNormal PointNormalT;
+typedef pcl::PointCloud<PointNormalT> PointCloudNormalT;
+
 
 #define SUCCESS 0
 #define ERROR 1
 
 #define PROTOCOL_GRAB "Grab"
+#define PROTOCOL_GRAB_TRANSMIT "GrabAndTransmit"
 #define PROTOCOL_OPEN "Open"
 #define PROTOCOL_CLOSE "Close"
 #define PROTOCOL_PIPELINE "Pipeline_"

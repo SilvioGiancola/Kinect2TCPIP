@@ -204,6 +204,7 @@ QString KinectWidget::getPipeline()     {return ui->comboBox_pipeline->currentTe
 QString KinectWidget::getSerial()       {return ui->comboBox_KinectSerials->currentText();}
 Transform KinectWidget::getTransform()  {return ui->myTransformationWidget->getTransform();}
 PointCloudT::Ptr KinectWidget::getPointCloud(){PointCloudT::Ptr _PC(new PointCloudT()); pcl::copyPointCloud(*PC, *_PC); return _PC;}
+PointCloudNormalT::Ptr KinectWidget::getPointCloudNormal(){PointCloudNormalT::Ptr _PC(new PointCloudNormalT()); pcl::copyPointCloud(*PC, *_PC); return _PC;}
 
 
 // Event Handling

@@ -13,6 +13,10 @@ ClientWidget::ClientWidget(QWidget *parent) :
     mySocket->setReadBufferSize(0);
     connect(mySocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(plotState(QAbstractSocket::SocketState)));
     connect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+
+    //SSH stuff
+    connect(&proc, SIGNAL(readyReadStandardOutput()), this, SLOT(SSHlog()));
+    connect(&proc, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(showProcState(QProcess::ProcessState)));
 }
 
 
@@ -76,6 +80,7 @@ void ClientWidget::on_pushButton_Register_clicked()             {   WriteMessage
 void ClientWidget::on_pushButton_Save_Settings_clicked()        {   WriteMessage(QString(PROTOCOL_SAVE_SETTINGS));}
 void ClientWidget::on_comboBox_activated(const QString &arg1)   {   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
 void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage(QString("%1%2").arg(PROTOCOL_SAVE).arg((int)checked));}
+void ClientWidget::on_pushButton_GrabAndTransmit_clicked()      {   WriteMessage(QString(PROTOCOL_GRAB_TRANSMIT));}
 
 
 
@@ -84,73 +89,83 @@ void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage
 
 
 
-void ClientWidget::on_groupBox_ExpertMode_toggled(bool checked)
-{
-    if (checked)
-    {
-        ui->pushButton_SSHReboot->setVisible(true);
-        ui->pushButton_SSHUpdate->setVisible(true);
-        ui->pushButton_SSHClientCompile->setVisible(true);
-    }
-    else
-    {
-        ui->pushButton_SSHReboot->setVisible(false);
-        ui->pushButton_SSHUpdate->setVisible(false);
-        ui->pushButton_SSHClientCompile->setVisible(false);
-    }
-}
-
 
 void ClientWidget::on_pushButton_SSHReboot_clicked()
 {
-    this->setEnabled(false);
-    QProcess proc;
+    if (proc.state() != QProcess::NotRunning)
+    {
+        qDebug() << "Proc already opened";
+        return;
+    }
+
     proc.start(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        qWarning() << "Reboot Timeout reached";
-    else qDebug() << "Reboot Done";
-    this->setEnabled(true);
+        ui->plainTextEdit_SSHLog->appendPlainText("Reboot Timeout reached");
+    else   ui->plainTextEdit_SSHLog->appendPlainText("Reboot Done");
 }
 
 void ClientWidget::on_pushButton_SSHUpdate_clicked()
 {
-    this->setEnabled(false);
-    QProcess proc;
-
-  /*  proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP/build-Server").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        qWarning() << "Update Timeout reached";
-    else qDebug() << "Update Done";*/
+    // check if running
+    if (proc.state() != QProcess::NotRunning)
+    {
+        qDebug() << "Proc already opened";
+        return;
+    }
 
 
     proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP/build-Server").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        qWarning() << "Update Timeout reached";
-    else qDebug() << "Update Done";
+        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
+    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
 
     proc.start(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        qWarning() << "Update Timeout reached";
-    else qDebug() << "Update Done";
+        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
+    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
+
 
     proc.start(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        qWarning() << "Update Timeout reached";
-    else qDebug() << "Update Done";
+        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
+    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
 
-    this->setEnabled(true);
 }
 
 void ClientWidget::on_pushButton_SSHClientCompile_clicked()
 {
-    this->setEnabled(false);
-    QProcess proc;
-    proc.startDetached(QString("ssh sineco@%1 sh /home/sineco/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
-    this->setEnabled(true);
+    if (proc.state() != QProcess::NotRunning)
+    {
+        qDebug() << "Proc already opened";
+        return;
+    }
+
+    proc.start(QString("ssh sineco@%1 sh /home/sineco/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
 }
 
+void ClientWidget::showProcState(QProcess::ProcessState newState)
+{
+    if (newState == QProcess::NotRunning)
+    {
+        ui->Layout_ExpertMode->setEnabled(true);
+        ui->label_State->setText("State: NotRunning");
+    }
+    else if (newState == QProcess::Starting)
+    {
+        ui->Layout_ExpertMode->setEnabled(false);
+        ui->label_State->setText("State: Starting");
+    }
+    else if (newState == QProcess::Running)
+    {
+        ui->label_State->setText("State: Running");
+    }
+}
 
-
+void ClientWidget::SSHlog()
+{
+    QString output = proc.readAllStandardOutput().replace("\n","");
+    ui->plainTextEdit_SSHLog->appendPlainText(output);
+}
 
 
 // TCPIP handling
