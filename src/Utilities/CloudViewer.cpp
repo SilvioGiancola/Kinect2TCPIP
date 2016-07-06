@@ -33,7 +33,7 @@ CloudViewer::CloudViewer(QWidget *parent) :
 
 CloudViewer::~CloudViewer()
 {
-  //  this->clear();
+    //  this->clear();
 }
 
 
@@ -41,7 +41,8 @@ CloudViewer::~CloudViewer()
 void CloudViewer::contextMenuEvent(QContextMenuEvent * event)
 {
     QAction * a = _menu->exec(event->globalPos());
-    a->trigger();
+    if (a)
+        a->trigger();
 }
 
 
@@ -96,7 +97,7 @@ void CloudViewer::on_actionClearViewer_triggered()
     _visualizer->removeAllCoordinateSystems();
     _visualizer->removeAllPointClouds();
     _visualizer->removeAllShapes();
-   this->showReferenceSystemGlobal(true);
+    this->showReferenceSystemGlobal(true);
 
 
     this->update ();
