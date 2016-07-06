@@ -470,7 +470,7 @@ void ServerWindow::on_pushButton_compress_clicked()
     PointCloudDecoder->decodePointCloud (compressedDataReceived, cloudOut);
 
      qDebug() << "showing";
-    ui->myCloudViewer->clear();
+    //ui->myCloudViewer->clear();
     ui->myCloudViewer->showPC(cloudOut);
 
 

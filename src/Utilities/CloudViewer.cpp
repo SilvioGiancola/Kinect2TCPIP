@@ -5,6 +5,7 @@ CloudViewer::CloudViewer(QWidget *parent) :
     QVTKWidget(parent),
     ui(new Ui::CloudViewer)
 {
+    // UI
     ui->setupUi(this);
 
     this->showReferenceSystemPointCloud(true);
@@ -23,21 +24,27 @@ CloudViewer::CloudViewer(QWidget *parent) :
     _visualizer->setShowFPS(false);
     this->showReferenceSystemGlobal(true);
     this->update ();
+
+
+    // Menu
+    _menu = new QMenu(this);
+    _menu->addAction(ui->actionClearViewer);
 }
 
 CloudViewer::~CloudViewer()
 {
-    this->clear();
+  //  this->clear();
 }
 
 
-void CloudViewer::clear()
+// Visualize Menu
+void CloudViewer::contextMenuEvent(QContextMenuEvent * event)
 {
-    _visualizer->removeAllCoordinateSystems();
-    _visualizer->removeAllPointClouds();
-    _visualizer->removeAllShapes();
-    this->update ();
+    QAction * a = _menu->exec(event->globalPos());
+    a->trigger();
 }
+
+
 
 
 // ON/OFF
@@ -82,4 +89,16 @@ void CloudViewer::removePC(std::string str)
 void CloudViewer::removePC(QString str)
 {
     removePC(str.toStdString());
+}
+
+void CloudViewer::on_actionClearViewer_triggered()
+{
+    _visualizer->removeAllCoordinateSystems();
+    _visualizer->removeAllPointClouds();
+    _visualizer->removeAllShapes();
+   this->showReferenceSystemGlobal(true);
+
+
+    this->update ();
+
 }

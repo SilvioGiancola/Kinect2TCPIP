@@ -10,6 +10,9 @@
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
 
+#include <QMenu>
+#include <QtGui/QContextMenuEvent>
+
 
 namespace Ui {
 class CloudViewer;
@@ -24,9 +27,10 @@ public:
 	virtual ~CloudViewer();
 
 
+protected:
+    virtual void contextMenuEvent(QContextMenuEvent * event);
 
 public slots:
-    void clear();
 
     //PC
     void showPC(PointCloudT::Ptr PC);
@@ -38,9 +42,12 @@ public slots:
     void showReferenceSystemGlobal(bool value);
 
 
+private slots:
+    void on_actionClearViewer_triggered();
+
 private:
     Ui::CloudViewer *ui;
-
+QMenu * _menu;
     pcl::visualization::PCLVisualizer::Ptr _visualizer;
     bool _showReferenceSystemPointCloud;
 

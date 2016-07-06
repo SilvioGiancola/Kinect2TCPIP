@@ -20,6 +20,11 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout"/>
+  <action name="actionClearViewer">
+   <property name="text">
+    <string>ClearViewer</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
