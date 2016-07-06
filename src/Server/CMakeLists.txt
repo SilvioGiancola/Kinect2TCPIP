@@ -1,41 +1,108 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Utilities)
 
-find_package (Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork) # component of QT4
-find_package (VTK REQUIRED QUIET) # find VTK
-find_package (PCL 1.8 REQUIRED QUIET) # find PCL
+IF("${QT_VERSION}" STREQUAL "4")
 
- # find freenect2
-find_package (freenect2 REQUIRED)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Utilities)
 
+    find_package (Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork) # component of QT4
+    find_package (VTK REQUIRED QUIET) # find VTK
+    find_package (PCL 1.8 REQUIRED QUIET) # find PCL
 
-# include the current directory
-SET(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-
-include_directories (${PCL_INCLUDE_DIRS})
-link_directories    (${PCL_LIBRARY_DIRS})
-add_definitions     (${PCL_DEFINITIONS})
-
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITION})
-
-set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
+     # find freenect2
+    find_package (freenect2 REQUIRED)
 
 
+    # include the current directory
+    SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
-# SERVER SOLUTION (Kinect V2 Handler)
-set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
-set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
-set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
+    include_directories (${PCL_INCLUDE_DIRS})
+    link_directories    (${PCL_LIBRARY_DIRS})
+    add_definitions     (${PCL_DEFINITIONS})
+
+    include(${QT_USE_FILE})
+    add_definitions(${QT_DEFINITION})
+
+    set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
 
 
-QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})
-QT4_WRAP_UI(server_FORMS_HEADERS ${server_FORMS})
 
 
-ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES} ../../CompileScript.sh)
+    # SERVER SOLUTION (Kinect V2 Handler)
+    set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+    set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
+    set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
 
-TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
+
+    QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})
+    QT4_WRAP_UI(server_FORMS_HEADERS ${server_FORMS})
 
 
+    ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES} ../../CompileScript.sh)
+
+    TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
+
+else()
+
+
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Utilities)
+
+    find_package(PCL 1.8 REQUIRED QUIET)
+    find_package(freenect2 REQUIRED QUIET)
+
+    include_directories(${PCL_INCLUDE_DIRS})
+    link_directories(${PCL_LIBRARY_DIRS})
+    add_definitions(${PCL_DEFINITIONS})
+
+    # include the current directory
+    SET(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+
+    # SERVER SOLUTION (Kinect V2 Handler)
+    set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+    set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
+    set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
+
+
+
+    IF("${QT_VERSION}" STREQUAL "5")
+
+        #find QT5
+        find_package(Qt5Core REQUIRED)
+        find_package(Qt5Widgets REQUIRED)
+        find_package(Qt5SerialPort REQUIRED)
+        find_package(Qt5Gui REQUIRED)
+        find_package(Qt5Network REQUIRED)
+        set(QT_LIB ${Qt5Widgets_LIBRARIES} ${Qt5SerialPort_LIBRARIES} ${Qt5Network_LIBRARIES})
+
+        #use local VTK
+        set(VTK_DIR "/usr/local/lib")
+        find_package(VTK 6.2 REQUIRED) # find VTK
+        include(${VTK_USE_FILE})
+
+        QT5_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})
+        QT5_WRAP_UI(server_FORMS_HEADERS ${server_FORMS})
+
+    ELSEIF("${QT_VERSION}" STREQUAL "4")
+
+        #find QT4
+        find_package(Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork QtWidgets) # component of QT4
+        include(${QT_USE_FILE})
+        add_definitions(${QT_DEFINITION})
+        set(QT_LIB ${QT_LIBRARIES})
+
+        #use system VTK
+        set(VTK_LIBRARIES vtkRendering vtkGraphics vtkHybrid QVTK)
+
+        QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})
+        QT4_WRAP_UI(server_FORMS_HEADERS ${server_FORMS})
+
+    ENDIF()
+
+
+
+    ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES})
+
+    TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIB} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
+
+
+endif()
