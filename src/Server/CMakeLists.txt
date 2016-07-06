@@ -100,7 +100,7 @@ else()
 
 
 
-    ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES})
+    ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES} ../../CompileScript.sh)
 
     TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIB} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
 

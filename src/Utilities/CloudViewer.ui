@@ -25,6 +25,28 @@
     <string>ClearViewer</string>
    </property>
   </action>
+  <action name="actionShowMainRefSyst">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ShowMainRefSyst</string>
+   </property>
+  </action>
+  <action name="actionShowPCRefSyst">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ShowPCRefSyst</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

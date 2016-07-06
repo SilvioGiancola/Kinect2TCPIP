@@ -8,7 +8,6 @@ CloudViewer::CloudViewer(QWidget *parent) :
     // UI
     ui->setupUi(this);
 
-    this->showReferenceSystemPointCloud(true);
     this->setMouseTracking(false);
 
     _visualizer.reset(new pcl::visualization::PCLVisualizer("Viewer",false));
@@ -22,45 +21,35 @@ CloudViewer::CloudViewer(QWidget *parent) :
     _visualizer->setCameraClipDistances(-10,10);
     _visualizer->setBackgroundColor (0.5, 0.5, 0.5);
     _visualizer->setShowFPS(false);
-    this->showReferenceSystemGlobal(true);
+
+
+  // this->setPCReferenceSystemShown(true);
+    this->on_actionShowMainRefSyst_triggered(true);
+
     this->update ();
 
 
     // Menu
     _menu = new QMenu(this);
     _menu->addAction(ui->actionClearViewer);
+    _menu->addAction(ui->actionShowMainRefSyst);
+    _menu->addAction(ui->actionShowPCRefSyst);
 }
 
 CloudViewer::~CloudViewer()
 {
-    //  this->clear();
+    delete _menu;
+    delete ui;
 }
 
 
 // Visualize Menu
 void CloudViewer::contextMenuEvent(QContextMenuEvent * event)
 {
-    QAction * a = _menu->exec(event->globalPos());
-    if (a)
-        a->trigger();
+    _menu->exec(event->globalPos());
 }
 
 
-
-
-// ON/OFF
-void CloudViewer::showReferenceSystemGlobal(bool value)
-{
-    if (value) _visualizer->addCoordinateSystem(1.0,"Global Reference System");
-    else       _visualizer->removeCoordinateSystem("Global Reference System");
-    return;
-}
-
-void CloudViewer::showReferenceSystemPointCloud(bool value)
-{
-    _showReferenceSystemPointCloud = value;
-    return;
-}
 
 
 
@@ -73,7 +62,7 @@ void CloudViewer::showPC(PointCloudT::Ptr PC)
 
     qDebug() << QString::fromStdString(PC->header.frame_id) << " has been added to the viewer";
 
-    if (_showReferenceSystemPointCloud)
+    if (isPCReferenceSystemShown())
     {
         Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
         trans.block(0,0,3,3) = PC->sensor_orientation_.matrix();
@@ -94,14 +83,67 @@ void CloudViewer::removePC(QString str)
     removePC(str.toStdString());
 }
 
-void CloudViewer::on_actionClearViewer_triggered()
+
+
+
+// Checkable Actions
+
+bool CloudViewer::isMainReferenceSystemShown() const
+{
+    return ui->actionShowMainRefSyst->isChecked();
+}
+
+void CloudViewer::setMainReferenceSystemShown(bool shown)
+{
+    ui->actionShowMainRefSyst->setChecked(shown);
+}
+
+void CloudViewer::on_actionShowMainRefSyst_triggered(bool value)
+{
+    if (value)
+        _visualizer->addCoordinateSystem(1.0,"Global Reference System");
+    else
+        _visualizer->removeCoordinateSystem("Global Reference System");
+    return;
+}
+
+
+
+
+
+bool CloudViewer::isPCReferenceSystemShown() const
+{
+    return ui->actionShowPCRefSyst->isChecked();
+}
+
+void CloudViewer::setPCReferenceSystemShown(bool shown)
+{
+    ui->actionShowPCRefSyst->setChecked(shown);
+}
+
+void CloudViewer::on_actionShowPCRefSyst_triggered(bool checked)
+{
+    // nothing to do here, eventually get point cloud ref syst?
+}
+
+
+
+// Single shot action
+
+void CloudViewer::doClearPointClouds()
 {
     _visualizer->removeAllCoordinateSystems();
     _visualizer->removeAllPointClouds();
     _visualizer->removeAllShapes();
-    this->showReferenceSystemGlobal(true);
-
-
-    this->update ();
-
+    if(isMainReferenceSystemShown())
+        on_actionShowMainRefSyst_triggered(true);
+    this->update();
 }
+
+
+void CloudViewer::on_actionClearViewer_triggered()
+{
+    doClearPointClouds();
+}
+
+

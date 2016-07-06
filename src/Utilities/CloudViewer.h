@@ -20,11 +20,21 @@ class CloudViewer;
 
 class CloudViewer : public QVTKWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	CloudViewer(QWidget * parent = 0);
-	virtual ~CloudViewer();
+    CloudViewer(QWidget * parent = 0);
+    virtual ~CloudViewer();
+
+
+    // checkable Action
+    bool isMainReferenceSystemShown() const;
+    void setMainReferenceSystemShown(bool shown);
+    bool isPCReferenceSystemShown() const;
+    void setPCReferenceSystemShown(bool shown);
+
+    // single shot Action
+    void doClearPointClouds();
 
 
 protected:
@@ -37,19 +47,18 @@ public slots:
     void removePC(std::string str);
     void removePC(QString str);
 
-    //ON/OFF
-    void showReferenceSystemPointCloud(bool value);
-    void showReferenceSystemGlobal(bool value);
 
 
 private slots:
     void on_actionClearViewer_triggered();
+    void on_actionShowMainRefSyst_triggered(bool value);
+    void on_actionShowPCRefSyst_triggered(bool value);
 
 private:
     Ui::CloudViewer *ui;
-QMenu * _menu;
+    QMenu * _menu;
     pcl::visualization::PCLVisualizer::Ptr _visualizer;
-    bool _showReferenceSystemPointCloud;
+
 
 };
 

@@ -18,8 +18,8 @@ MultiClientWindow::MultiClientWindow(QWidget *parent) :
 
 MultiClientWindow::~MultiClientWindow()
 {
-    ui->widget_clientA->on_pushButton_Disconnect_Devices_clicked();
-    ui->widget_clientB->on_pushButton_Disconnect_Devices_clicked();
+    //ui->widget_clientA->on_pushButton_Disconnect_Devices_clicked();
+    //ui->widget_clientB->on_pushButton_Disconnect_Devices_clicked();
     writeSettings();
     ui->widget_clientA->on_pushButton_Disconnect_clicked();
     ui->widget_clientB->on_pushButton_Disconnect_clicked();
