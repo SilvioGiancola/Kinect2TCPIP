@@ -6,6 +6,7 @@
 #include <Eigen/Dense>
 
 #include "define.h"
+#include <QStringList>
 
 class Transform
 {
@@ -15,6 +16,7 @@ public:
     Transform(Eigen::Vector3f translation, Eigen::Quaternionf quaternion);
     Transform(Eigen::Vector4f translation, Eigen::Quaternionf quaternion);
     Transform(float Tx,float Ty,float Tz,float Rx,float Ry,float Rz);
+    Transform(QString);
     virtual ~Transform();
 
 
@@ -38,6 +40,9 @@ public:
 
 
     void print(){ std::cout << matrix4() << std::endl; }
+
+    QString prettyprint();
+    void fromPrettyPrint(QString str);
 
 private:
     Eigen::Transform<float,3,Eigen::Affine> _transformation;

@@ -29,11 +29,12 @@
 #include <pcl/io/openni_grabber.h>
 #include <pcl/visualization/cloud_viewer.h>
 
-#include <pcl/compression/octree_pointcloud_compression.h>
 
 #include <stdio.h>
 #include <sstream>
 #include <stdlib.h>
+
+
 
 namespace Ui {
 class ServerWindow;
@@ -52,15 +53,13 @@ private slots:
     void newMessageReceived();
     void clientStateChanged(QAbstractSocket::SocketState);
 
-    void savePC(PointCloudT::Ptr);
+    PointCloudT::Ptr getPointCloud(int i);
+    QString savePC(PointCloudT::Ptr);
 
     void on_comboBox_log_currentIndexChanged(const QString &arg1);
     void on_checkBox_save_toggled(bool checked);
-
-
     void on_pushButton_registrer_clicked();
 
-    void on_pushButton_compress_clicked();
 
 private:
     Ui::ServerWindow *ui;
@@ -74,8 +73,6 @@ private:
     void writeSettings();
     void readSettings();
 
-    pcl::io::OctreePointCloudCompression<PointT>* PointCloudEncoder;
-    pcl::io::OctreePointCloudCompression<PointT>* PointCloudDecoder;
 
 
 };

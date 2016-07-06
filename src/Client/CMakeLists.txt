@@ -34,9 +34,9 @@ SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 # CLIENT SOLUTION (remote control)
-set  (client_SOURCES ClientMain.cpp ClientWidget.cpp MultiClientWindow.cpp ../Utilities/CloudViewer.cpp)
-set  (client_HEADERS ClientWidget.h MultiClientWindow.h ../Utilities/define.h ../Utilities/CloudViewer.h )
-set  (client_FORMS   ClientWidget.ui MultiClientWindow.ui ../Utilities/CloudViewer.ui)
+set  (client_SOURCES ClientMain.cpp ClientWidget.cpp MultiClientWindow.cpp ../Utilities/CloudViewer.cpp ../Utilities/TransformationWidget.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+set  (client_HEADERS ClientWidget.h MultiClientWindow.h ../Utilities/define.h ../Utilities/CloudViewer.h  ../Utilities/TransformationWidget.h ../Utilities/Transform.h ../Utilities/LogWidget.h)
+set  (client_FORMS   ClientWidget.ui MultiClientWindow.ui ../Utilities/CloudViewer.ui ../Utilities/TransformationWidget.ui ../Utilities/LogWidget.ui)
 
 
 QT5_WRAP_CPP(client_HEADERS_MOC ${client_HEADERS})

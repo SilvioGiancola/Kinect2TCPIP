@@ -19,8 +19,9 @@ ClientWidget::ClientWidget(QWidget *parent) :
     connect(&proc, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(showProcState(QProcess::ProcessState)));
 
 
-
-    PointCloudDecoder = new pcl::io::OctreePointCloudCompression<PointT> ();
+    // Repeated message
+    timer1 = new QTimer();
+    connect(timer1, SIGNAL(timeout()), this, SLOT(on_pushButton_Grab_Devices_clicked()));
 
 }
 
@@ -28,8 +29,7 @@ ClientWidget::ClientWidget(QWidget *parent) :
 
 ClientWidget::~ClientWidget()
 {
-    delete (PointCloudDecoder);
-    mySocket->disconnectFromHost();
+    on_pushButton_Disconnect_clicked();
     delete ui;
 }
 
@@ -61,6 +61,9 @@ QString ClientWidget::getLastMessage(){return ui->lineEdit_Message->text();}
 // Socket Connection
 void ClientWidget::on_pushButton_Connect_clicked()
 {
+    if (mySocket->state() != QAbstractSocket::UnconnectedState)
+        return;
+
     mySocket->connectToHost(ui->lineEdit_IP->text(), ui->lineEdit_Port->text().toInt());
 
     // Auto Completion
@@ -70,12 +73,18 @@ void ClientWidget::on_pushButton_Connect_clicked()
     QCompleter *comp = new QCompleter(*IPhistory, this);
     comp->setCaseSensitivity(Qt::CaseInsensitive);
     ui->lineEdit_IP->setCompleter(comp);
+
+    return;
 }
 
 void ClientWidget::on_pushButton_Disconnect_clicked()
 {
+    if (mySocket->state() != QAbstractSocket::ConnectedState)
+        return;
+
     mySocket->disconnectFromHost();
 }
+
 
 // Message Writing
 void ClientWidget::on_pushButton_Send_clicked()                 {   WriteMessage(ui->lineEdit_Message->text());}
@@ -84,17 +93,91 @@ void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage
 void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
 void ClientWidget::on_pushButton_Register_clicked()             {   WriteMessage(QString(PROTOCOL_REGISTER));}
 void ClientWidget::on_pushButton_Save_Settings_clicked()        {   WriteMessage(QString(PROTOCOL_SAVE_SETTINGS));}
-void ClientWidget::on_comboBox_activated(const QString &arg1)   {   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
+void ClientWidget::on_comboBox_pipeline_activated(const QString &arg1){   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
 void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage(QString("%1%2").arg(PROTOCOL_SAVE).arg((int)checked));}
-void ClientWidget::on_pushButton_GrabAndTransmit_clicked()      {   WriteMessage(QString(PROTOCOL_GRAB_TRANSMIT));}
+void ClientWidget::on_pushButton_SendRepeated_clicked()
+{
+    if (timer1->isActive())
+    {
+        timer1->stop();
+        ui->doubleSpinBox_time_Resend->setEnabled(true);
+    }
+    else
+    {
+        timer1->start(ui->doubleSpinBox_time_Resend->value()*1000);
+        ui->doubleSpinBox_time_Resend->setEnabled(false);
+    }
+}
 
+
+void ClientWidget::on_pushButton_GetPointCloud_clicked()
+{
+    // disconnect auto read
+    disconnect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+
+
+    WriteMessage(QString(PROTOCOL_TRANSMIT_POINTCLOUDS));
+    mySocket->waitForReadyRead(1000);
+
+    QString answer = QString::fromLocal8Bit(mySocket->readAll());
+
+
+    QString remotepath0 = answer.split(":").at(0);
+    QString remotepath1 = answer.split(":").at(1);
+    qDebug() << remotepath0;
+    qDebug() << remotepath1;
+
+    QString localpath0 = remotepath0;
+    localpath0.replace("sineco","silvio");
+    QString localpath1 = remotepath1;
+    localpath1.replace("sineco","silvio");
+    qDebug() << localpath0;
+    qDebug() << localpath1;
+
+    // create folders
+    QDir().mkpath(QFileInfo(localpath0).absolutePath());
+    QDir().mkpath(QFileInfo(localpath1).absolutePath());
+
+
+
+    QString log = "->" + QString(PROTOCOL_TRANSMIT_POINTCLOUDS);
+
+    QString cmdline0 = QString("scp sineco@%1:%2 %3").arg(ui->lineEdit_IP->text()).arg(remotepath0).arg(localpath0);
+    qDebug() << cmdline0;
+    proc.start(cmdline0);
+    if (proc.waitForFinished() == false)
+        log.append(": ERR");
+    else  log.append(": OK");
+
+
+    QString cmdline1 = QString("scp sineco@%1:%2 %3").arg(ui->lineEdit_IP->text()).arg(remotepath1).arg(localpath1);
+    qDebug() << cmdline1;
+    proc.start(cmdline1);
+    if (proc.waitForFinished() == false)
+        log.append(": ERR");
+    else  log.append(": OK");
+
+    ui->logWidget_received->appendText(log);
+
+    qDebug() << "load PC0";
+    PointCloudT::Ptr cloud0(new PointCloudT);
+    pcl::io::loadPCDFile(localpath0.toStdString(), *cloud0);
+    cloud0->header.frame_id = localpath0.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
+    emit PCtransmitted(cloud0);
+    qDebug() << "load PC1";
+    PointCloudT::Ptr cloud1(new PointCloudT);
+    pcl::io::loadPCDFile(localpath1.toStdString(), *cloud1);
+    cloud1->header.frame_id = localpath1.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
+    emit PCtransmitted(cloud1);
+
+    // reconnect auto read
+    connect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+
+}
 
 
 
 // SSH communication
-
-
-
 
 void ClientWidget::on_pushButton_SSHReboot_clicked()
 {
@@ -106,8 +189,8 @@ void ClientWidget::on_pushButton_SSHReboot_clicked()
 
     proc.start(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        ui->plainTextEdit_SSHLog->appendPlainText("Reboot Timeout reached");
-    else   ui->plainTextEdit_SSHLog->appendPlainText("Reboot Sent");
+        ui->logWidget_ssh->appendText("Reboot Timeout reached");
+    else   ui->logWidget_ssh->appendText("Reboot Sent");
 }
 
 void ClientWidget::on_pushButton_SSHUpdate_clicked()
@@ -120,39 +203,34 @@ void ClientWidget::on_pushButton_SSHUpdate_clicked()
     }
 
 
+    // Remove old
     proc.start(QString("ssh sineco@%1 rm -r /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
-    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
+        ui->logWidget_ssh->appendText("Update Timeout reached");
+    else   ui->logWidget_ssh->appendText("Update Done");
 
-
+    // Create Folder
     proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
-    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
+        ui->logWidget_ssh->appendText("Update Timeout reached");
+    else   ui->logWidget_ssh->appendText("Update Done");
 
+    // Copy Compilation script
     proc.start(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
-    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
+        ui->logWidget_ssh->appendText("Update Timeout reached");
+    else   ui->logWidget_ssh->appendText("Update Done");
 
-
+    // Copy new src files
     proc.start(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
     if (proc.waitForFinished() == false)
-        ui->plainTextEdit_SSHLog->appendPlainText("Update Timeout reached");
-    else   ui->plainTextEdit_SSHLog->appendPlainText("Update Done");
+        ui->logWidget_ssh->appendText("Update Timeout reached");
+    else   ui->logWidget_ssh->appendText("Update Done");
 
-}
-
-void ClientWidget::on_pushButton_SSHClientCompile_clicked()
-{
-    if (proc.state() != QProcess::NotRunning)
-    {
-        qDebug() << "Proc already opened";
-        return;
-    }
-
+    // Compile
     proc.start(QString("ssh sineco@%1 sh /home/sineco/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
+
+
 }
 
 void ClientWidget::showProcState(QProcess::ProcessState newState)
@@ -176,8 +254,9 @@ void ClientWidget::showProcState(QProcess::ProcessState newState)
 void ClientWidget::SSHlog()
 {
     QString output = proc.readAllStandardOutput().replace("\n","");
-    ui->plainTextEdit_SSHLog->appendPlainText(output);
+    ui->logWidget_ssh->appendText(output);
 }
+
 
 
 // TCPIP handling
@@ -199,50 +278,28 @@ void ClientWidget::plotState(QAbstractSocket::SocketState state)
 void ClientWidget::newMessageReceived()
 {
     QString message = QString::fromLocal8Bit(mySocket->readAll());
-    ui->plainTextEdit_received->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString(TIMEFORMAT)).arg(message));
-
-    if (message.contains("MY_"))
-    {
-        PCmode = false;
-    }
-
-    if (message.contains("<PCL-OCT-COMPRESSED>"))
-    {
-        PCmode = true;
-        compressedDataPart = QString();
-    }
-
-    if (PCmode == true)
-    {
-        compressedDataPart = compressedDataPart.append(message);
-    }
-
-}
-
-
-void ClientWidget::on_pushButton_ShowArrived_clicked()
-{
-    qDebug() << "PC detected";
-    qDebug() << compressedDataPart;
-    // decompress point cloud
-    std::stringstream compressedData;
-    compressedData.str(compressedDataPart.toStdString());
-    PointCloudT::Ptr cloudOut (new PointCloudT ());
-    qDebug() << "before decoding";
-    PointCloudDecoder->decodePointCloud (compressedData, cloudOut);
-    qDebug() << "decoded";
-
-
-  //  emit PCtransmitted(cloudOut);
+    ui->logWidget_received->appendText(message);
 }
 
 
 void ClientWidget::WriteMessage(QString message)
 {
     mySocket->write(message.toStdString().c_str());
-    ui->plainTextEdit_sent->appendPlainText(QString("[%1]: %2").arg(QDateTime::currentDateTime().toString()).arg(message));
+    ui->logWidget_sent->appendText(message);
     mySocket->waitForBytesWritten(1000);
     return;
 }
 
 
+void ClientWidget::on_transformationWidget_Kin1_matrixchanged( Transform T)
+{
+   // qDebug() << "here";
+    QString pose = T.prettyprint();
+    WriteMessage(QString("%1%2_%3").arg(PROTOCOL_POSE).arg(0).arg(pose));
+}
+
+void ClientWidget::on_transformationWidget_Kin2_matrixchanged(Transform T)
+{
+    const QString pose = T.prettyprint();
+    WriteMessage(QString("%1%2_%3").arg(PROTOCOL_POSE).arg(1).arg(pose));
+}

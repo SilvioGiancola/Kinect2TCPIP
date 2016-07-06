@@ -33,9 +33,33 @@ Transform::Transform(float Tx,float Ty,float Tz,float Rx,float Ry,float Rz)
     setEulerAngles(Eigen::Vector3f(Rx, Ry, Rz));
 }
 
+Transform::Transform(QString str)
+{
+    _transformation.matrix() = Eigen::Matrix4f::Identity();
+    fromPrettyPrint(str);
+}
+
 Transform::~Transform()
 {
 
+}
+
+
+QString Transform::prettyprint()
+{
+    Eigen::Vector3f trans = getOrigin3();
+    Eigen::Vector3f euler = getEulerAngles();
+    return QString("%1_%2_%3_%4_%5_%6")
+            .arg(trans(0)).arg(trans(1)).arg(trans(2))
+            .arg(euler(0)).arg(euler(1)).arg(euler(2));
+}
+
+void Transform::fromPrettyPrint(QString str)
+{
+    QStringList strlst = str.split("_");
+    if (strlst.length() <6) return;
+    setOrigin3(Eigen::Vector3f(strlst.at(0).toFloat(), strlst.at(1).toFloat(), strlst.at(2).toFloat()));
+    setEulerAngles(Eigen::Vector3f(strlst.at(4).toFloat(), strlst.at(5).toFloat(), strlst.at(6).toFloat()));
 }
 
 

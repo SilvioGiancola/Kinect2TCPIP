@@ -25,9 +25,9 @@ set  (VTK_LIBRARIES   vtkRendering vtkGraphics vtkHybrid QVTK)
 
 
 # SERVER SOLUTION (Kinect V2 Handler)
-set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp)
-set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h  )
-set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui)
+set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
+set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
 
 
 QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})

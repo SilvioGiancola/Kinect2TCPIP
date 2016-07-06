@@ -11,9 +11,7 @@ MultiClientWindow::MultiClientWindow(QWidget *parent) :
 
     ui->widget_clientA->setIPCompletion(IPhistory);
     ui->widget_clientB->setIPCompletion(IPhistory);
-    //ui->widget_clientB->IPhistory = IPhistory ;
     readSettings();
-
 }
 
 
@@ -100,4 +98,10 @@ void MultiClientWindow::on_pushButton_SendALL_clicked()
 {
     ui->widget_clientA->on_pushButton_Send_clicked();
     ui->widget_clientB->on_pushButton_Send_clicked();
+}
+
+
+void MultiClientWindow::showPointCloud(PointCloudT::Ptr PC)
+{
+    ui->widget->showPC(PC);
 }

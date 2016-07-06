@@ -8,15 +8,19 @@
 #include <QProcess>
 #include <QThread>
 #include <QCompleter>
+#include <QDir>
+#include <QTimer>
 #include <QStringListModel>
 
 #include <define.h>
+#include <Transform.h>
 
-#include <pcl/compression/octree_pointcloud_compression.h>
 
 #include <string>       // std::string
 #include <iostream>     // std::cout
-#include <sstream>      // std::stringstream, std::stringbuf
+
+
+#include <pcl/io/pcd_io.h>
 
 /// TO DO:
 /// ADD Registration handle with fixed number of iteration and at every grab
@@ -60,15 +64,14 @@ private slots:
     void newMessageReceived();
     void WriteMessage(QString message);
 
+    void on_pushButton_SendRepeated_clicked();
 
 
     void on_pushButton_SSHReboot_clicked();
     void on_pushButton_SSHUpdate_clicked();
-    void on_pushButton_SSHClientCompile_clicked();
     void SSHlog();
     void showProcState(QProcess::ProcessState newState);
-
-    void on_comboBox_activated(const QString &arg1);
+    void on_comboBox_pipeline_activated(const QString &arg1);
 
     void on_checkBox_savePC_clicked(bool checked);
 
@@ -77,10 +80,11 @@ private slots:
 
     void on_pushButton_Save_Settings_clicked();
 
-    void on_pushButton_GrabAndTransmit_clicked();
+    void on_pushButton_GetPointCloud_clicked();
 
+    void on_transformationWidget_Kin1_matrixchanged(Transform);
 
-    void on_pushButton_ShowArrived_clicked();
+    void on_transformationWidget_Kin2_matrixchanged(Transform);
 
 signals:
     void PCtransmitted(PointCloudT::Ptr);
@@ -92,10 +96,8 @@ private:
     // SSH stuff
     QProcess proc;
 
-    bool PCmode = false;
-    QString compressedDataPart;
-    pcl::io::OctreePointCloudCompression<PointT>* PointCloudDecoder;
-
+    // repeat stuff
+    QTimer* timer1;
 };
 
 #endif // ClientWidget_H

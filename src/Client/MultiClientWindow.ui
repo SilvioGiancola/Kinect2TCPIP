@@ -108,6 +108,8 @@
    <container>1</container>
    <slots>
     <signal>PCtransmitted(PointCloudT::Ptr)</signal>
+    <slot>on_pushButton_Connect_clicked()</slot>
+    <slot>on_pushButton_Disconnect_clicked()</slot>
    </slots>
   </customwidget>
  </customwidgets>

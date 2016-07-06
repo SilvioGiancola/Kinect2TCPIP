@@ -15,7 +15,7 @@ class TransformationWidget : public QWidget
 
 public:
     explicit TransformationWidget(QWidget *parent = 0);
-    ~TransformationWidget();
+    virtual ~TransformationWidget();
 
     Transform getTransform();
     void setTransform(Transform);

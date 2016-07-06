@@ -47,23 +47,12 @@ ServerWindow::ServerWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::Se
         }
     }
 
-    bool showStatistics = true;
-
-    // for a full list of profiles see: /io/include/pcl/compression/compression_profiles.h
-    pcl::io::compression_Profiles_e compressionProfile = pcl::io::MED_RES_ONLINE_COMPRESSION_WITH_COLOR;
-
-    PointCloudEncoder = new pcl::io::OctreePointCloudCompression<PointT> (compressionProfile, showStatistics);
-    PointCloudDecoder = new pcl::io::OctreePointCloudCompression<PointT> ();
-
 }
 
 // Destructor
 ServerWindow::~ServerWindow()
 {
     writeSettings();
-
-    delete (PointCloudDecoder);
-    delete (PointCloudEncoder);
 
     delete server;
     delete socket;
@@ -78,9 +67,8 @@ void ServerWindow::writeSettings()
 
     settings.beginGroup("Kinect settings");
 
-    settings.setValue("Serial Kinect 0", ui->myKinectWidget1->getSerial());
-    settings.setValue("Serial Kinect 1", ui->myKinectWidget2->getSerial());
-
+    if (!ui->myKinectWidget1->getSerial().length() > 5) settings.setValue("Serial Kinect 0", ui->myKinectWidget1->getSerial());
+    if (!ui->myKinectWidget1->getSerial().length() > 5) settings.setValue("Serial Kinect 1", ui->myKinectWidget2->getSerial());
 
     if (!ui->myKinectWidget1->getPipeline().compare("") == 0)   settings.setValue("Pipeline 0", ui->myKinectWidget1->getPipeline());
     if (!ui->myKinectWidget2->getPipeline().compare("") == 0)   settings.setValue("Pipeline 1", ui->myKinectWidget2->getPipeline());
@@ -125,10 +113,16 @@ void ServerWindow::readSettings()
 }
 
 
+PointCloudT::Ptr ServerWindow::getPointCloud(int i)
+{
+    if (i == 0)         return ui->myKinectWidget1->getPointCloud();
+    else if ( i == 1)   return ui->myKinectWidget2->getPointCloud();
+
+    return PointCloudT::Ptr(new PointCloudT);
+}
 
 
 // TCPIP
-
 void ServerWindow::newTCPIPConnection()
 {
     socket = server->nextPendingConnection();
@@ -150,6 +144,8 @@ void ServerWindow::clientStateChanged(QAbstractSocket::SocketState state)
     if (state == QAbstractSocket::ListeningState)   ui->label_ClientState->setText(QString("Socket : ListeningState"));
     if (state == QAbstractSocket::ClosingState)     ui->label_ClientState->setText(QString("Socket : ClosingState"));
 }
+
+
 
 void ServerWindow::newMessageReceived()
 {
@@ -179,6 +175,7 @@ void ServerWindow::newMessageReceived()
     else if(message == QString(PROTOCOL_SAVE_SETTINGS))
     {
         writeSettings();
+        Answer.append(": OK");
     }
     else if(message == QString(PROTOCOL_GRAB))
     {
@@ -189,39 +186,24 @@ void ServerWindow::newMessageReceived()
         if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
         else Answer.append("ERR");
     }
-    else if(message == QString(PROTOCOL_GRAB_TRANSMIT))
-    {/*
-        Answer.append(": ");
-        if (ui->myKinectWidget1->GrabKinect()== SUCCESS) Answer.append("OK");
-        else Answer.append("ERR");
-        Answer.append(" / ");
-        if (ui->myKinectWidget2->GrabKinect()== SUCCESS) Answer.append("OK");
-        else Answer.append("ERR");
-*/
-        PointCloudT::Ptr cloud = ui->myKinectWidget1->getPointCloud();
-
-        // compress point cloud
-        std::stringstream compressedDataSent;
-
-
-        PointCloudEncoder->encodePointCloud (cloud, compressedDataSent);
-
-        QString compressedDataQT = QString::fromStdString(compressedDataSent.str());
-
-/*
-        ui->myCloudViewer->clear();
-        ui->myCloudViewer->showPC(cloudOut);*/
-
-
-       // QString::fromStdString()
-        socket->write(compressedDataQT.toLocal8Bit());
-        return;
-    }
     else if(message == QString(PROTOCOL_REGISTER))
     {
         on_pushButton_registrer_clicked();
         Answer.append(": OK");
     }
+    else if(message == QString(PROTOCOL_TRANSMIT_POINTCLOUDS))
+    {
+        QString path0 = savePC(getPointCloud(0));
+        QString path1 = savePC(getPointCloud(1));
+
+        Answer = path0 + ":"+ path1;
+    }
+    else if(message == QString(PROTOCOL_TIME))
+    {
+        Answer.append(QDateTime::currentDateTime().toString(TIMEFORMAT));
+    }
+
+    // answers with return parameters
     else if(message.contains(QString(PROTOCOL_PIPELINE)))
     {
         const QString submess = message.remove(0,QString(PROTOCOL_PIPELINE).length());
@@ -236,27 +218,52 @@ void ServerWindow::newMessageReceived()
         int index = submess.toInt();
         ui->checkBox_save->setChecked((bool)index);
     }
+    else if(message.contains(QString(PROTOCOL_POSE)))
+    {
+        const QString submess = message.remove(0,QString(PROTOCOL_POSE).length());
+
+        Transform trans;
+        if (submess.section("_",0,0).toInt() == 0)
+        {
+            qDebug() << submess;
+            QString pose=submess.section("_",1,-1);
+            qDebug() << pose;
+            trans.fromPrettyPrint(pose);
+
+            ui->myKinectWidget1->TransformationChanged(trans);
+        }
+        else if (submess.section("_",0,0).toInt() == 1)
+        {
+            qDebug() << submess;
+            QString pose=submess.section("_",1,-1);
+            qDebug() << pose;
+            trans.fromPrettyPrint(pose);
+
+            ui->myKinectWidget2->TransformationChanged(trans);
+        }
+        Answer.append(": " + submess);
+       /* int index = submess.toInt();
+        ui->checkBox_save->setChecked((bool)index);*/
+    }
+
 
     socket->write(Answer.toLocal8Bit());
 
 }
 
 
-
-// Application
-void ServerWindow::savePC(PointCloudT::Ptr PC)
+QString ServerWindow::savePC(PointCloudT::Ptr PC)
 {
-    QString DIR = QDir::homePath() + "/PointClouds/" + QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(DATEFORMAT) + "/";
+    QString DIR = QDir::homePath() + "/PointClouds/" + QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(DATEFORMAT);
     QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(TIMEFORMAT) + "_" + QString::fromStdString(PC->header.frame_id);
+    QString path =  QString("%1/%2.pcd").arg(DIR).arg(NAME);
 
-    QDir dir;
-    if (!QDir(DIR).exists())
-        dir.mkpath(DIR);
+    QDir().mkpath(QFileInfo(path).absolutePath());
 
-    QString path = QString("%1/%2.pcd").arg(DIR).arg(NAME);
     pcl::io::savePCDFileBinary(path.toStdString(), *PC);
 
     qDebug() << "saved in: " << path ;
+    return path;
 }
 
 
@@ -440,38 +447,3 @@ void ServerWindow::on_checkBox_save_toggled(bool checked)
     }
 }
 
-void ServerWindow::on_pushButton_compress_clicked()
-{
-    PointCloudT::Ptr cloud = ui->myKinectWidget1->getPointCloud();
-
-    // compress point cloud
-    std::stringstream compressedDataSent;
-
-
-    PointCloudEncoder->encodePointCloud (cloud, compressedDataSent);
-
-    QString compressedDataSentQString = QString::fromStdString(compressedDataSent.str());
-
-
-    qDebug() << compressedDataSentQString;
-
-    QByteArray array = compressedDataSentQString.toLocal8Bit();
-
-
-    QString compressedDataReceivedQString = QString::fromLocal8Bit(array);
-
-    // decompress point cloud
-
-
-    std::stringstream compressedDataReceived;
-    compressedDataReceived.str(compressedDataReceivedQString.toStdString());
-    PointCloudT::Ptr cloudOut (new PointCloudT ());
-    qDebug() << "before decoding";
-    PointCloudDecoder->decodePointCloud (compressedDataReceived, cloudOut);
-
-     qDebug() << "showing";
-    //ui->myCloudViewer->clear();
-    ui->myCloudViewer->showPC(cloudOut);
-
-
-}

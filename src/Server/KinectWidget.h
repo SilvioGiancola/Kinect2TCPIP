@@ -48,11 +48,11 @@ public slots:
     int OpenKinect();
     int CloseKinect();
     int GrabKinect();
+    void TransformationChanged(Transform);
 
 private slots:
     void on_comboBox_pipeline_currentIndexChanged(const QString &arg1);
     void on_comboBox_KinectSerials_currentIndexChanged(const QString &arg1);
-    void TransformationChanged(Transform);
 
 private:
     Ui::KinectWidget *ui;

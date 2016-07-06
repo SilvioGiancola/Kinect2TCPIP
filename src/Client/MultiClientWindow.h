@@ -22,6 +22,7 @@ public:
     explicit MultiClientWindow(QWidget *parent = 0);
     ~MultiClientWindow();
 
+    void showPointCloud(PointCloudT::Ptr PC);
 private slots:
     void on_pushButton_ConnectALL_clicked();
     void on_pushButton_DisconnectALL_clicked();

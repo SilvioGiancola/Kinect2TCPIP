@@ -71,6 +71,8 @@ void CloudViewer::showPC(PointCloudT::Ptr PC)
     _visualizer->removePointCloud(PC->header.frame_id);
     _visualizer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
 
+    qDebug() << QString::fromStdString(PC->header.frame_id) << " has been added to the viewer";
+
     if (_showReferenceSystemPointCloud)
     {
         Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
