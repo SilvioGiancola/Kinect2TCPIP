@@ -22,7 +22,7 @@ set(server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWi
 IF("${QT_VERSION}" STREQUAL "4")
 
     #find QT4
-    find_package(Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork) # component of QT4
+    find_package(Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork QtWidgets) # component of QT4
     include(${QT_USE_FILE})
     add_definitions(${QT_DEFINITION})
     set(QT_LIB ${QT_LIBRARIES})
