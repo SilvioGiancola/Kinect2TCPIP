@@ -46,3 +46,8 @@ void TransformationWidget::on_pushButton_reset_clicked()
 {
     setTransform(Transform());
 }
+
+void TransformationWidget::emitTransform()
+{
+    emit matrixchanged(getTransform());
+}

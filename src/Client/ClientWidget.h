@@ -50,6 +50,15 @@ public:
     QString getLastMessage();
     QTcpSocket * mySocket;
 
+    PointCloudT::Ptr getPointCloud(int index);
+    void setPointCloud(int index, PointCloudT::Ptr PC);
+    Transform getPointCloudPose(int index);
+    void setPointCloudPose(int index, Transform T);
+
+
+
+    Ui::ClientWidget *ui;
+
 public slots:
     void on_pushButton_Connect_clicked();
     void on_pushButton_Disconnect_clicked();
@@ -63,6 +72,8 @@ private slots:
     void plotState(QAbstractSocket::SocketState);
     void newMessageReceived();
     void WriteMessage(QString message);
+    QString readAnswer();
+    QString WriteMessageAndWaitForAnswer(QString message);
 
     void on_pushButton_SendRepeated_clicked();
 
@@ -70,6 +81,7 @@ private slots:
     void on_pushButton_SSHReboot_clicked();
     void on_pushButton_SSHUpdate_clicked();
     void SSHlog();
+    void runProc(QString cmdline);
     void showProcState(QProcess::ProcessState newState);
     void on_comboBox_pipeline_activated(const QString &arg1);
 
@@ -86,11 +98,24 @@ private slots:
 
     void on_transformationWidget_Kin2_matrixchanged(Transform);
 
+
+    void MovePointCloud1(Transform trans)
+    {
+        emit sig_PointCloudMoved(cloud0->header.frame_id, trans);
+        return;
+    }
+    void MovePointCloud2(Transform trans)
+    {
+        emit sig_PointCloudMoved(cloud1->header.frame_id, trans);
+        return;
+    }
+
+
 signals:
     void PCtransmitted(PointCloudT::Ptr);
+    void sig_PointCloudMoved(std::string, Transform);
 
 private:
-    Ui::ClientWidget *ui;
     QStringList * IPhistory;
 
     // SSH stuff
@@ -98,6 +123,10 @@ private:
 
     // repeat stuff
     QTimer* timer1;
+
+
+    PointCloudT::Ptr cloud0;
+    PointCloudT::Ptr cloud1;
 };
 
 #endif // ClientWidget_H

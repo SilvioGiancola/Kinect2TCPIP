@@ -20,18 +20,22 @@ public:
     Transform getTransform();
     void setTransform(Transform);
 
+public slots:
+    void emitTransform();
+
 signals:
     void matrixchanged(Transform mat);
 
 private slots:
-    void on_TranslationX_valueChanged(double arg1){ emit matrixchanged(getTransform());}
+  /*  void on_TranslationX_valueChanged(double arg1){ emit matrixchanged(getTransform());}
     void on_TranslationY_valueChanged(double arg1){ emit matrixchanged(getTransform());}
     void on_TranslationZ_valueChanged(double arg1){ emit matrixchanged(getTransform());}
     void on_RotationX_valueChanged(double arg1){ emit matrixchanged(getTransform());}
     void on_RotationY_valueChanged(double arg1){ emit matrixchanged(getTransform());}
-    void on_RotationZ_valueChanged(double arg1){ emit matrixchanged(getTransform());}
+    void on_RotationZ_valueChanged(double arg1){ emit matrixchanged(getTransform());}*/
 
     void on_pushButton_reset_clicked();
+
 
 private:
     Ui::TransformationWidget *ui;

@@ -1,3 +1,11 @@
+# SERVER SOLUTION (Kinect V2 Handler)
+set(server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/registration.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+set(server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/registration.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
+set(server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
+
+
+
+
 
 IF("${QT_VERSION}" STREQUAL "4")
 
@@ -27,12 +35,6 @@ IF("${QT_VERSION}" STREQUAL "4")
 
 
 
-    # SERVER SOLUTION (Kinect V2 Handler)
-    set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
-    set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
-    set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
-
-
     QT4_WRAP_CPP(server_HEADERS_MOC ${server_HEADERS})
     QT4_WRAP_UI(server_FORMS_HEADERS ${server_FORMS})
 
@@ -56,11 +58,6 @@ else()
     # include the current directory
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-    # SERVER SOLUTION (Kinect V2 Handler)
-    set  (server_SOURCES ServerMain.cpp ServerWindow.cpp KinectWidget.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
-    set  (server_HEADERS ServerWindow.h KinectWidget.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
-    set  (server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
 
 
 

@@ -23,7 +23,7 @@ CloudViewer::CloudViewer(QWidget *parent) :
     _visualizer->setShowFPS(false);
 
 
-  // this->setPCReferenceSystemShown(true);
+    // this->setPCReferenceSystemShown(true);
     this->on_actionShowMainRefSyst_triggered(true);
 
     this->update ();
@@ -84,6 +84,20 @@ void CloudViewer::removePC(QString str)
 }
 
 
+void CloudViewer::setPointCloudPose(std::string str, Transform T)
+{
+    //qDebug() << str.c_str();
+    _visualizer->updatePointCloudPose(str, T.getAffine3f());
+    this->update ();
+}
+void CloudViewer::setPointCloudPose(QString str, Transform T)
+{
+    setPointCloudPose(str.toStdString(), T);
+}
+
+
+
+
 
 
 // Checkable Actions
@@ -125,6 +139,8 @@ void CloudViewer::on_actionShowPCRefSyst_triggered(bool checked)
 {
     // nothing to do here, eventually get point cloud ref syst?
 }
+
+
 
 
 

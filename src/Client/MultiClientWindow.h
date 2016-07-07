@@ -9,6 +9,7 @@
 #include <ClientWidget.h>
 
 #include <define.h>
+#include <registration.h>
 
 namespace Ui {
 class MultiClientWindow;
@@ -23,11 +24,19 @@ public:
     ~MultiClientWindow();
 
     void showPointCloud(PointCloudT::Ptr PC);
+    PointCloudT::Ptr getPointCloud(int index);
+    void setPointCloud(int index, PointCloudT::Ptr PC);
+    Transform getPointCloudPose(int index);
+    void setPointCloudPose(int index, Transform T);
+
+
 private slots:
     void on_pushButton_ConnectALL_clicked();
     void on_pushButton_DisconnectALL_clicked();
     void on_pushButton_GrabALL_clicked();
     void on_pushButton_SendALL_clicked();
+
+    void on_pushButton_RegisterLocally_clicked();
 
 private:
     Ui::MultiClientWindow *ui;
@@ -35,7 +44,7 @@ private:
     void writeSettings();
     void readSettings();
     QStringList *IPhistory;
- //   QCompleter *IPcompleter;
+    //   QCompleter *IPcompleter;
 };
 
 #endif // MultiClientWindow_H

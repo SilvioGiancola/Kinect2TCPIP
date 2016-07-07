@@ -1,3 +1,9 @@
+# CLIENT SOLUTION (remote control)
+set(client_SOURCES ClientMain.cpp ClientWidget.cpp MultiClientWindow.cpp ../Utilities/registration.cpp ../Utilities/CloudViewer.cpp ../Utilities/TransformationWidget.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+set(client_HEADERS ClientWidget.h MultiClientWindow.h ../Utilities/define.h ../Utilities/registration.h ../Utilities/CloudViewer.h  ../Utilities/TransformationWidget.h ../Utilities/Transform.h ../Utilities/LogWidget.h)
+set(client_FORMS   ClientWidget.ui MultiClientWindow.ui ../Utilities/CloudViewer.ui ../Utilities/TransformationWidget.ui ../Utilities/LogWidget.ui)
+
+
 
 IF("${QT_VERSION}" STREQUAL "4")
 
@@ -27,13 +33,6 @@ IF("${QT_VERSION}" STREQUAL "4")
 
 
 
-    # CLIENT SOLUTION (remote control)
-    set(client_SOURCES ClientMain.cpp ClientWidget.cpp MultiClientWindow.cpp ../Utilities/CloudViewer.cpp ../Utilities/TransformationWidget.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
-    set(client_HEADERS ClientWidget.h MultiClientWindow.h ../Utilities/define.h ../Utilities/CloudViewer.h  ../Utilities/TransformationWidget.h ../Utilities/Transform.h ../Utilities/LogWidget.h)
-    set(client_FORMS   ClientWidget.ui MultiClientWindow.ui ../Utilities/CloudViewer.ui ../Utilities/TransformationWidget.ui ../Utilities/LogWidget.ui)
-
-
-
     QT4_WRAP_CPP(client_HEADERS_MOC ${client_HEADERS})
     QT4_WRAP_UI(client_FORMS_HEADERS ${client_FORMS})
 
@@ -56,12 +55,6 @@ else()
     # include the current directory
     SET(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-
-
-    # CLIENT SOLUTION (remote control)
-    set(client_SOURCES ClientMain.cpp ClientWidget.cpp MultiClientWindow.cpp ../Utilities/CloudViewer.cpp ../Utilities/TransformationWidget.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
-    set(client_HEADERS ClientWidget.h MultiClientWindow.h ../Utilities/define.h ../Utilities/CloudViewer.h  ../Utilities/TransformationWidget.h ../Utilities/Transform.h ../Utilities/LogWidget.h)
-    set(client_FORMS   ClientWidget.ui MultiClientWindow.ui ../Utilities/CloudViewer.ui ../Utilities/TransformationWidget.ui ../Utilities/LogWidget.ui)
 
 
 

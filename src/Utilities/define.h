@@ -32,7 +32,7 @@ typedef pcl::PointCloud<PointNormalT> PointCloudNormalT;
 #define PROTOCOL_PIPELINE "Pipeline_" // + Value
 #define PROTOCOL_SAVE "Save_" // + Value
 #define PROTOCOL_TRANSMIT_POINTCLOUDS "get_PointClouds"
-#define PROTOCOL_POSE "Pose_"
+#define PROTOCOL_POSE "Pose_" //+ Pose
 #define PROTOCOL_TIME "Time"
 
 

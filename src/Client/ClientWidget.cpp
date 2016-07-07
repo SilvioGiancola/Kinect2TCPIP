@@ -23,6 +23,9 @@ ClientWidget::ClientWidget(QWidget *parent) :
     timer1 = new QTimer();
     connect(timer1, SIGNAL(timeout()), this, SLOT(on_pushButton_Grab_Devices_clicked()));
 
+    cloud0.reset(new PointCloudT);
+    cloud1.reset(new PointCloudT);
+
 }
 
 
@@ -49,12 +52,53 @@ void ClientWidget::setIPCompletion(QStringList *strList)
 void ClientWidget::setIP(QString str){ui->lineEdit_IP->setText(str);}
 void ClientWidget::setPort(QString str){ui->lineEdit_Port->setText(str);}
 void ClientWidget::setMessage(QString str) {ui->lineEdit_Message->setText(str);}
-QString ClientWidget::getIP(){return ui->lineEdit_IP->text();}
+QString ClientWidget::getIP(){return ui->lineEdit_IP->text().replace(" ","");}
 QString ClientWidget::getPort(){return ui->lineEdit_Port->text();}
 QString ClientWidget::getLastMessage(){return ui->lineEdit_Message->text();}
 
 
+PointCloudT::Ptr ClientWidget::getPointCloud(int index)
+{
+    if (index == 0) return cloud0;
+    else if (index == 1) return cloud1;
+}
 
+void ClientWidget::setPointCloud(int index, PointCloudT::Ptr PC)
+{
+    if (index == 0)
+    {
+        cloud0 = PC;
+        ui->transformationWidget_Kin1->setTransform(getPointCloudPose(0));
+        ui->transformationWidget_Kin1->emitTransform();
+    }
+    else if (index == 1)
+    {
+        cloud1 = PC;
+        ui->transformationWidget_Kin2->setTransform(getPointCloudPose(1));
+        ui->transformationWidget_Kin2->emitTransform();
+    }
+}
+
+Transform ClientWidget::getPointCloudPose(int index)
+{
+    if (index == 0) return Transform(cloud0->sensor_origin_, cloud0->sensor_orientation_);
+    else if (index == 1) return Transform(cloud1->sensor_origin_, cloud1->sensor_orientation_);
+}
+
+
+void ClientWidget::setPointCloudPose(int index, Transform T)
+{
+    if (index == 0)
+    {
+        ui->transformationWidget_Kin1->setTransform(T);
+        ui->transformationWidget_Kin1->emitTransform();
+    }
+    else if (index == 1)
+    {
+        ui->transformationWidget_Kin2->setTransform(T);
+        ui->transformationWidget_Kin2->emitTransform();
+    }
+}
 
 
 // CLICK
@@ -73,6 +117,7 @@ void ClientWidget::on_pushButton_Connect_clicked()
     QCompleter *comp = new QCompleter(*IPhistory, this);
     comp->setCaseSensitivity(Qt::CaseInsensitive);
     ui->lineEdit_IP->setCompleter(comp);
+
 
     return;
 }
@@ -117,10 +162,16 @@ void ClientWidget::on_pushButton_GetPointCloud_clicked()
 
 
     WriteMessage(QString(PROTOCOL_TRANSMIT_POINTCLOUDS));
-    mySocket->waitForReadyRead(1000);
 
-    QString answer = QString::fromLocal8Bit(mySocket->readAll());
+    QString answer = readAnswer();
 
+    // reconnect auto read
+    connect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+
+
+
+    if (answer.split(":").length() != 2)
+        return;
 
     QString remotepath0 = answer.split(":").at(0);
     QString remotepath1 = answer.split(":").at(1);
@@ -159,19 +210,22 @@ void ClientWidget::on_pushButton_GetPointCloud_clicked()
 
     ui->logWidget_received->appendText(log);
 
-    qDebug() << "load PC0";
-    PointCloudT::Ptr cloud0(new PointCloudT);
+    // qDebug() << "load PC0";
+
+    cloud0.reset(new PointCloudT);
     pcl::io::loadPCDFile(localpath0.toStdString(), *cloud0);
     cloud0->header.frame_id = localpath0.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
+    Transform(cloud0->sensor_origin_, cloud0->sensor_orientation_).print();
     emit PCtransmitted(cloud0);
-    qDebug() << "load PC1";
-    PointCloudT::Ptr cloud1(new PointCloudT);
+    ui->transformationWidget_Kin2->setTransform(getPointCloudPose(0));
+
+    // qDebug() << "load PC1";
+    cloud1.reset(new PointCloudT);
     pcl::io::loadPCDFile(localpath1.toStdString(), *cloud1);
     cloud1->header.frame_id = localpath1.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
+    Transform(cloud1->sensor_origin_, cloud1->sensor_orientation_).print();
     emit PCtransmitted(cloud1);
-
-    // reconnect auto read
-    connect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+    ui->transformationWidget_Kin2->setTransform(getPointCloudPose(1));
 
 }
 
@@ -187,10 +241,8 @@ void ClientWidget::on_pushButton_SSHReboot_clicked()
         return;
     }
 
-    proc.start(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        ui->logWidget_ssh->appendText("Reboot Timeout reached");
-    else   ui->logWidget_ssh->appendText("Reboot Sent");
+    runProc(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
+
 }
 
 void ClientWidget::on_pushButton_SSHUpdate_clicked()
@@ -204,33 +256,31 @@ void ClientWidget::on_pushButton_SSHUpdate_clicked()
 
 
     // Remove old
-    proc.start(QString("ssh sineco@%1 rm -r /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        ui->logWidget_ssh->appendText("Update Timeout reached");
-    else   ui->logWidget_ssh->appendText("Update Done");
+    runProc(QString("ssh sineco@%1 rm -r /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
+
 
     // Create Folder
-    proc.start(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        ui->logWidget_ssh->appendText("Update Timeout reached");
-    else   ui->logWidget_ssh->appendText("Update Done");
+    runProc(QString("ssh sineco@%1 mkdir -p /home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
 
     // Copy Compilation script
-    proc.start(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        ui->logWidget_ssh->appendText("Update Timeout reached");
-    else   ui->logWidget_ssh->appendText("Update Done");
+    runProc(QString("scp /home/silvio/git/Kinect2TCPIP/CompileScript.sh sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
 
     // Copy new src files
-    proc.start(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
-    if (proc.waitForFinished() == false)
-        ui->logWidget_ssh->appendText("Update Timeout reached");
-    else   ui->logWidget_ssh->appendText("Update Done");
+    runProc(QString("scp -r /home/silvio/git/Kinect2TCPIP/src sineco@%1:/home/sineco/Kinect2TCPIP").arg(ui->lineEdit_IP->text()));
 
     // Compile
     proc.start(QString("ssh sineco@%1 sh /home/sineco/Kinect2TCPIP/CompileScript.sh").arg(ui->lineEdit_IP->text()));
 
 
+}
+
+void ClientWidget::runProc(QString cmdline)
+{
+    qDebug() << cmdline;
+    proc.start(cmdline);
+    if (proc.waitForFinished() == false)
+        ui->logWidget_ssh->appendText("Timeout reached");
+    else   ui->logWidget_ssh->appendText("Done");
 }
 
 void ClientWidget::showProcState(QProcess::ProcessState newState)
@@ -282,6 +332,8 @@ void ClientWidget::newMessageReceived()
 }
 
 
+
+// Read / Write
 void ClientWidget::WriteMessage(QString message)
 {
     mySocket->write(message.toStdString().c_str());
@@ -290,10 +342,25 @@ void ClientWidget::WriteMessage(QString message)
     return;
 }
 
+QString ClientWidget::readAnswer()
+{
+    mySocket->waitForReadyRead(1000);
+    return QString::fromLocal8Bit(mySocket->readAll());
+}
+
+QString ClientWidget::WriteMessageAndWaitForAnswer(QString message)
+{
+    WriteMessage(message);
+    return readAnswer();
+}
+
+
+
+
 
 void ClientWidget::on_transformationWidget_Kin1_matrixchanged( Transform T)
 {
-   // qDebug() << "here";
+    // qDebug() << "here";
     QString pose = T.prettyprint();
     WriteMessage(QString("%1%2_%3").arg(PROTOCOL_POSE).arg(0).arg(pose));
 }
@@ -303,3 +370,4 @@ void ClientWidget::on_transformationWidget_Kin2_matrixchanged(Transform T)
     const QString pose = T.prettyprint();
     WriteMessage(QString("%1%2_%3").arg(PROTOCOL_POSE).arg(1).arg(pose));
 }
+

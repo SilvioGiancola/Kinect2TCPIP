@@ -47,6 +47,9 @@ public slots:
     void removePC(std::string str);
     void removePC(QString str);
 
+    void setPointCloudPose(std::string, Transform);
+    void setPointCloudPose(QString, Transform);
+
 
 
 private slots:

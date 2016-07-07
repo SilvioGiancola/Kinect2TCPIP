@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>235</width>
-    <height>167</height>
+    <width>244</width>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -163,15 +163,48 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="3">
+   <item row="1" column="0">
     <widget class="QPushButton" name="pushButton_reset">
+     <property name="maximumSize">
+      <size>
+       <width>20</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="text">
-      <string>Reset</string>
+      <string>R</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QPushButton" name="pushButton_emit">
+     <property name="text">
+      <string>emit</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_emit</sender>
+   <signal>clicked()</signal>
+   <receiver>TransformationWidget</receiver>
+   <slot>emitTransform()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>104</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>121</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>emitTransform()</slot>
+ </slots>
 </ui>

@@ -38,6 +38,10 @@ Transform::Transform(QString str)
     _transformation.matrix() = Eigen::Matrix4f::Identity();
     fromPrettyPrint(str);
 }
+Transform::Transform(Eigen::Matrix4f mat4)
+{
+    _transformation.matrix() = mat4;
+}
 
 Transform::~Transform()
 {
@@ -56,10 +60,11 @@ QString Transform::prettyprint()
 
 void Transform::fromPrettyPrint(QString str)
 {
+    _transformation.matrix() = Eigen::Matrix4f::Identity();
     QStringList strlst = str.split("_");
-    if (strlst.length() <6) return;
+    if (strlst.length() < 6) return;
     setOrigin3(Eigen::Vector3f(strlst.at(0).toFloat(), strlst.at(1).toFloat(), strlst.at(2).toFloat()));
-    setEulerAngles(Eigen::Vector3f(strlst.at(4).toFloat(), strlst.at(5).toFloat(), strlst.at(6).toFloat()));
+    setEulerAngles(Eigen::Vector3f(strlst.at(3).toFloat(), strlst.at(4).toFloat(), strlst.at(5).toFloat()));
 }
 
 

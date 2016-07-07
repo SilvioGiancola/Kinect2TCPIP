@@ -136,13 +136,17 @@ void ServerWindow::newTCPIPConnection()
 
 void ServerWindow::clientStateChanged(QAbstractSocket::SocketState state)
 {
-    if (state == QAbstractSocket::UnconnectedState) ui->label_ClientState->setText(QString("Socket : UnconnectedState"));
-    if (state == QAbstractSocket::HostLookupState)  ui->label_ClientState->setText(QString("Socket : HostLookupState"));
-    if (state == QAbstractSocket::ConnectingState)  ui->label_ClientState->setText(QString("Socket : ConnectingState"));
-    if (state == QAbstractSocket::ConnectedState)   ui->label_ClientState->setText(QString("Socket : ConnectedState"));
-    if (state == QAbstractSocket::BoundState)       ui->label_ClientState->setText(QString("Socket : BoundState"));
-    if (state == QAbstractSocket::ListeningState)   ui->label_ClientState->setText(QString("Socket : ListeningState"));
-    if (state == QAbstractSocket::ClosingState)     ui->label_ClientState->setText(QString("Socket : ClosingState"));
+    QString stateName;
+    if (state == QAbstractSocket::UnconnectedState) stateName = "Socket : UnconnectedState";
+    if (state == QAbstractSocket::HostLookupState)  stateName = "Socket : HostLookupState";
+    if (state == QAbstractSocket::ConnectingState)  stateName = "Socket : ConnectingState";
+    if (state == QAbstractSocket::ConnectedState)   stateName = "Socket : ConnectedState";
+    if (state == QAbstractSocket::BoundState)       stateName = "Socket : BoundState";
+    if (state == QAbstractSocket::ListeningState)   stateName = "Socket : ListeningState";
+    if (state == QAbstractSocket::ClosingState)     stateName = "Socket : ClosingState";
+
+    ui->label_ClientState->setText(stateName);
+    ui->logWidget_server->appendText("[StateChanged] " + stateName);
 }
 
 
@@ -150,15 +154,17 @@ void ServerWindow::clientStateChanged(QAbstractSocket::SocketState state)
 void ServerWindow::newMessageReceived()
 {
     QString message = QString(socket->readAll());
+    ui->logWidget_server->appendText("[TCP/IP] " + message);
+
     QString Answer = "->" + message;
 
     if (message == QString(PROTOCOL_OPEN))
     {
         Answer.append(": ");
-        if (ui->myKinectWidget1->OpenKinect()== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget1->OpenKinect()== SUCCESS) Answer.append(ui->myKinectWidget1->getSerial());
         else Answer.append("ERR");
         Answer.append(" / ");
-        if (ui->myKinectWidget2->OpenKinect()== SUCCESS) Answer.append("OK");
+        if (ui->myKinectWidget2->OpenKinect()== SUCCESS) Answer.append(ui->myKinectWidget2->getSerial());
         else Answer.append("ERR");
 
     }
@@ -225,25 +231,21 @@ void ServerWindow::newMessageReceived()
         Transform trans;
         if (submess.section("_",0,0).toInt() == 0)
         {
-            qDebug() << submess;
             QString pose=submess.section("_",1,-1);
-            qDebug() << pose;
             trans.fromPrettyPrint(pose);
 
-            ui->myKinectWidget1->TransformationChanged(trans);
+            ui->myKinectWidget1->setTransform(trans);
+            Answer.append(": OK");
         }
         else if (submess.section("_",0,0).toInt() == 1)
         {
-            qDebug() << submess;
-            QString pose=submess.section("_",1,-1);
-            qDebug() << pose;
+            QString pose = submess.section("_",1,-1);
             trans.fromPrettyPrint(pose);
 
-            ui->myKinectWidget2->TransformationChanged(trans);
+            ui->myKinectWidget2->setTransform(trans);
+            Answer.append("/ OK");
         }
         Answer.append(": " + submess);
-       /* int index = submess.toInt();
-        ui->checkBox_save->setChecked((bool)index);*/
     }
 
 
@@ -266,7 +268,7 @@ QString ServerWindow::savePC(PointCloudT::Ptr PC)
     return path;
 }
 
-
+/*
 
 // TODO : Verify Registration
 
@@ -279,7 +281,9 @@ QString ServerWindow::savePC(PointCloudT::Ptr PC)
 #include <pcl/registration/correspondence_rejection_median_distance.h>
 #include <pcl/registration/transformation_estimation_point_to_plane.h>
 
+*/
 
+#include <registration.h>
 
 void ServerWindow::on_pushButton_registrer_clicked()
 {
@@ -287,10 +291,12 @@ void ServerWindow::on_pushButton_registrer_clicked()
     {
         ui->myKinectWidget1->GrabKinect();
         ui->myKinectWidget2->GrabKinect();
-        PointCloudNormalT::Ptr PC1 = ui->myKinectWidget1->getPointCloudNormal();
-        PointCloudNormalT::Ptr PC2 = ui->myKinectWidget2->getPointCloudNormal();
+        PointCloudT::Ptr PC1 = ui->myKinectWidget1->getPointCloud();
+        PointCloudT::Ptr PC2 = ui->myKinectWidget2->getPointCloud();
 
 
+      Transform T =  utils::getTransformation(PC1, PC2);
+/*
         // NORMAL
         qDebug() << "NORMAL: " << PC1->size();
         pcl::IntegralImageNormalEstimation<PointNormalT, PointNormalT> ne;
@@ -350,12 +356,6 @@ void ServerWindow::on_pushButton_registrer_clicked()
         pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
         icp.addCorrespondenceRejector (cor_rej_o2o);
 
-        /*
-        pcl::registration::CorrespondenceRejectorMedianDistance::Ptr cor_rej_med (new pcl::registration::CorrespondenceRejectorMedianDistance);
-        cor_rej_med->setInputTarget<PointNormalT> (PC1);
-        cor_rej_med->setInputSource<PointNormalT> (PC2);
-        icp.addCorrespondenceRejector (cor_rej_med);*/
-
 
 
 
@@ -393,13 +393,16 @@ void ServerWindow::on_pushButton_registrer_clicked()
 
         Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
         std::cout << ICPtransformation  << std::endl;
+*/
 
-
-        Transform T;
+      //  Transform T;
         PointCloudT::Ptr PCnew = ui->myKinectWidget2->getPointCloud();
-        T.setOrigin4(ICPtransformation.block<4,1>(0,3) + PCnew->sensor_origin_);
+        Transform currentPose = Transform(PCnew->sensor_origin_, PCnew->sensor_orientation_);
+     /*   T.setOrigin4(ICPtransformation.block<4,1>(0,3) + PCnew->sensor_origin_);
         T.setQuaternion(Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PCnew->sensor_orientation_);
+*/
 
+        T = T.postmultiplyby(currentPose);
         T.print();
 
         ui->myKinectWidget2->setTransform(T);

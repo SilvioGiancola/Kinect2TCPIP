@@ -194,10 +194,11 @@ void  KinectWidget::TransformationChanged(Transform trans)
 }
 
 
+
 // get Set Parameters
 void KinectWidget::setPipeline(QString string)      {ui->comboBox_pipeline->setCurrentIndex(ui->comboBox_pipeline->findText(string));}
 void KinectWidget::setSerial(QString string)        {ui->comboBox_KinectSerials->setCurrentIndex(ui->comboBox_KinectSerials->findText(string));}
-void KinectWidget::setTransform(Transform transf)   {ui->myTransformationWidget->setTransform(transf);}
+void KinectWidget::setTransform(Transform transf)   {ui->myTransformationWidget->setTransform(transf);  ui->myTransformationWidget->emitTransform();}
 
 
 QString KinectWidget::getPipeline()     {return ui->comboBox_pipeline->currentText();}
