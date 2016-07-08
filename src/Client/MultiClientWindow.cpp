@@ -13,6 +13,12 @@ MultiClientWindow::MultiClientWindow(QWidget *parent) :
     ui->widget_clientB->setIPCompletion(IPhistory);
     readSettings();
 
+    // Repeated message
+    timer1 = new QTimer();
+    connect(timer1, SIGNAL(timeout()), ui->widget_clientA, SLOT(on_pushButton_Grab_Devices_clicked()));
+    connect(timer1, SIGNAL(timeout()), ui->widget_clientB, SLOT(on_pushButton_Grab_Devices_clicked()));
+
+
 }
 
 
@@ -99,6 +105,26 @@ void MultiClientWindow::on_pushButton_SendALL_clicked()
     ui->widget_clientB->on_pushButton_Send_clicked();
 }
 
+void MultiClientWindow::on_pushButton_RepeatGrabALL_clicked()
+{
+
+    if (timer1->isActive())
+    {
+        timer1->stop();
+        ui->doubleSpinBox_time_Resend->setEnabled(true);
+    }
+    else
+    {
+        timer1->start(ui->doubleSpinBox_time_Resend->value()*1000);
+        ui->doubleSpinBox_time_Resend->setEnabled(false);
+    }
+}
+
+void MultiClientWindow::on_pushButton_TransmitPointCloud_clicked()
+{
+    ui->widget_clientA->on_pushButton_GetPointCloud_clicked();
+    ui->widget_clientB->on_pushButton_GetPointCloud_clicked();
+}
 
 void MultiClientWindow::showPointCloud(PointCloudT::Ptr PC)
 {
@@ -147,49 +173,51 @@ void MultiClientWindow::on_pushButton_RegisterLocally_clicked()
     int i_input = ui->spinBox_PC_Input->value();
 
     PointCloudT::Ptr PC_target(new PointCloudT);
-    PC_target = getPointCloud(i_target);
-
     PointCloudT::Ptr PC_input(new PointCloudT);
+
+    PC_target = getPointCloud(i_target);
     PC_input = getPointCloud(i_input);
 
-    PointCloudT::Ptr PC_result(new PointCloudT);
-    pcl::copyPointCloud(*PC_input,*PC_result);
+    PointCloudT::Ptr PCnew(new PointCloudT);
+    PCnew = getPointCloud(i_input);
+
+    Transform currentPose = Transform(PCnew->sensor_origin_, PCnew->sensor_orientation_);
 
 
-    Transform trans = utils::getTransformation(PC_target, PC_input);
+    Transform T = utils::getTransformation(PC_target, PC_input);
 
-    trans.print();
-
-
-
-    Transform currentPose = getPointCloudPose(i_input);
-
-    //       Transform(PC_result->sensor_origin_, PC_result->sensor_orientation_);
-  //  currentPose.print();
+    T.print();
 
 
-
-   // Transform refPose = getPointCloudPose(i_target);
-
-    trans = trans.postmultiplyby(currentPose);
-    trans.print();
+    T = T.postmultiplyby(currentPose);
+    T.print();
 
 
-
-    setPointCloudPose(i_input,trans);
-
-   /* ui->myKinectWidget2->setTransform(trans);
-
-    currentPose = currentPose.premultiplyby(trans);//.postmultiplyby(refPose);
-   // currentPose.print();
-
-    PC_result->sensor_orientation_ = currentPose.getQuaternion();
-    PC_result->sensor_origin_ = currentPose.getOrigin4();
-*/
-
-    //setPointCloud(i_input, PC_result);*/
-
-
-
+    setPointCloudPose(i_input,T);
 
 }
+
+void MultiClientWindow::on_pushButton_reg12_clicked()
+{
+    on_pushButton_TransmitPointCloud_clicked();
+    ui->spinBox_PC_Target->setValue(1);
+    ui->spinBox_PC_Input->setValue(2);
+    on_pushButton_RegisterLocally_clicked();
+}
+
+void MultiClientWindow::on_pushButton_reg23_clicked()
+{
+    on_pushButton_TransmitPointCloud_clicked();
+    ui->spinBox_PC_Target->setValue(2);
+    ui->spinBox_PC_Input->setValue(3);
+    on_pushButton_RegisterLocally_clicked();
+}
+
+void MultiClientWindow::on_pushButton_reg34_clicked()
+{
+    on_pushButton_TransmitPointCloud_clicked();
+    ui->spinBox_PC_Target->setValue(3);
+    ui->spinBox_PC_Input->setValue(4);
+    on_pushButton_RegisterLocally_clicked();
+}
+

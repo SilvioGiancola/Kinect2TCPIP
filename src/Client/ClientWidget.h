@@ -9,7 +9,6 @@
 #include <QThread>
 #include <QCompleter>
 #include <QDir>
-#include <QTimer>
 #include <QStringListModel>
 
 #include <define.h>
@@ -68,6 +67,8 @@ public slots:
     void on_pushButton_Disconnect_Devices_clicked();
     void on_pushButton_Grab_Devices_clicked();
 
+    void on_pushButton_GetPointCloud_clicked();
+
 private slots:
     void plotState(QAbstractSocket::SocketState);
     void newMessageReceived();
@@ -75,7 +76,6 @@ private slots:
     QString readAnswer();
     QString WriteMessageAndWaitForAnswer(QString message);
 
-    void on_pushButton_SendRepeated_clicked();
 
 
     void on_pushButton_SSHReboot_clicked();
@@ -92,7 +92,6 @@ private slots:
 
     void on_pushButton_Save_Settings_clicked();
 
-    void on_pushButton_GetPointCloud_clicked();
 
     void on_transformationWidget_Kin1_matrixchanged(Transform);
 
@@ -111,6 +110,7 @@ private slots:
     }
 
 
+
 signals:
     void PCtransmitted(PointCloudT::Ptr);
     void sig_PointCloudMoved(std::string, Transform);
@@ -121,8 +121,6 @@ private:
     // SSH stuff
     QProcess proc;
 
-    // repeat stuff
-    QTimer* timer1;
 
 
     PointCloudT::Ptr cloud0;

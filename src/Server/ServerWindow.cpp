@@ -291,123 +291,22 @@ void ServerWindow::on_pushButton_registrer_clicked()
     {
         ui->myKinectWidget1->GrabKinect();
         ui->myKinectWidget2->GrabKinect();
-        PointCloudT::Ptr PC1 = ui->myKinectWidget1->getPointCloud();
-        PointCloudT::Ptr PC2 = ui->myKinectWidget2->getPointCloud();
+        PointCloudT::Ptr PC_target = ui->myKinectWidget1->getPointCloud();
+        PointCloudT::Ptr PC_input = ui->myKinectWidget2->getPointCloud();
 
 
-      Transform T =  utils::getTransformation(PC1, PC2);
-/*
-        // NORMAL
-        qDebug() << "NORMAL: " << PC1->size();
-        pcl::IntegralImageNormalEstimation<PointNormalT, PointNormalT> ne;
-        ne.setNormalEstimationMethod (ne.AVERAGE_3D_GRADIENT);
-        ne.setMaxDepthChangeFactor(0.02);
-        ne.setNormalSmoothingSize(10.0);
-
-        ne.setInputCloud(PC1);
-        ne.compute(*PC1);
-        ne.setInputCloud(PC2);
-        ne.compute(*PC2);
+        Transform T =  utils::getTransformation(PC_target, PC_input);
 
 
-        // TRANSFORM
-        qDebug() << "TRANSFORM: " << PC1->size();
-        pcl::transformPointCloud(*PC1, *PC1, PC1->sensor_origin_.head(3), PC1->sensor_orientation_);
-        pcl::transformPointCloud(*PC2, *PC2, PC2->sensor_origin_.head(3), PC2->sensor_orientation_);
-
-
-        //REMOVE NAN
-        qDebug() << "REMOVE NAN: " << PC1->size();
-        std::vector<int> ind;
-        pcl::removeNaNFromPointCloud(*PC1, *PC1, ind);
-        pcl::removeNaNNormalsFromPointCloud(*PC1, *PC1, ind);
-        pcl::removeNaNFromPointCloud(*PC2, *PC2, ind);
-        pcl::removeNaNNormalsFromPointCloud(*PC2, *PC2, ind);
-
-
-
-
-        // Creo il mio elemento ICP
-        qDebug() << "ICP: " << PC1->size();
-        pcl::IterativeClosestPoint<PointNormalT, PointNormalT> icp;
-
-
-
-
-        // Corrispondence Estimation
-        // Scelgo il mia stima dei accopiamenti
-        qDebug() << "Corrispondence Estimation";
-        pcl::registration::CorrespondenceEstimationBase<PointNormalT, PointNormalT>::Ptr cens;
-        cens.reset(new pcl::registration::CorrespondenceEstimationNormalShooting<PointNormalT, PointNormalT,PointNormalT>);
-
-        cens->setInputTarget (PC1);
-        cens->setInputSource (PC2);
-
-        icp.setCorrespondenceEstimation (cens);
-
-
-
-
-        // Corrispondence Rejection
-        qDebug() << "Corrispondence Rejection";
-
-
-
-        pcl::registration::CorrespondenceRejectorOneToOne::Ptr cor_rej_o2o (new pcl::registration::CorrespondenceRejectorOneToOne);
-        icp.addCorrespondenceRejector (cor_rej_o2o);
-
-
-
-
-
-
-
-
-        // Transformation Estimation
-        // Scelgo un metodo per risolvere il problema
-        qDebug() << "Transformation Estimation";
-        pcl::registration::TransformationEstimation<PointNormalT, PointNormalT>::Ptr te;
-        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointNormalT, PointNormalT>);
-
-        icp.setTransformationEstimation (te);
-
-
-
-
-
-        icp.setInputSource(PC2);
-        icp.setInputTarget(PC1);
-
-
-        // Modalità di fine ICP
-        //icp.setEuclideanFitnessEpsilon(10E-9);
-        //icp.setTransformationEpsilon(10E-9);
-        icp.setMaximumIterations(1);
-
-
-        qDebug() << "Align";
-        PointCloudNormalT::Ptr Final(new PointCloudNormalT);
-        icp.align(*Final);
-        qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
-
-
-        Eigen::Matrix4f ICPtransformation = icp.getFinalTransformation();
-        std::cout << ICPtransformation  << std::endl;
-*/
-
-      //  Transform T;
         PointCloudT::Ptr PCnew = ui->myKinectWidget2->getPointCloud();
         Transform currentPose = Transform(PCnew->sensor_origin_, PCnew->sensor_orientation_);
-     /*   T.setOrigin4(ICPtransformation.block<4,1>(0,3) + PCnew->sensor_origin_);
-        T.setQuaternion(Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PCnew->sensor_orientation_);
-*/
+
 
         T = T.postmultiplyby(currentPose);
         T.print();
 
         ui->myKinectWidget2->setTransform(T);
-        //  result->sensor_origin_ = ICPtransformation.block<4,1>(0,3) + PC->sensor_origin_;
-        //  result->sensor_orientation_ = Eigen::Quaternionf(ICPtransformation.block<3,3>(0,0)) * PC->sensor_orientation_;
+
 
         writeSettings();
 

@@ -11,6 +11,9 @@
 #include <define.h>
 #include <registration.h>
 
+#include <QTimer>
+
+
 namespace Ui {
 class MultiClientWindow;
 }
@@ -38,12 +41,28 @@ private slots:
 
     void on_pushButton_RegisterLocally_clicked();
 
+    void on_pushButton_reg12_clicked();
+
+    void on_pushButton_reg23_clicked();
+
+    void on_pushButton_reg34_clicked();
+
+    void on_pushButton_TransmitPointCloud_clicked();
+
+    void on_pushButton_RepeatGrabALL_clicked();
+
 private:
     Ui::MultiClientWindow *ui;
 
     void writeSettings();
     void readSettings();
     QStringList *IPhistory;
+
+
+    // repeat stuff
+    QTimer* timer1;
+
+
     //   QCompleter *IPcompleter;
 };
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>570</height>
+    <width>460</width>
+    <height>654</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -105,50 +105,12 @@
       <string>Kinect 2 Handler</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="5" column="0">
-       <widget class="QPushButton" name="pushButton_Save_Settings">
-        <property name="text">
-         <string>Save Settings</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QPushButton" name="pushButton_SendRepeated">
-        <property name="text">
-         <string>Continuous Grab</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QCheckBox" name="checkBox_savePC">
-        <property name="text">
-         <string>Save PC</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QPushButton" name="pushButton_Register">
-        <property name="text">
-         <string>Register</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="pushButton_Disconnect_Devices">
         <property name="text">
          <string>Disconnect Kinects</string>
         </property>
        </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="pushButton_Grab_Devices">
-        <property name="text">
-         <string>Grab All</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="TransformationWidget" name="transformationWidget_Kin1" native="true"/>
       </item>
       <item row="0" column="0">
        <widget class="QPushButton" name="pushButton_Connect_Devices">
@@ -157,10 +119,21 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="TransformationWidget" name="transformationWidget_Kin2" native="true"/>
+      <item row="4" column="1">
+       <widget class="QCheckBox" name="checkBox_autoGetPointClouds">
+        <property name="text">
+         <string>AutoGetPointCloud</string>
+        </property>
+       </widget>
       </item>
-      <item row="2" column="1">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="pushButton_Grab_Devices">
+        <property name="text">
+         <string>Grab All</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QComboBox" name="comboBox_pipeline">
         <property name="currentIndex">
          <number>2</number>
@@ -187,22 +160,43 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="1" column="1">
+       <widget class="QPushButton" name="pushButton_Register">
+        <property name="text">
+         <string>Register</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="pushButton_Save_Settings">
+        <property name="text">
+         <string>Save Settings</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QCheckBox" name="checkBox_savePC">
+        <property name="text">
+         <string>Save PC</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
        <widget class="QPushButton" name="pushButton_GetPointCloud">
         <property name="text">
          <string>get Point Clouds</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_time_Resend">
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="minimum">
-         <double>1.000000000000000</double>
-        </property>
-       </widget>
+      <item row="7" column="0" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="TransformationWidget" name="transformationWidget_Kin1" native="true"/>
+        </item>
+        <item>
+         <widget class="TransformationWidget" name="transformationWidget_Kin2" native="true"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -222,34 +216,38 @@
       <item row="0" column="0">
        <widget class="QWidget" name="Layout_ExpertMode" native="true">
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="1">
-          <widget class="QPushButton" name="pushButton_SSHReboot">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Reboot</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QPushButton" name="pushButton_SSHUpdate">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>Update</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="2">
+         <item row="3" column="0">
           <widget class="QLabel" name="label_State">
            <property name="text">
             <string>State</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="0" colspan="2">
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="pushButton_SSHUpdate">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Update</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_SSHReboot">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Reboot</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="4" column="0">
           <widget class="LogWidget" name="logWidget_ssh" native="true"/>
          </item>
         </layout>

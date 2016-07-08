@@ -19,9 +19,6 @@ ClientWidget::ClientWidget(QWidget *parent) :
     connect(&proc, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(showProcState(QProcess::ProcessState)));
 
 
-    // Repeated message
-    timer1 = new QTimer();
-    connect(timer1, SIGNAL(timeout()), this, SLOT(on_pushButton_Grab_Devices_clicked()));
 
     cloud0.reset(new PointCloudT);
     cloud1.reset(new PointCloudT);
@@ -135,38 +132,31 @@ void ClientWidget::on_pushButton_Disconnect_clicked()
 void ClientWidget::on_pushButton_Send_clicked()                 {   WriteMessage(ui->lineEdit_Message->text());}
 void ClientWidget::on_pushButton_Connect_Devices_clicked()      {   WriteMessage(QString(PROTOCOL_OPEN));}
 void ClientWidget::on_pushButton_Disconnect_Devices_clicked()   {   WriteMessage(QString(PROTOCOL_CLOSE));}
-void ClientWidget::on_pushButton_Grab_Devices_clicked()         {   WriteMessage(QString(PROTOCOL_GRAB));}
 void ClientWidget::on_pushButton_Register_clicked()             {   WriteMessage(QString(PROTOCOL_REGISTER));}
 void ClientWidget::on_pushButton_Save_Settings_clicked()        {   WriteMessage(QString(PROTOCOL_SAVE_SETTINGS));}
 void ClientWidget::on_comboBox_pipeline_activated(const QString &arg1){   WriteMessage(QString(PROTOCOL_PIPELINE+arg1));}
 void ClientWidget::on_checkBox_savePC_clicked(bool checked)     {   WriteMessage(QString("%1%2").arg(PROTOCOL_SAVE).arg((int)checked));}
-void ClientWidget::on_pushButton_SendRepeated_clicked()
+
+
+void ClientWidget::on_pushButton_Grab_Devices_clicked()
 {
-    if (timer1->isActive())
+    if (ui->checkBox_autoGetPointClouds->isChecked())
     {
-        timer1->stop();
-        ui->doubleSpinBox_time_Resend->setEnabled(true);
+         WriteMessageAndWaitForAnswer(QString(PROTOCOL_GRAB));
+         on_pushButton_GetPointCloud_clicked();
     }
     else
     {
-        timer1->start(ui->doubleSpinBox_time_Resend->value()*1000);
-        ui->doubleSpinBox_time_Resend->setEnabled(false);
+        WriteMessage(QString(PROTOCOL_GRAB));
     }
 }
-
-
 void ClientWidget::on_pushButton_GetPointCloud_clicked()
 {
-    // disconnect auto read
-    disconnect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
 
 
-    WriteMessage(QString(PROTOCOL_TRANSMIT_POINTCLOUDS));
+    QString answer =  WriteMessageAndWaitForAnswer(QString(PROTOCOL_TRANSMIT_POINTCLOUDS));
 
-    QString answer = readAnswer();
 
-    // reconnect auto read
-    connect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
 
 
 
@@ -217,7 +207,7 @@ void ClientWidget::on_pushButton_GetPointCloud_clicked()
     cloud0->header.frame_id = localpath0.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
     Transform(cloud0->sensor_origin_, cloud0->sensor_orientation_).print();
     emit PCtransmitted(cloud0);
-    ui->transformationWidget_Kin2->setTransform(getPointCloudPose(0));
+    ui->transformationWidget_Kin1->setTransform(getPointCloudPose(0));
 
     // qDebug() << "load PC1";
     cloud1.reset(new PointCloudT);
@@ -350,8 +340,26 @@ QString ClientWidget::readAnswer()
 
 QString ClientWidget::WriteMessageAndWaitForAnswer(QString message)
 {
-    WriteMessage(message);
-    return readAnswer();
+    if (mySocket->state() != QAbstractSocket::ConnectedState)
+        return QString("");
+
+
+    // disconnect auto read
+    disconnect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+
+
+    ui->logWidget_sent->appendText(message);
+    mySocket->write(message.toStdString().c_str());
+    mySocket->waitForBytesWritten(1000);
+
+    mySocket->waitForReadyRead(1000);
+    QString answer =  QString::fromLocal8Bit(mySocket->readAll());
+
+
+    // reconnect auto read
+    connect(mySocket, SIGNAL(readyRead()), this, SLOT (newMessageReceived()));
+
+    return answer;
 }
 
 
@@ -370,4 +378,5 @@ void ClientWidget::on_transformationWidget_Kin2_matrixchanged(Transform T)
     const QString pose = T.prettyprint();
     WriteMessage(QString("%1%2_%3").arg(PROTOCOL_POSE).arg(1).arg(pose));
 }
+
 
