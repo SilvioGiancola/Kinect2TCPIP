@@ -7,6 +7,8 @@ MultiClientWindow::MultiClientWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->centralWidget->setVisible(false);
+
     IPhistory = new QStringList();
 
     ui->widget_clientA->setIPCompletion(IPhistory);
@@ -26,8 +28,7 @@ MultiClientWindow::MultiClientWindow(QWidget *parent) :
 MultiClientWindow::~MultiClientWindow()
 {
     writeSettings();
-    ui->widget_clientA->on_pushButton_Disconnect_clicked();
-    ui->widget_clientB->on_pushButton_Disconnect_clicked();
+    this->on_pushButton_DisconnectALL_clicked();
     delete ui;
 }
 
@@ -147,7 +148,6 @@ Transform MultiClientWindow::getPointCloudPose(int index)
     if (index == 4) return ui->widget_clientB->getPointCloudPose(1);
 }
 
-
 void MultiClientWindow::setPointCloudPose(int index, Transform T)
 {
     if (index == 1) return ui->widget_clientA->setPointCloudPose(0, T);
@@ -156,7 +156,6 @@ void MultiClientWindow::setPointCloudPose(int index, Transform T)
     if (index == 4) return ui->widget_clientB->setPointCloudPose(1, T);
 }
 
-
 void MultiClientWindow::setPointCloud(int index, PointCloudT::Ptr PC)
 {
     if (index == 1) return ui->widget_clientA->setPointCloud(0, PC);
@@ -164,6 +163,8 @@ void MultiClientWindow::setPointCloud(int index, PointCloudT::Ptr PC)
     if (index == 3) return ui->widget_clientB->setPointCloud(0, PC);
     if (index == 4) return ui->widget_clientB->setPointCloud(1, PC);
 }
+
+
 
 
 
@@ -221,3 +222,70 @@ void MultiClientWindow::on_pushButton_reg34_clicked()
     on_pushButton_RegisterLocally_clicked();
 }
 
+
+void MultiClientWindow::on_pushButton_Clean_clicked()
+{
+
+    pcl::RadiusOutlierRemoval<PointT> outrem;
+    // build the filter
+    outrem.setRadiusSearch(0.1);
+    outrem.setMinNeighborsInRadius(5);
+    outrem.setNegative(false);
+
+
+
+    for (int i = 1; i < 5; i++)
+    {
+
+        PointCloudT::Ptr PC_input(new PointCloudT);
+        PC_input = getPointCloud(i);
+
+
+        PointCloudT::Ptr PC_output(new PointCloudT);
+        pcl::copyPointCloud(*PC_input, *PC_output);
+
+
+        outrem.setInputCloud(PC_input);
+        outrem.setKeepOrganized(PC_input->isOrganized());
+
+        // apply filter
+        outrem.filter (*PC_output);
+
+        // update PC
+        setPointCloud(i, PC_output);
+
+        ui->widget->replacePC(PC_output);
+
+
+    }
+}
+
+void MultiClientWindow::on_doubleSpinBox_OffsetCampata_valueChanged(double arg1)
+{
+    Transform Trans(0,arg1,0,0,0,0);
+    ui->widget_clientA->setOffsetCampata(Trans);
+    ui->widget_clientB->setOffsetCampata(Trans);
+}
+
+void MultiClientWindow::on_pushButton_SavePointCloud_clicked()
+{
+    for (int i = 1; i < 5; i++)
+    {
+        PointCloudT::Ptr PC(new PointCloudT);
+        PC = getPointCloud(i);
+
+        QString Path = QString("%1/PointClouds/%2/%4m_%3.pcd")
+                .arg(QDir::homePath())
+                .arg(ui->lineEdit_CampataPath->text())
+                .arg(QString::fromStdString(PC->header.frame_id))
+                .arg(QString::number(ui->doubleSpinBox_OffsetCampata->value(),'f',1));
+
+        QDir().mkpath(QFileInfo(Path).absolutePath());
+
+        qDebug() << Path;
+
+        pcl::io::savePCDFileBinary(Path.toStdString(), *PC);
+
+
+    }
+}

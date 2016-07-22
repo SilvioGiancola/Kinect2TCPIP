@@ -11,6 +11,10 @@
 #include <define.h>
 #include <registration.h>
 
+// Post
+#include <pcl/filters/radius_outlier_removal.h>   // remove radius outliers
+#include <pcl/kdtree/kdtree_flann.h>
+
 #include <QTimer>
 
 
@@ -51,6 +55,12 @@ private slots:
 
     void on_pushButton_RepeatGrabALL_clicked();
 
+    void on_pushButton_Clean_clicked();
+
+    void on_doubleSpinBox_OffsetCampata_valueChanged(double arg1);
+
+    void on_pushButton_SavePointCloud_clicked();
+
 private:
     Ui::MultiClientWindow *ui;
 
@@ -63,7 +73,6 @@ private:
     QTimer* timer1;
 
 
-    //   QCompleter *IPcompleter;
 };
 
 #endif // MultiClientWindow_H

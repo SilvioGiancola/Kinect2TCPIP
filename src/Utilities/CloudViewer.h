@@ -3,6 +3,8 @@
 
 #include <QVTKWidget.h>
 #include <QDebug>
+#include <QColorDialog>
+#include <QSettings>
 
 #include "define.h"
 
@@ -35,6 +37,7 @@ public:
 
     // single shot Action
     void doClearPointClouds();
+    void changeBackGroundColor(QColor Color = QColor());
 
 
 protected:
@@ -46,21 +49,33 @@ public slots:
     void showPC(PointCloudT::Ptr PC);
     void removePC(std::string str);
     void removePC(QString str);
+    void removePC(PointCloudT::Ptr PC);
+    void replacePC(PointCloudT::Ptr PC);
 
     void setPointCloudPose(std::string, Transform);
     void setPointCloudPose(QString, Transform);
+
+    void setBackGroundColor(QColor);
+    QColor getBackGroundColor();
 
 
 
 private slots:
     void on_actionClearViewer_triggered();
+    void on_actionSet_Background_Color_triggered();
     void on_actionShowMainRefSyst_triggered(bool value);
     void on_actionShowPCRefSyst_triggered(bool value);
+
 
 private:
     Ui::CloudViewer *ui;
     QMenu * _menu;
     pcl::visualization::PCLVisualizer::Ptr _visualizer;
+
+    QColor _backgroundColor;
+
+
+    QSettings settings;
 
 
 };

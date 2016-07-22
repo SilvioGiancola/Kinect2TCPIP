@@ -69,6 +69,13 @@ public slots:
 
     void on_pushButton_GetPointCloud_clicked();
 
+    void setOffsetCampata(Transform t)
+    {
+        offset_campata = t;
+
+        offset_campata.print();;
+    }
+
 private slots:
     void plotState(QAbstractSocket::SocketState);
     void newMessageReceived();
@@ -111,6 +118,8 @@ private slots:
 
 
 
+    void on_pushButton_SSHTime_clicked();
+
 signals:
     void PCtransmitted(PointCloudT::Ptr);
     void sig_PointCloudMoved(std::string, Transform);
@@ -125,6 +134,8 @@ private:
 
     PointCloudT::Ptr cloud0;
     PointCloudT::Ptr cloud1;
+
+   Transform offset_campata;
 };
 
 #endif // ClientWidget_H

@@ -6,32 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>829</width>
-    <height>564</height>
+    <width>1219</width>
+    <height>485</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MultiKinect TCPIP Controller</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QSplitter" name="splitter">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="ClientWidget" name="widget_clientA" native="true"/>
-      <widget class="ClientWidget" name="widget_clientB" native="true"/>
-     </widget>
-    </item>
-   </layout>
+   <layout class="QGridLayout" name="gridLayout"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>829</width>
+     <width>1219</width>
      <height>25</height>
     </rect>
    </property>
@@ -46,10 +36,23 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="1" column="0">
-      <widget class="QPushButton" name="pushButton_DisconnectALL">
+     <item row="2" column="3">
+      <widget class="QDoubleSpinBox" name="doubleSpinBox_OffsetCampata">
+       <property name="minimum">
+        <double>-100.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>100.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>DisconnectALL</string>
+        <string>Offset(m)</string>
        </property>
       </widget>
      </item>
@@ -60,21 +63,77 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
+     <item row="2" column="0">
+      <widget class="QPushButton" name="pushButton_DisconnectALL">
+       <property name="text">
+        <string>DisconnectALL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QPushButton" name="pushButton_Clean">
+       <property name="text">
+        <string>Pulisci</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="pushButton_SavePointCloud">
+       <property name="text">
+        <string>Save CurrentCloud</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="5">
       <widget class="QPushButton" name="pushButton_TransmitPointCloud">
        <property name="text">
         <string>export Point Cloud to Client</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
+     <item row="2" column="1">
+      <widget class="QPushButton" name="pushButton_RepeatGrabALL">
+       <property name="text">
+        <string>Repeat Grab</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="8">
+      <widget class="QPushButton" name="pushButton_RegisterLocally">
+       <property name="text">
+        <string>RegisterLocally</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <widget class="QPushButton" name="pushButton_reg12">
+       <property name="text">
+        <string>Register 1 with 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Time (s)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pushButton_GrabALL">
+       <property name="text">
+        <string>Grab All Kinect</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
       <widget class="QPushButton" name="pushButton_SendALL">
        <property name="text">
         <string>Send Current Message</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="4">
+     <item row="2" column="8">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QSpinBox" name="spinBox_PC_Target">
@@ -101,66 +160,37 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="4">
-      <widget class="QPushButton" name="pushButton_RegisterLocally">
+     <item row="2" column="6">
+      <widget class="QPushButton" name="pushButton_reg23">
        <property name="text">
-        <string>RegisterLocally</string>
+        <string>Register 2 with 3</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Time (s)</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="pushButton_GrabALL">
-       <property name="text">
-        <string>Grab All Kinect</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5" rowspan="2">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QPushButton" name="pushButton_reg12">
-         <property name="text">
-          <string>Register 1 with 2</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_reg23">
-         <property name="text">
-          <string>Register 2 with 3</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButton_reg34">
-         <property name="text">
-          <string>Register 3 with 4</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="pushButton_RepeatGrabALL">
-       <property name="text">
-        <string>Repeat Grab</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
+     <item row="2" column="2">
       <widget class="QDoubleSpinBox" name="doubleSpinBox_time_Resend">
        <property name="decimals">
         <number>3</number>
        </property>
        <property name="minimum">
         <double>1.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>5.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="7">
+      <widget class="QPushButton" name="pushButton_reg34">
+       <property name="text">
+        <string>Register 3 with 4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="8">
+      <widget class="QLineEdit" name="lineEdit_CampataPath">
+       <property name="text">
+        <string>campata_1</string>
        </property>
       </widget>
      </item>
@@ -184,6 +214,27 @@
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="0">
       <widget class="CloudViewer" name="widget" native="true"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_2">
+   <property name="windowTitle">
+    <string>Single Control</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QGridLayout" name="gridLayout_4">
+     <item row="0" column="0">
+      <widget class="QSplitter" name="splitter">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="ClientWidget" name="widget_clientA" native="true"/>
+       <widget class="ClientWidget" name="widget_clientB" native="true"/>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -223,12 +274,12 @@
    <slot>showPC(PointCloudT::Ptr)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>189</x>
-     <y>250</y>
+     <x>186</x>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
-     <x>721</x>
-     <y>293</y>
+     <x>910</x>
+     <y>508</y>
     </hint>
    </hints>
   </connection>
@@ -239,12 +290,12 @@
    <slot>showPC(PointCloudT::Ptr)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>422</x>
-     <y>293</y>
+     <x>370</x>
+     <y>508</y>
     </hint>
     <hint type="destinationlabel">
-     <x>721</x>
-     <y>293</y>
+     <x>910</x>
+     <y>508</y>
     </hint>
    </hints>
   </connection>
@@ -255,12 +306,12 @@
    <slot>setPointCloudPose(std::string,Transform)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>221</x>
-     <y>233</y>
+     <x>186</x>
+     <y>448</y>
     </hint>
     <hint type="destinationlabel">
-     <x>721</x>
-     <y>235</y>
+     <x>910</x>
+     <y>450</y>
     </hint>
    </hints>
   </connection>
@@ -271,12 +322,12 @@
    <slot>setPointCloudPose(std::string,Transform)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>421</x>
-     <y>283</y>
+     <x>370</x>
+     <y>498</y>
     </hint>
     <hint type="destinationlabel">
-     <x>721</x>
-     <y>278</y>
+     <x>910</x>
+     <y>493</y>
     </hint>
    </hints>
   </connection>

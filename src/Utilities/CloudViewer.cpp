@@ -3,7 +3,8 @@
 
 CloudViewer::CloudViewer(QWidget *parent) :
     QVTKWidget(parent),
-    ui(new Ui::CloudViewer)
+    ui(new Ui::CloudViewer),
+     settings("SilvioGiancola", "CloudViewer")
 {
     // UI
     ui->setupUi(this);
@@ -19,7 +20,11 @@ CloudViewer::CloudViewer(QWidget *parent) :
                                    0.5,0.5,0.5, // guardo un punto centrale
                                    0,0,1);   // orientato con la z verso l'alto
     _visualizer->setCameraClipDistances(-10,10);
-    _visualizer->setBackgroundColor (0.5, 0.5, 0.5);
+
+   // setBackGroundColor(QColor(127,127,127));
+    setBackGroundColor(settings.value("BackGroundColor").value<QColor>());
+
+
     _visualizer->setShowFPS(false);
 
 
@@ -32,12 +37,17 @@ CloudViewer::CloudViewer(QWidget *parent) :
     // Menu
     _menu = new QMenu(this);
     _menu->addAction(ui->actionClearViewer);
+    _menu->addAction(ui->actionSet_Background_Color);
     _menu->addAction(ui->actionShowMainRefSyst);
     _menu->addAction(ui->actionShowPCRefSyst);
 }
 
 CloudViewer::~CloudViewer()
 {
+
+    settings.setValue("BackGroundColor",_backgroundColor);
+
+
     delete _menu;
     delete ui;
 }
@@ -78,11 +88,22 @@ void CloudViewer::removePC(std::string str)
     _visualizer->removePointCloud(str);
 }
 
+void CloudViewer::removePC(PointCloudT::Ptr PC)
+{
+    _visualizer->removePointCloud(PC->header.frame_id);
+}
+
 void CloudViewer::removePC(QString str)
 {
     removePC(str.toStdString());
 }
 
+
+void CloudViewer::replacePC(PointCloudT::Ptr PC)
+{
+    removePC(PC);
+    showPC(PC);
+}
 
 void CloudViewer::setPointCloudPose(std::string str, Transform T)
 {
@@ -96,6 +117,20 @@ void CloudViewer::setPointCloudPose(QString str, Transform T)
 }
 
 
+void CloudViewer::setBackGroundColor(QColor color)
+{
+    if (color.isValid())
+        _backgroundColor = color;
+
+    _visualizer->setBackgroundColor (_backgroundColor.redF(), _backgroundColor.greenF(), _backgroundColor.blueF());
+
+    return;
+}
+
+QColor CloudViewer::getBackGroundColor()
+{
+    return _backgroundColor;
+}
 
 
 
@@ -156,10 +191,28 @@ void CloudViewer::doClearPointClouds()
     this->update();
 }
 
+void CloudViewer::changeBackGroundColor(QColor color)
+{
+    if (!color.isValid())
+        color = QColorDialog::getColor(_backgroundColor, this);
+
+    if (color.isValid())
+        setBackGroundColor(color);
+
+    /* if (color == QColor())
+    {
+        color = QColorDialog::getColor(color, this);
+    }*/
+}
+
+// Action
 
 void CloudViewer::on_actionClearViewer_triggered()
 {
     doClearPointClouds();
 }
 
-
+void CloudViewer::on_actionSet_Background_Color_triggered()
+{
+    changeBackGroundColor();
+}

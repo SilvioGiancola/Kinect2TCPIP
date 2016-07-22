@@ -23,6 +23,8 @@ ClientWidget::ClientWidget(QWidget *parent) :
     cloud0.reset(new PointCloudT);
     cloud1.reset(new PointCloudT);
 
+    //offset_campata = Transform();
+
 }
 
 
@@ -142,8 +144,8 @@ void ClientWidget::on_pushButton_Grab_Devices_clicked()
 {
     if (ui->checkBox_autoGetPointClouds->isChecked())
     {
-         WriteMessageAndWaitForAnswer(QString(PROTOCOL_GRAB));
-         on_pushButton_GetPointCloud_clicked();
+        WriteMessageAndWaitForAnswer(QString(PROTOCOL_GRAB));
+        on_pushButton_GetPointCloud_clicked();
     }
     else
     {
@@ -205,7 +207,12 @@ void ClientWidget::on_pushButton_GetPointCloud_clicked()
     cloud0.reset(new PointCloudT);
     pcl::io::loadPCDFile(localpath0.toStdString(), *cloud0);
     cloud0->header.frame_id = localpath0.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
-    Transform(cloud0->sensor_origin_, cloud0->sensor_orientation_).print();
+    Transform CurrentPose0(cloud0->sensor_origin_, cloud0->sensor_orientation_);
+    CurrentPose0.print();
+    CurrentPose0 = CurrentPose0.premultiplyby(offset_campata);
+    cloud0->sensor_origin_ = CurrentPose0.getOrigin4();
+    cloud0->sensor_orientation_ = CurrentPose0.getQuaternion();
+    CurrentPose0.print();
     emit PCtransmitted(cloud0);
     ui->transformationWidget_Kin1->setTransform(getPointCloudPose(0));
 
@@ -213,7 +220,14 @@ void ClientWidget::on_pushButton_GetPointCloud_clicked()
     cloud1.reset(new PointCloudT);
     pcl::io::loadPCDFile(localpath1.toStdString(), *cloud1);
     cloud1->header.frame_id = localpath1.section("/",-1, -1).section("_",-1,-1).section(".",-2,-2).toStdString();
-    Transform(cloud1->sensor_origin_, cloud1->sensor_orientation_).print();
+    //  Transform(cloud1->sensor_origin_, cloud1->sensor_orientation_).print();
+    Transform CurrentPose1(cloud1->sensor_origin_, cloud1->sensor_orientation_);
+    CurrentPose1.print();
+    CurrentPose1 = CurrentPose1.premultiplyby(offset_campata);
+    cloud1->sensor_origin_ = CurrentPose1.getOrigin4();
+    cloud1->sensor_orientation_ = CurrentPose1.getQuaternion();
+    CurrentPose1.print();
+
     emit PCtransmitted(cloud1);
     ui->transformationWidget_Kin2->setTransform(getPointCloudPose(1));
 
@@ -234,6 +248,24 @@ void ClientWidget::on_pushButton_SSHReboot_clicked()
     runProc(QString("ssh sineco@%1 sudo reboot").arg(ui->lineEdit_IP->text()));
 
 }
+
+#include <QDateTime>
+
+void ClientWidget::on_pushButton_SSHTime_clicked()
+{
+    if (proc.state() != QProcess::NotRunning)
+    {
+        qDebug() << "Proc already opened";
+        return;
+    }
+    //  sudo date +%T%p -s "19:05:00"
+    QString time = QDateTime::currentDateTime().toString("hh:mm:ss");
+
+    QString ssh = QString("ssh sineco@%1 sudo date +%T%p -s \"%2\"").arg(ui->lineEdit_IP->text()).arg(time);
+
+    runProc(ssh);
+}
+
 
 void ClientWidget::on_pushButton_SSHUpdate_clicked()
 {

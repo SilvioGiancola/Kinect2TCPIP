@@ -76,6 +76,16 @@ int KinectWidget::OpenKinect()
     }
 
 
+    libfreenect2::Freenect2Device::Config config;
+    config.EnableBilateralFilter = true;
+    config.EnableEdgeAwareFilter = true;
+    config.MinDepth = 0.5;
+    config.MaxDepth = 4;
+    dev->setConfiguration(config);
+    //dev->get
+
+
+
     dev->setColorFrameListener(listener);
     dev->setIrAndDepthFrameListener(listener);
     dev->start();
@@ -124,7 +134,7 @@ int KinectWidget::GrabKinect()
 
 
     // Initialize my Point Cloud
-  //  PC.reset(new PointCloudT());
+    //  PC.reset(new PointCloudT());
     PC->header.stamp = timestamp.toMSecsSinceEpoch();                               // the stamp correspond to the acquisition time
     //  PC->header.frame_id = QString("%1/PointClouds/Kinect%2_%3.pcd").arg(QDir::homePath()).arg(_serial.c_str()).arg(timestamp.toString("yyyy-MM-dd-HH:mm:ss:zzz")).toStdString();
     PC->header.frame_id = serial.toStdString();

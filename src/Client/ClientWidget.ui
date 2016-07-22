@@ -124,6 +124,9 @@
         <property name="text">
          <string>AutoGetPointCloud</string>
         </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="0" column="2">
@@ -232,6 +235,13 @@
              </property>
              <property name="text">
               <string>Update</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_SSHTime">
+             <property name="text">
+              <string>Sync Time</string>
              </property>
             </widget>
            </item>

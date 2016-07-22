@@ -47,6 +47,11 @@
     <string>ShowPCRefSyst</string>
    </property>
   </action>
+  <action name="actionSet_Background_Color">
+   <property name="text">
+    <string>set Background Color</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
