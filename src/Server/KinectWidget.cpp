@@ -228,12 +228,11 @@ void KinectWidget::on_comboBox_pipeline_currentIndexChanged(const QString &arg1)
 #ifdef LIBFREENECT2_WITH_OPENCL_SUPPORT
     else if (arg1.compare("OpenCL") == 0)   pipeline = new libfreenect2::OpenCLPacketPipeline();
 #endif
-    if (arg1.compare("Cpu") == 0)           pipeline = new libfreenect2::CpuPacketPipeline();
-    else if (arg1.compare("OpenGL") == 0)   pipeline = new libfreenect2::OpenGLPacketPipeline();
-    else if (arg1.compare("OpenCL") == 0)   pipeline = new libfreenect2::OpenCLPacketPipeline();
 #ifdef LIBFREENECT2_WITH_CUDA_SUPPORT
     else if (arg1.compare("Cuda") == 0)     pipeline = new libfreenect2::CudaPacketPipeline();
 #endif
+    else
+        pipeline = new libfreenect2::CpuPacketPipeline();
 }
 void KinectWidget::on_comboBox_KinectSerials_currentIndexChanged(const QString &arg1)
 {
