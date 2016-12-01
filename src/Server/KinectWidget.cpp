@@ -136,6 +136,10 @@ int KinectWidget::GrabKinect()
     libfreenect2::Frame *rgb = frames[libfreenect2::Frame::Color];
     libfreenect2::Frame *depth = frames[libfreenect2::Frame::Depth];
 
+
+    mat_rgb = cv::Mat((*rgb).height, (*rgb).width, CV_8UC4, (*rgb).data) ;
+    mat_depth = cv::Mat((*depth).height, (*depth).width, CV_32FC1, (*depth).data) / 1000.0f;
+
   //  timestamp = QDateTime::fromMSecsSinceEpoch(rgb->timestamp);//QDateTime::currentDateTime();
     timestamp = QDateTime::currentDateTime();
     qDebug() << "sequence: " << rgb->sequence;
@@ -379,20 +383,24 @@ QString KinectWidget::savePC()
     QDir().mkpath(QFileInfo(path_RGB).absolutePath());
     QDir().mkpath(QFileInfo(path_DEPTH).absolutePath());
 
+    //SAVE PCD
     pcl::io::savePCDFileBinary(path_PCD.toStdString(), *getPointCloud());
-    cv::imwrite(path_RGB.toStdString(),mat_registered);
+
+    // SAve RGB
+    //cv::imwrite(path_RGB.toStdString(), mat_registered);
+    cv::imwrite(path_RGB.toStdString(), mat_rgb);
 
 
-
-
-   std::vector<int> compression_params;
+    //Save PNG
+ /*  std::vector<int> compression_params;
     compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(0);
 
    cv::Mat m1(mat_undistorted.rows, mat_undistorted.cols, CV_8UC4, mat_undistorted.data);
     cv::imwrite(path_DEPTH.toStdString(), m1 ,compression_params);
-
-  //  cv::imwrite(path_DEPTH.toStdString(), mat_undistorted ,compression_params);
+*/
+   // cv::imwrite(path_DEPTH.toStdString(), mat_undistorted);
+    cv::imwrite(path_DEPTH.toStdString(), mat_depth);
 
     qDebug() << "PC saved in: " << path_PCD ;
     return path_PCD;

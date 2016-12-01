@@ -85,6 +85,8 @@ private:
 
 
 
+    cv::Mat mat_depth;
+    cv::Mat mat_rgb;
     cv::Mat mat_undistorted;
     cv::Mat mat_registered;
     // libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4);
