@@ -136,26 +136,31 @@ int KinectWidget::GrabKinect()
     libfreenect2::Frame *rgb = frames[libfreenect2::Frame::Color];
     libfreenect2::Frame *depth = frames[libfreenect2::Frame::Depth];
 
+  /*  libfreenect2::Frame rgb(1980, 1024, 4);
+    libfreenect2::Frame depth(512, 424, 4);
+    rgb = *frames[libfreenect2::Frame::Color];
+    depth = *frames[libfreenect2::Frame::Depth];*/
 
-    mat_rgb = cv::Mat((*rgb).height, (*rgb).width, CV_8UC4, (*rgb).data) ;
-    mat_depth = cv::Mat((*depth).height, (*depth).width, CV_32FC1, (*depth).data) / 1000.0f;
+
 
   //  timestamp = QDateTime::fromMSecsSinceEpoch(rgb->timestamp);//QDateTime::currentDateTime();
     timestamp = QDateTime::currentDateTime();
-    qDebug() << "sequence: " << rgb->sequence;
+   /* qDebug() << "sequence: " << rgb->sequence;
     qDebug() << "timestamp: " << rgb->timestamp;
     qDebug() << "exposure: " << rgb->exposure;
     qDebug() << "gain: " << rgb->gain;
-    qDebug() << "status: " << rgb->status;
+    qDebug() << "status: " << rgb->status;*/
 
     // Undistort and register frames
     libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4);
    // undistorted = libfreenect2::Frame(512, 424, 4);
-    registration->apply(rgb,depth,&undistorted,&registered);
+    registration->apply(rgb, depth, &undistorted, &registered);
 
-    qDebug() << "width" << undistorted.width;
-    qDebug() << "height" << undistorted.height;
+   // qDebug() << "width" << undistorted.width;
+  //  qDebug() << "height" << undistorted.height;
   //  qDebug() << "Grab" << undistorted.data;
+    mat_rgb = cv::Mat((*rgb).height, (*rgb).width, CV_8UC4, (rgb)->data) ;
+    mat_depth = cv::Mat((*depth).height, (*depth).width, CV_32FC1, (depth)->data) / 1000.0f;
     mat_registered = cv::Mat(registered.height, registered.width, CV_8UC4, registered.data) ;
     mat_undistorted = cv::Mat(undistorted.height, undistorted.width, CV_32FC1, undistorted.data) / 1000.0f;
    // mat_undistorted = cv::Mat(undistorted.height, undistorted.width, CV_16UC1, undistorted.data);
@@ -378,20 +383,32 @@ QString KinectWidget::savePC()
     QString path_PCD =  QString("%1/%2.pcd").arg(DIR).arg(NAME);
     QString path_RGB =  QString("%1/rgb/%2.png").arg(DIR).arg(NAME);
     QString path_DEPTH =  QString("%1/depth/%2.png").arg(DIR).arg(NAME);
+    QString path_UNDISTORTED =  QString("%1/undistorted/%2.png").arg(DIR).arg(NAME);
+    QString path_REGISTERED =  QString("%1/registered/%2.png").arg(DIR).arg(NAME);
 
     QDir().mkpath(QFileInfo(path_PCD).absolutePath());
     QDir().mkpath(QFileInfo(path_RGB).absolutePath());
     QDir().mkpath(QFileInfo(path_DEPTH).absolutePath());
+    QDir().mkpath(QFileInfo(path_UNDISTORTED).absolutePath());
+    QDir().mkpath(QFileInfo(path_REGISTERED).absolutePath());
 
-    //SAVE PCD
+    // SAVE PCD
     pcl::io::savePCDFileBinary(path_PCD.toStdString(), *getPointCloud());
 
     // SAve RGB
-    //cv::imwrite(path_RGB.toStdString(), mat_registered);
     cv::imwrite(path_RGB.toStdString(), mat_rgb);
 
+    // Save DEPTH
+    cv::imwrite(path_DEPTH.toStdString(), mat_depth);
 
-    //Save PNG
+    // Save UNDISTORTED
+    cv::imwrite(path_UNDISTORTED.toStdString(), mat_undistorted);
+
+    // Save REGISTERED
+    cv::imwrite(path_REGISTERED.toStdString(), mat_registered);
+
+
+
  /*  std::vector<int> compression_params;
     compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
     compression_params.push_back(0);
@@ -400,9 +417,8 @@ QString KinectWidget::savePC()
     cv::imwrite(path_DEPTH.toStdString(), m1 ,compression_params);
 */
    // cv::imwrite(path_DEPTH.toStdString(), mat_undistorted);
-    cv::imwrite(path_DEPTH.toStdString(), mat_depth);
 
-    qDebug() << "PC saved in: " << path_PCD ;
+//    qDebug() << "PC saved in: " << path_PCD ;
     return path_PCD;
 
 

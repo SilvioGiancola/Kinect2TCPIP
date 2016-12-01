@@ -205,7 +205,7 @@ void ServerWindow::newMessageReceived()
     else if(message == QString(PROTOCOL_TRANSMIT_POINTCLOUDS))
     {
         QString path0 = ui->myKinectWidget1->savePC();
-        QString path1 = ui->myKinectWidget1->savePC();
+        QString path1 = ui->myKinectWidget2->savePC();
 
         Answer = path0 + ":"+ path1;
     }
@@ -345,6 +345,7 @@ void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
 void ServerWindow::on_checkBox_save_toggled(bool checked)
 {
     ui->myKinectWidget1->save = checked;
+    ui->myKinectWidget2->save = checked;
 /*    if (checked)
     {
         ui->myKinectWidget1->save = checked;
