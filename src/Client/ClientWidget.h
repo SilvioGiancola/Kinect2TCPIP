@@ -120,6 +120,8 @@ private slots:
 
     void on_pushButton_SSHTime_clicked();
 
+    void on_pushButton_SSHCustom_clicked();
+
 signals:
     void PCtransmitted(PointCloudT::Ptr);
     void sig_PointCloudMoved(std::string, Transform);

@@ -68,7 +68,7 @@ void ServerWindow::writeSettings()
     settings.beginGroup("Kinect settings");
 
     if (!ui->myKinectWidget1->getSerial().length() > 5) settings.setValue("Serial Kinect 0", ui->myKinectWidget1->getSerial());
-    if (!ui->myKinectWidget1->getSerial().length() > 5) settings.setValue("Serial Kinect 1", ui->myKinectWidget2->getSerial());
+    if (!ui->myKinectWidget2->getSerial().length() > 5) settings.setValue("Serial Kinect 1", ui->myKinectWidget2->getSerial());
 
     if (!ui->myKinectWidget1->getPipeline().compare("") == 0)   settings.setValue("Pipeline 0", ui->myKinectWidget1->getPipeline());
     if (!ui->myKinectWidget2->getPipeline().compare("") == 0)   settings.setValue("Pipeline 1", ui->myKinectWidget2->getPipeline());
@@ -82,6 +82,8 @@ void ServerWindow::writeSettings()
     settings.setValue("LogLevel", ui->comboBox_log->currentText());
 
     settings.endGroup();
+
+    qDebug() << "Setting written";
 }
 
 void ServerWindow::readSettings()
@@ -110,6 +112,9 @@ void ServerWindow::readSettings()
     ui->comboBox_log->setCurrentIndex(ui->comboBox_log->findText(settings.value("LogLevel","").toString()));
 
     settings.endGroup();
+
+
+    qDebug() << "Setting opened";
 }
 
 
@@ -199,8 +204,8 @@ void ServerWindow::newMessageReceived()
     }
     else if(message == QString(PROTOCOL_TRANSMIT_POINTCLOUDS))
     {
-        QString path0 = savePC(getPointCloud(0));
-        QString path1 = savePC(getPointCloud(1));
+        QString path0 = ui->myKinectWidget1->savePC();
+        QString path1 = ui->myKinectWidget1->savePC();
 
         Answer = path0 + ":"+ path1;
     }
@@ -253,20 +258,22 @@ void ServerWindow::newMessageReceived()
 
 }
 
-
+/*
 QString ServerWindow::savePC(PointCloudT::Ptr PC)
 {
     QString DIR = QDir::homePath() + "/PointClouds/" + QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(DATEFORMAT);
     QString NAME = QDateTime::fromMSecsSinceEpoch(PC->header.stamp).toString(TIMEFORMAT) + "_" + QString::fromStdString(PC->header.frame_id);
-    QString path =  QString("%1/%2.pcd").arg(DIR).arg(NAME);
+    QString path_PCD =  QString("%1/%2.pcd").arg(DIR).arg(NAME);
+    QString path_RGB =  QString("%1/%2_rgb.png").arg(DIR).arg(NAME);
+    QString path_DEPTH =  QString("%1/%2_depth.png").arg(DIR).arg(NAME);
 
-    QDir().mkpath(QFileInfo(path).absolutePath());
+    QDir().mkpath(QFileInfo(path_PCD).absolutePath());
 
-    pcl::io::savePCDFileBinary(path.toStdString(), *PC);
+    pcl::io::savePCDFileBinary(path_PCD.toStdString(), *PC);
 
-    qDebug() << "saved in: " << path ;
+    qDebug() << "saved in: " << path_PCD ;
     return path;
-}
+}*/
 
 /*
 
@@ -337,15 +344,17 @@ void ServerWindow::on_comboBox_log_currentIndexChanged(const QString &arg1)
 
 void ServerWindow::on_checkBox_save_toggled(bool checked)
 {
-    if (checked)
+    ui->myKinectWidget1->save = checked;
+/*    if (checked)
     {
-        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
-        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
+        ui->myKinectWidget1->save = checked;
+        QObject::connect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myKinectWidget1, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::connect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myKinectWidget2, SLOT(savePC(PointCloudT::Ptr)));
     }
     else
     {
-        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
-        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), this, SLOT(savePC(PointCloudT::Ptr)));
-    }
+        QObject::disconnect(ui->myKinectWidget1, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myKinectWidget1, SLOT(savePC(PointCloudT::Ptr)));
+        QObject::disconnect(ui->myKinectWidget2, SIGNAL(PCGrabbedsignal(PointCloudT::Ptr)), ui->myKinectWidget2, SLOT(savePC(PointCloudT::Ptr)));
+    }*/
 }
 

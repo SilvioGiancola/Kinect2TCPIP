@@ -237,6 +237,19 @@ void ClientWidget::on_pushButton_GetPointCloud_clicked()
 
 // SSH communication
 
+void ClientWidget::on_pushButton_SSHCustom_clicked()
+{
+    if (proc.state() != QProcess::NotRunning)
+    {
+        qDebug() << "Proc already opened";
+        return;
+    }
+
+    runProc(QString("ssh sineco@%1 %2").arg(ui->lineEdit_IP->text()).arg(ui->lineEdit_SSHcmdline->text()));
+
+}
+
+
 void ClientWidget::on_pushButton_SSHReboot_clicked()
 {
     if (proc.state() != QProcess::NotRunning)
@@ -410,5 +423,6 @@ void ClientWidget::on_transformationWidget_Kin2_matrixchanged(Transform T)
     const QString pose = T.prettyprint();
     WriteMessage(QString("%1%2_%3").arg(PROTOCOL_POSE).arg(1).arg(pose));
 }
+
 
 

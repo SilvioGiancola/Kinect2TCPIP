@@ -15,6 +15,8 @@ PROJECT(Kinect2TCPIP)
 
 #SET(CMAKE_CXX_FLAGS "-std=c++11")
 
+
+
 IF("${CLIENT}" STREQUAL "YES")
     ADD_SUBDIRECTORY( Client )
 ENDIF()

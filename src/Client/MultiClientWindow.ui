@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1219</width>
-    <height>485</height>
+    <width>1313</width>
+    <height>432</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1219</width>
+     <width>1313</width>
      <height>25</height>
     </rect>
    </property>
@@ -98,20 +98,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="8">
-      <widget class="QPushButton" name="pushButton_RegisterLocally">
-       <property name="text">
-        <string>RegisterLocally</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="6">
-      <widget class="QPushButton" name="pushButton_reg12">
-       <property name="text">
-        <string>Register 1 with 2</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="2">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -133,40 +119,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="8">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QSpinBox" name="spinBox_PC_Target">
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>4</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="spinBox_PC_Input">
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>4</number>
-         </property>
-         <property name="value">
-          <number>2</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="6">
-      <widget class="QPushButton" name="pushButton_reg23">
-       <property name="text">
-        <string>Register 2 with 3</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="2">
       <widget class="QDoubleSpinBox" name="doubleSpinBox_time_Resend">
        <property name="decimals">
@@ -180,14 +132,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="7">
-      <widget class="QPushButton" name="pushButton_reg34">
-       <property name="text">
-        <string>Register 3 with 4</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1" colspan="8">
+     <item row="4" column="1" colspan="5">
       <widget class="QLineEdit" name="lineEdit_CampataPath">
        <property name="text">
         <string>campata_1</string>
@@ -234,6 +179,69 @@
        </property>
        <widget class="ClientWidget" name="widget_clientA" native="true"/>
        <widget class="ClientWidget" name="widget_clientB" native="true"/>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_3">
+   <property name="windowTitle">
+    <string>Registration</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QGridLayout" name="gridLayout_5">
+     <item row="3" column="1">
+      <widget class="QPushButton" name="pushButton_reg34">
+       <property name="text">
+        <string>Register 3 with 4</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton_reg23">
+       <property name="text">
+        <string>Register 2 with 3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pushButton_RegisterLocally">
+       <property name="text">
+        <string>RegisterLocally</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pushButton_reg12">
+       <property name="text">
+        <string>Register 1 with 2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QSpinBox" name="spinBox_PC_Input">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>4</number>
+       </property>
+       <property name="value">
+        <number>2</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QSpinBox" name="spinBox_PC_Target">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>4</number>
+       </property>
       </widget>
      </item>
     </layout>

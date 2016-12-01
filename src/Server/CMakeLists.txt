@@ -6,6 +6,17 @@ set(server_FORMS   ServerWindow.ui KinectWidget.ui ../Utilities/TransformationWi
 
 
 
+find_package(OpenCV 3.1.0 REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+#set(OpenCV_LIBS opencv_core opencv_imgproc opencv_calib3d opencv_video opencv_features2d opencv_ml opencv_highgui opencv_objdetect opencv_contrib opencv_legacy opencv_gpu)
+IF(OpenCV_FOUND)
+   MESSAGE(STATUS "Found OpenCV: ${OpenCV_INCLUDE_DIRS} VERSION : ${OpenCV_VERSION}")
+    MESSAGE(STATUS ${OpenCV_LIBS})
+ENDIF(OpenCV_FOUND)
+link_directories(${OpenCV_INCLUDE_DIRS})
+add_definitions(${OpenCV_DEFINITIONS})
+
+
 
 IF("${QT_VERSION}" STREQUAL "4")
 
@@ -41,7 +52,7 @@ IF("${QT_VERSION}" STREQUAL "4")
 
     ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES} ../../CompileScript.sh)
 
-    TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
+    TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIBRARIES} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY}  ${OpenCV_LIBS})
 
 else()
 
@@ -85,7 +96,7 @@ else()
         find_package(Qt4 REQUIRED COMPONENTS QtCore QtGui QtNetwork QtWidgets) # component of QT4
         include(${QT_USE_FILE})
         add_definitions(${QT_DEFINITION})
-        set(QT_LIB ${QT_LIBRARIES})
+       set(QT_LIB ${QT_LIBRARIES})
 
         #use system VTK
         set(VTK_LIBRARIES vtkRendering vtkGraphics vtkHybrid QVTK)
@@ -99,7 +110,8 @@ else()
 
     ADD_EXECUTABLE(Kinect2Server ${server_SOURCES} ${server_FORMS_HEADERS} ${server_HEADERS_MOC} ${server_HEADERS} ${server_SOURCES} ../../CompileScript.sh)
 
-    TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIB} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY})
 
+    TARGET_LINK_LIBRARIES(Kinect2Server ${QT_LIB} ${PCL_LIBRARIES} ${VTK_LIBRARIES} ${freenect2_LIBRARY}  ${OpenCV_LIBS})
 
 endif()
+

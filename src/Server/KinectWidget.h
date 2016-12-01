@@ -4,9 +4,11 @@
 #include <QWidget>
 #include <QDebug>
 #include <QTime>
+#include <QDir>
 
 #include "define.h"
 
+#include <pcl/io/pcd_io.h>
 #include <pcl/common/io.h> // copy point cloud
 
 #include <libfreenect2/libfreenect2.hpp>
@@ -14,6 +16,17 @@
 #include <libfreenect2/registration.h>
 #include <libfreenect2/packet_pipeline.h>
 #include <libfreenect2/logger.h>
+
+
+
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/features2d/features2d.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/features2d.hpp>
 
 namespace Ui {
 class KinectWidget;
@@ -41,6 +54,10 @@ public:
     bool isOpened(){return !isClosed();}
 
 
+    PointCloudT::Ptr TransformPointCloud(cv::Mat rgb, cv::Mat depth);
+
+    bool save;
+
 signals:
     void PCGrabbedsignal(PointCloudT::Ptr);
 
@@ -49,6 +66,7 @@ public slots:
     int CloseKinect();
     int GrabKinect();
     void TransformationChanged(Transform);
+    QString savePC();
 
 private slots:
     void on_comboBox_pipeline_currentIndexChanged(const QString &arg1);
@@ -65,7 +83,20 @@ private:
     libfreenect2::PacketPipeline* pipeline;
     QString serial;
 
-    PointCloudT::Ptr PC;
+
+
+    cv::Mat mat_undistorted;
+    cv::Mat mat_registered;
+    // libfreenect2::Frame undistorted(512, 424, 4), registered(512, 424, 4);
+  /*  libfreenect2::Frame(512, 424, 4) undistorted;
+    libfreenect2::Frame(512, 424, 4) registered;*/
+    QDateTime timestamp;
+    Transform pose;
+    //PointCloudT::Ptr PC;
+
+
+
+
 };
 
 #endif // KinectWidget_H

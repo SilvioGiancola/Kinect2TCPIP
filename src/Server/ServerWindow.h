@@ -54,7 +54,7 @@ private slots:
     void clientStateChanged(QAbstractSocket::SocketState);
 
     PointCloudT::Ptr getPointCloud(int i);
-    QString savePC(PointCloudT::Ptr);
+ //   QString savePC(PointCloudT::Ptr);
 
     void on_comboBox_log_currentIndexChanged(const QString &arg1);
     void on_checkBox_save_toggled(bool checked);
