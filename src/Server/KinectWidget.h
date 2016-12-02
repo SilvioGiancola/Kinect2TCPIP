@@ -94,7 +94,7 @@ private:
     libfreenect2::Frame(512, 424, 4) registered;*/
     QDateTime timestamp;
     Transform pose;
-    //PointCloudT::Ptr PC;
+    PointCloudT::Ptr PC;
 
 
 

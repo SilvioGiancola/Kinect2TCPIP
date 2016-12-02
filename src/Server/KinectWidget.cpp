@@ -33,7 +33,7 @@ KinectWidget::KinectWidget(QWidget *parent) :
 #endif
 
     // PointCloud
-    /*  PC.reset(new PointCloudT);
+      PC.reset(new PointCloudT);
     PC->resize(512*424); // set the memory size to allocate
     PC->height = 424;        // set the height
     PC->width = 512;          // set the width
@@ -175,7 +175,8 @@ int KinectWidget::GrabKinect()
 
     //PC
 
-    emit PCGrabbedsignal(this->getPointCloud());
+    PC = this->getPointCloud();
+    emit PCGrabbedsignal(PC);
    /* emit RGBGrabbedsignal(this->getRGB());
     emit DepthGrabbedsignal(this->getDepth());*/
 
@@ -393,7 +394,7 @@ QString KinectWidget::savePC()
     QDir().mkpath(QFileInfo(path_REGISTERED).absolutePath());
 
     // SAVE PCD
-    pcl::io::savePCDFileBinary(path_PCD.toStdString(), *this->getPointCloud());
+    pcl::io::savePCDFileBinary(path_PCD.toStdString(), *PC);
 
     // SAve RGB
     cv::imwrite(path_RGB.toStdString(), mat_rgb);
