@@ -393,7 +393,7 @@ QString KinectWidget::savePC()
     QDir().mkpath(QFileInfo(path_REGISTERED).absolutePath());
 
     // SAVE PCD
-    pcl::io::savePCDFileBinary(path_PCD.toStdString(), *getPointCloud());
+    pcl::io::savePCDFileBinary(path_PCD.toStdString(), *this->getPointCloud());
 
     // SAve RGB
     cv::imwrite(path_RGB.toStdString(), mat_rgb);
