@@ -14,8 +14,49 @@
 #include <iostream>
 #include <exception>
 
+
+/*
+template <typename PointT>
+class PCL_EXPORTS myPointCloud : public pcl::PointCloud
+
+
+//class PointCloudT : public pcl::PointCloud<PointT>
+{
+public:
+    myPointCloud() : isVisible(true), showNormal(false), pointsize(1), opacity(1) { }
+
+    bool isVisible;
+    bool showNormal;
+    int pointsize;
+    double opacity;
+
+public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+};
+*/
+
 typedef pcl::PointXYZRGBA PointT;
-typedef pcl::PointCloud<PointT> PointCloudT;
+typedef pcl::PointCloud<pcl::PointXYZRGBA> PointCloudT;
+
+
+/*
+class PointCloudT : public pcl::PointCloud<PointT>::Ptr
+{
+public:
+    PointCloudT()
+    {
+        isVisible = true;
+        showNormal = false;
+        pointsize = 1;
+        opacity = 1;
+    };
+    bool isVisible;
+    bool showNormal;
+    int pointsize;
+    double opacity;
+};*/
+
+//
 
 typedef pcl::PointXYZRGBNormal PointNormalT;
 typedef pcl::PointCloud<PointNormalT> PointCloudNormalT;

@@ -15,6 +15,8 @@
 #include <QMenu>
 #include <QtGui/QContextMenuEvent>
 
+#include <CloudListModel.h>
+
 
 namespace Ui {
 class CloudViewer;
@@ -45,6 +47,8 @@ protected:
 
 public slots:
 
+    void setModel(CloudListModel *MyModel);
+
     //PC
     void showPC(PointCloudT::Ptr PC);
     void removePC(std::string str);
@@ -73,7 +77,7 @@ private:
     pcl::visualization::PCLVisualizer::Ptr _visualizer;
 
     QColor _backgroundColor;
-
+CloudListModel *myModel;
 
     QSettings settings;
 

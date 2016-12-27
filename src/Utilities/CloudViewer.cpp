@@ -53,6 +53,11 @@ CloudViewer::~CloudViewer()
 }
 
 
+void CloudViewer::setModel(CloudListModel *MyModel)
+{
+    myModel = MyModel;
+}
+
 // Visualize Menu
 void CloudViewer::contextMenuEvent(QContextMenuEvent * event)
 {
