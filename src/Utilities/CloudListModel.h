@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <Transform.h>
 #include "define.h"
+#include "CustomPointCloud.h"
 
 
 #define PROP_NUMBER 0
@@ -43,6 +44,6 @@ public slots:
     void addCloud(PointCloudT::Ptr PC);
 
 private:
-    QList<PointCloudT::Ptr> _PCList;
+    QList<CustomPointCloud> _PCList;
 };
 #endif // CloudList_H

@@ -26,7 +26,8 @@ void CloudListModel::addCloud(PointCloudT::Ptr PC)
     invisibleRootItem()->appendRow(myCloudItem2);
 
 
-    _PCList.append(PC);
+    CustomPointCloud myCustomPC(PC);
+    _PCList.append(myCustomPC);
 }
 
 
@@ -67,8 +68,8 @@ QVariant CloudListModel::data(const QModelIndex &index, int role) const
         if (index.parent() == invisibleRootItem()->index())
         {
             if (index.column() == 0 )        return QString("Frame ID");
-            else if (index.column() == 1 && role == Qt::DisplayRole )   return QString::fromStdString(_PCList.at(index.row())->header.frame_id).section("/", -1,-1);
-            else if (index.column() == 1 && role == Qt::EditRole )   return QString::fromStdString(_PCList.at(index.row())->header.frame_id);
+            else if (index.column() == 1 && role == Qt::DisplayRole )   return QString::fromStdString(_PCList.at(index.row()).PC->header.frame_id).section("/", -1,-1);
+            else if (index.column() == 1 && role == Qt::EditRole )   return QString::fromStdString(_PCList.at(index.row()).PC->header.frame_id);
         }
 
         // Second Level: it correspond to the parameters of the point cloud
@@ -76,20 +77,20 @@ QVariant CloudListModel::data(const QModelIndex &index, int role) const
         {
 
             QModelIndex PCindex = index.parent();
-            PointCloudT::Ptr thisPointCloud = _PCList.at(PCindex.row());
+            CustomPointCloud thisPointCloud = _PCList.at(PCindex.row());
             // Intrinsic parameters
             if (index.row() == PROP_NUMBER && index.column() == 0)    return QString("Number");
-            if (index.row() == PROP_NUMBER && index.column() == 1)    return QLocale(QLocale::German).toString((int)thisPointCloud->size());
+            if (index.row() == PROP_NUMBER && index.column() == 1)    return QLocale(QLocale::German).toString((int)thisPointCloud.size());
 
             if (index.row() == PROP_ORGANIZED && index.column() == 0)   return QString("Organized");
             if (index.row() == PROP_ORGANIZED && index.column() == 1)
             {
-                if ( thisPointCloud->isOrganized() ) return QString("w:%1 x h:%2").arg(thisPointCloud->width).arg(thisPointCloud->height);
+                if ( thisPointCloud.isOrganized() ) return QString("w:%1 x h:%2").arg(thisPointCloud.width()).arg(thisPointCloud.height());
                 else return false;
             }
 
             if (index.row() == PROP_DENSE && index.column() == 0)       return QString("Dense");
-            if (index.row() == PROP_DENSE && index.column() == 1)       return (bool) ( thisPointCloud->is_dense);
+            if (index.row() == PROP_DENSE && index.column() == 1)       return (bool) ( thisPointCloud.isDense());
 
 
             // Visualization parameters
@@ -101,10 +102,10 @@ QVariant CloudListModel::data(const QModelIndex &index, int role) const
             }*/
 
             if (index.row() == PROP_SIZE && index.column() == 0)        return QString("Size");
-            if (index.row() == PROP_SIZE && index.column() == 1)        return thisPointCloud->pointsize;
+            if (index.row() == PROP_SIZE && index.column() == 1)        return thisPointCloud.getPointSize();
 
             if (index.row() == PROP_OPACITY && index.column() == 0)     return QString("Opacity");
-            if (index.row() == PROP_OPACITY && index.column() == 1)     return thisPointCloud.opacity*10;
+            if (index.row() == PROP_OPACITY && index.column() == 1)     return thisPointCloud.getOpacity()*10;
 
             if (index.row() == PROP_NORMAL && index.column() == 0)      return QString("Normals");
             if (index.row() == PROP_NORMAL && index.column() == 1)      return QVariant();
@@ -142,7 +143,7 @@ QVariant CloudListModel::data(const QModelIndex &index, int role) const
         {
            if (index.row() == PROP_NORMAL && index.column() == 0)
             {
-                if (_PCList.at(index.parent().row()).showNormal)        return Qt::Checked;
+                if (_PCList.at(index.parent().row()).isNormalVisible)        return Qt::Checked;
                 else return Qt::Unchecked;
             }
         }
@@ -172,7 +173,7 @@ bool CloudListModel::setData(const QModelIndex & index, const QVariant & value, 
                 //removePointCloudFromViewer(_PCList.at(index.row()));
 
                 // I change its name
-                _PCList.at(index.row())->header.frame_id = value.toString().toStdString();
+                _PCList.at(index.row()).PC->header.frame_id = value.toString().toStdString();
 
                 // I add the point cloud with its new name
                // addPointCloudToViewer(_PCList.at(index.row()), false, true);
@@ -183,13 +184,13 @@ bool CloudListModel::setData(const QModelIndex & index, const QVariant & value, 
             {
                 QModelIndex PCindex = index.parent();
                 if (index.row() == PROP_DENSE)
-                    _PCList.at(PCindex.row())->is_dense = value.toBool();
+                    _PCList.at(PCindex.row()).PC->is_dense = value.toBool();
+//
+             //   else if (index.row() == PROP_SIZE)
+             //       _PCList.at(PCindex.row()).pointSize = ( (value.toInt()>0)?value.toInt():1 );
 
-                else if (index.row() == PROP_SIZE)
-                    _PCList.at(PCindex.row())->pointsize = (value.toInt()>0)?value.toInt():1;
-
-                else if (index.row() == PROP_OPACITY )
-                    _PCList.at(PCindex.row()).opacity = value.toDouble()/10;
+                //else if (index.row() == PROP_OPACITY )
+                    //_PCList.at(PCindex.row()).setOpacity( value.toDouble()/10 );
 
 
               /*  else if (index.row() == PROP_SIZE && _viewer->contains(_PCList.at(PCindex.row())->header.frame_id))

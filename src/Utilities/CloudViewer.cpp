@@ -31,7 +31,7 @@ CloudViewer::CloudViewer(QWidget *parent) :
     // this->setPCReferenceSystemShown(true);
     this->on_actionShowMainRefSyst_triggered(true);
 
-    this->update ();
+    this->update();
 
 
     // Menu
@@ -52,11 +52,11 @@ CloudViewer::~CloudViewer()
     delete ui;
 }
 
-
+/*
 void CloudViewer::setModel(CloudListModel *MyModel)
 {
     myModel = MyModel;
-}
+}*/
 
 // Visualize Menu
 void CloudViewer::contextMenuEvent(QContextMenuEvent * event)
@@ -69,21 +69,45 @@ void CloudViewer::contextMenuEvent(QContextMenuEvent * event)
 
 
 // Visualization PC
-void CloudViewer::showPC(PointCloudT::Ptr PC)
+void CloudViewer::showPC(PointCloudNormalT::Ptr PC, std::string str)
 {
-    pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
-    _visualizer->removePointCloud(PC->header.frame_id);
-    _visualizer->addPointCloud<PointT>(PC, single_color, PC->header.frame_id);
+    std::string myLabel = PC->header.frame_id;
+    if (str != "")  myLabel = str;
 
-    qDebug() << QString::fromStdString(PC->header.frame_id) << " has been added to the viewer";
+    pcl::visualization::PointCloudColorHandlerRGBField<PointNormalT> single_color(PC);
+    _visualizer->removePointCloud(myLabel);
+    _visualizer->addPointCloud<PointNormalT>(PC, single_color, myLabel);
+
+    qDebug() << QString::fromStdString(myLabel) << " has been added to the viewer";
 
     if (isPCReferenceSystemShown())
     {
         Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
         trans.block(0,0,3,3) = PC->sensor_orientation_.matrix();
         trans.block(0,3,4,1) = PC->sensor_origin_;
-        _visualizer->removeCoordinateSystem(PC->header.frame_id + "Reference system");
-        _visualizer->addCoordinateSystem(0.2,Eigen::Affine3f(trans), PC->header.frame_id + "Reference system");
+        _visualizer->removeCoordinateSystem(myLabel + "Reference system");
+        _visualizer->addCoordinateSystem(0.2,Eigen::Affine3f(trans), myLabel + "Reference system");
+    }
+    this->update ();
+}
+void CloudViewer::showPC(PointCloudT::Ptr PC, std::string str)
+{
+    std::string myLabel = PC->header.frame_id;
+    if (str != "")  myLabel = str;
+
+    pcl::visualization::PointCloudColorHandlerRGBField<PointT> single_color(PC);
+    _visualizer->removePointCloud(myLabel);
+    _visualizer->addPointCloud<PointT>(PC, single_color, myLabel);
+
+    qDebug() << QString::fromStdString(myLabel) << " has been added to the viewer";
+
+    if (isPCReferenceSystemShown())
+    {
+        Eigen::Matrix4f trans = Eigen::Matrix4f::Identity();
+        trans.block(0,0,3,3) = PC->sensor_orientation_.matrix();
+        trans.block(0,3,4,1) = PC->sensor_origin_;
+        _visualizer->removeCoordinateSystem(myLabel + "Reference system");
+        _visualizer->addCoordinateSystem(0.2,Eigen::Affine3f(trans), myLabel + "Reference system");
     }
     this->update ();
 }
