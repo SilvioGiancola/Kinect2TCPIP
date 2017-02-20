@@ -12,10 +12,12 @@ MatrixOfCloud::~MatrixOfCloud()
 }
 
 
+
+// POINT CLOUDS handling functions
 PointCloudNormalT::Ptr MatrixOfCloud::getLineOfPointCloud(int line)
 {
     SetOfCloud mySetOfCloud;
-    if (line < _MatrixOfCloud.count() && line > 0)
+    if (line < _MatrixOfCloud.count() && line >= 0)
         mySetOfCloud = _MatrixOfCloud.at(line);
     return mySetOfCloud.getMergedPointCloud();
 }
@@ -23,15 +25,23 @@ PointCloudNormalT::Ptr MatrixOfCloud::getLineOfPointCloud(int line)
 PointCloudNormalT::Ptr MatrixOfCloud::getPointCloud(int line, int index)
 {
     SetOfCloud mySetOfCloud;
-    if (line < _MatrixOfCloud.count() && line > 0)
+    if (line < _MatrixOfCloud.count() && line >= 0)
         mySetOfCloud = _MatrixOfCloud.at(line);
     return mySetOfCloud.getPointCloud(index);
+}
+
+PointCloudNormalT::Ptr MatrixOfCloud::getPointCloud(int line, QString ID)
+{
+    SetOfCloud mySetOfCloud;
+    if (line < _MatrixOfCloud.count() && line >= 0)
+        mySetOfCloud = _MatrixOfCloud.at(line);
+    return mySetOfCloud.getPointCloud(ID);
 }
 
 void MatrixOfCloud::setPointCloud(int line, int index, PointCloudNormalT::Ptr PC)
 {
     SetOfCloud mySetOfCloud;
-    if (line < _MatrixOfCloud.count() && line > 0)
+    if (line < _MatrixOfCloud.count() && line >= 0)
         mySetOfCloud = _MatrixOfCloud.at(line);
     mySetOfCloud.setPointCloud(index, PC);
 }
@@ -65,8 +75,8 @@ int MatrixOfCloud::getNumberOfPointCloudLines()
 
 
 
-
-void MatrixOfCloud::parsePointClouds(QStringList allFiles)
+// OPEN, SAVE and EXPORT functions
+void MatrixOfCloud::openPointCloud(QStringList allFiles, QStringList IDlist)
 {
 
     // fill matrix of PC
@@ -74,27 +84,77 @@ void MatrixOfCloud::parsePointClouds(QStringList allFiles)
 
     for (int line = 0; line < allFiles.count()/4; line++)
     {
+        qDebug() << "line: " << line;
         SetOfCloud newlineofcloud;
+        newlineofcloud.setIDlist(IDlist);
+
+        QStringList lineFiles;
         for (int i = 0; i < 4; i++)
+            lineFiles.append(allFiles.at(line*4 + i));
+
+        //  int i = 0;
+        QString ID;
+        foreach (ID, IDlist)
         {
+            QString file;
+            foreach (file, lineFiles)
+            {
+                if (file.contains(ID))
+                {
+                    qDebug() << file << " -> ID: " << ID;
 
-            qDebug() << allFiles.at(line*4 + i);
+                    PointCloudNormalT::Ptr PC(new PointCloudNormalT);
+                    pcl::io::loadPCDFile(file.toStdString(), *PC);
 
-
-            PointCloudNormalT::Ptr PC(new PointCloudNormalT);
-            pcl::io::loadPCDFile(allFiles.at(line*4 + i).toStdString(), *PC);
-
-            PC->header.frame_id = allFiles.at(line*4 + i).toStdString();
-            newlineofcloud.setPointCloud(i,PC);
-
-            //Find set of line of cloud
+                    PC->header.frame_id = file.toStdString();
+                    newlineofcloud.setPointCloud(ID,PC);
+                    // i++;
+                    continue;
+                }
+            }
         }
+
         _MatrixOfCloud.append(newlineofcloud);
         qDebug() << "matrix of cloud is now " << _MatrixOfCloud.length() << " long";
 
     }
 }
 
+void MatrixOfCloud::savePointClouds(QString newDir)
+{
+    for (int line = 0; line < _MatrixOfCloud.count(); line++)
+    {
+        qDebug() << "\n-> line: " << line;
+        for (int i = 0; i < 4; i++)
+        {
+            qDebug() << "  -> index: " << i;
+            PointCloudNormalT::Ptr PC(new PointCloudNormalT);
+            PC = this->getPointCloud(line, i);
+
+            QString Path = QString::fromStdString(PC->header.frame_id);
+            qDebug() << Path;
+
+            Path = newDir + "/" + Path.section("/",-1,-1);
+            qDebug() << "PC should be saved in : " << Path;
+            pcl::io::savePCDFileBinary(Path.toStdString(),*PC);
+        }
+    }
+}
+
+void MatrixOfCloud::exportReconstruction(QString Path)
+{
+    PointCloudNormalT::Ptr PC(new PointCloudNormalT);
+    PC = this->getCompletePointCloud();
+
+    qDebug() << "Reconstruction should be saved in : " << Path;
+    pcl::io::savePCDFileBinary(Path.toStdString(),*PC);
+
+}
+
+
+
+
+// ELABORATION functions
 void MatrixOfCloud::EstimateNormals()
 {
     for (int line = 0; line < _MatrixOfCloud.count(); line++)
@@ -119,126 +179,6 @@ void MatrixOfCloud::EstimateNormals()
     }
 }
 
-
-void MatrixOfCloud::AlignLines(int refindex, int newindex)
-{
-    SetOfCloud refline = _MatrixOfCloud.at(refindex);
-    SetOfCloud newline = _MatrixOfCloud.at(newindex);
-
-
-    PointCloudNormalT::Ptr ref4cloud(new PointCloudNormalT);
-    ref4cloud = refline.getMergedPointCloud();
-    qDebug() << "ref4cloud: " << ref4cloud->size();
-
-
-    PointCloudNormalT::Ptr new4cloud(new PointCloudNormalT);
-    new4cloud = newline.getMergedPointCloud();
-    qDebug() << "new4cloud: " << new4cloud->size();
-
-    /*
-    pcl::VoxelGrid<PointT> sor;
-    sor.setLeafSize (0.01f, 0.01f, 0.01f);
-    sor.setInputCloud (ref4cloud);
-    sor.filter (*ref4cloud);
-    sor.setInputCloud (new4cloud);
-    sor.filter (*new4cloud);
-*/
-
-
-    float decimate_percent =  0.5;
-    pcl::RandomSample<PointNormalT> random_sampler;
-    random_sampler.setKeepOrganized(false);
-
-    random_sampler.setInputCloud(ref4cloud);
-    random_sampler.setSample((int) (decimate_percent*ref4cloud->points.size()));
-    random_sampler.filter(*ref4cloud);
-
-    random_sampler.setInputCloud(new4cloud);
-    random_sampler.setSample((int) (decimate_percent*new4cloud->points.size()));
-    random_sampler.filter(*new4cloud);
-
-
-    qDebug() << "ref4cloud: " << ref4cloud->size();
-    qDebug() << "new4cloud: " << new4cloud->size();
-
-
-
-
-
-    /* // PointCloudT::Ptr ref4cloud(new PointCloudT);
-   // PointCloudT::Ptr new4cloud(new PointCloudT);
-    pcl::transformPointCloudWithNormals(*ref4cloud, *ref4cloud, ref4cloud->sensor_origin_.head(3), ref4cloud->sensor_orientation_);
-    pcl::transformPointCloudWithNormals(*new4cloud, *new4cloud, new4cloud->sensor_origin_.head(3), new4cloud->sensor_orientation_);
-*/
-
-    qDebug() << "PC transformed";
-
-
-
-    // Find Correspondences
-    pcl::registration::CorrespondenceEstimation<PointNormalT, PointNormalT> myCorrespondenceEstimation;
-    pcl::CorrespondencesPtr correspondences(new pcl::Correspondences);
-    //myCorrespondenceEstimation.reset(new pcl::registration::CorrespondenceEstimation<PointNormalT, PointNormalT>);
-    myCorrespondenceEstimation.setInputSource (new4cloud);
-    myCorrespondenceEstimation.setInputTarget (ref4cloud);
-    qDebug() << "corresp started";
-    myCorrespondenceEstimation.determineReciprocalCorrespondences (*correspondences);
-
-
-    qDebug() << "corresp found";
-
-    // Filter Correspondences
-    pcl::registration::CorrespondenceRejectorDistance::Ptr cor_rej_dist (new pcl::registration::CorrespondenceRejectorDistance);
-    cor_rej_dist->setMaximumDistance(0.2);
-
-    if (cor_rej_dist->requiresSourcePoints())
-    {
-        pcl::PCLPointCloud2::Ptr Source2 (new pcl::PCLPointCloud2);
-        pcl::toPCLPointCloud2 (*new4cloud, *Source2);
-        cor_rej_dist->setSourcePoints(Source2);
-    }
-
-    if (cor_rej_dist->requiresTargetPoints())
-    {
-        pcl::PCLPointCloud2::Ptr Target2 (new pcl::PCLPointCloud2);
-        pcl::toPCLPointCloud2 (*ref4cloud, *Target2);
-        cor_rej_dist->setTargetPoints(Target2);
-    }
-
-    cor_rej_dist->setInputCorrespondences (correspondences);
-    cor_rej_dist->getCorrespondences (*correspondences);
-
-    qDebug() << "corresp filtered";
-
-
-    // Find Transformation
-    pcl::registration::TransformationEstimationPointToPlaneLLS<PointNormalT, PointNormalT> transf_est;
-    Eigen::Matrix4f transformation_ = Eigen::Matrix4f::Identity();
-    transf_est.estimateRigidTransformation (*new4cloud, *ref4cloud, *correspondences, transformation_);
-
-    qDebug() << "transf est.";
-
-    /*
-   PointCloudNormalT::Ptr ref4cloud(new PointCloudNormalT);
-   ref4cloud = refline.getMergedPointCloud();
-   qDebug() << "ref4cloud: " << ref4cloud->size();
-
-*/
-    /* PointCloudNormalT::Ptr new4cloud(new PointCloudNormalT);
-   */
-    new4cloud = newline.getMergedPointCloud();
-
-    /* qDebug() << "new4cloud: " << new4cloud->size();
-   */
-
-
-    pcl::transformPointCloudWithNormals (*new4cloud, *new4cloud, transformation_);
-
-
-
-
-}
-
 void MatrixOfCloud::RemoveOutliers()
 {
     for (int line = 0; line < _MatrixOfCloud.count(); line++)
@@ -261,4 +201,355 @@ void MatrixOfCloud::RemoveOutliers()
             outrem.filter (*input);
         }
     }
+}
+
+void MatrixOfCloud::BackBoneAlign(QString ID)
+{
+    for (int i = 0; i < _MatrixOfCloud.length() - 1; i++)
+    {
+        for (int iter = 0; iter < 20; iter++)
+        {
+            PointCloudNormalT::Ptr PC_Target(new PointCloudNormalT);
+            PC_Target = this->getPointCloud(i,ID);
+            qDebug() << "PC_Target: " << PC_Target->size();
+            qDebug() << "PC_Target: " << QString::fromStdString(PC_Target->header.frame_id);
+
+            PointCloudNormalT::Ptr PC_Input(new PointCloudNormalT);
+            PC_Input = this->getPointCloud(i+1,ID);
+            qDebug() << "PC_Input: " << PC_Input->size();
+            qDebug() << "PC_Input: " << QString::fromStdString(PC_Input->header.frame_id);
+
+
+            float decimate_percent = 1.0;
+              if (iter < 10)  decimate_percent = 0.0625;
+            else if (iter < 15)  decimate_percent = 0.25;
+            else if (iter < 18)  decimate_percent = 0.5;
+            else if (iter < 20)  decimate_percent = 1.0;
+
+            float corr_max_distance = 0.5;
+            if (iter < 10)  corr_max_distance = (0.5);
+            else if (iter < 15)  corr_max_distance = 0.2;
+            else if (iter < 18)  corr_max_distance = (0.1);
+            else if (iter < 20)  corr_max_distance = (0.05);
+
+
+
+            PointCloudNormalT::Ptr PC_Target_copy(new PointCloudNormalT);
+            PointCloudNormalT::Ptr PC_Input_copy(new PointCloudNormalT);
+            pcl::copyPointCloud(*PC_Target, *PC_Target_copy);
+            pcl::copyPointCloud(*PC_Input, *PC_Input_copy);
+/*
+
+            //DO BRISK STUFF
+            {
+                pcl::ScopeTime t ("Detect BRISK");
+                // constructor
+                pcl::BriskKeypoint2D<PointNormalT> brisk_keypoint_estimation;
+
+                //output
+                pcl::PointCloud<pcl::PointWithScale> brisk_keypoints_2D;
+
+                brisk_keypoint_estimation.setThreshold(10);
+                brisk_keypoint_estimation.setOctaves(2);
+                brisk_keypoint_estimation.setInputCloud (PC_Input);
+
+                //compute
+                brisk_keypoint_estimation.compute (brisk_keypoints_2D);
+
+                //convert pointwithscale to 3D
+                PC_Input_copy->resize(brisk_keypoints_2D.size());
+
+                int k = brisk_keypoints_2D.size();
+                for(int i = 0, j = 0; i < k; ++i)
+                {
+                    /// TO DO: improve accuracy
+                    int u = floor(brisk_keypoints_2D.points[i].x + 0.5);
+                    int v = floor(brisk_keypoints_2D.points[i].y + 0.5);
+                    j = u + v * PC_Input->width;
+                    if(isnan(PC_Input->points[j].x)) --k;
+                    else PC_Input_copy->points[i]=PC_Input->points[j];
+                }
+
+                std::vector<PointNormalT,Eigen::aligned_allocator<PointNormalT> >::iterator    keypointIt=PC_Input_copy->begin();
+
+                for(size_t i=k; k<brisk_keypoints_2D.size(); ++k)
+                    PC_Input_copy->erase(keypointIt+i);
+            }
+
+            {
+                pcl::ScopeTime t ("Detect BRISK");
+                // constructor
+                pcl::BriskKeypoint2D<PointNormalT> brisk_keypoint_estimation;
+
+                //output
+                pcl::PointCloud<pcl::PointWithScale> brisk_keypoints_2D;
+
+                brisk_keypoint_estimation.setThreshold(10);
+                brisk_keypoint_estimation.setOctaves(2);
+                brisk_keypoint_estimation.setInputCloud (PC_Target);
+
+                //compute
+                brisk_keypoint_estimation.compute (brisk_keypoints_2D);
+
+                //convert pointwithscale to 3D
+                PC_Target_copy->resize(brisk_keypoints_2D.size());
+
+                int k = brisk_keypoints_2D.size();
+                for(int i = 0, j = 0; i < k; ++i)
+                {
+                    /// TO DO: improve accuracy
+                    int u = floor(brisk_keypoints_2D.points[i].x + 0.5);
+                    int v = floor(brisk_keypoints_2D.points[i].y + 0.5);
+                    j = u + v * PC_Target->width;
+                    if(isnan(PC_Target->points[j].x)) --k;
+                    else PC_Target_copy->points[i]=PC_Target->points[j];
+                }
+
+                std::vector<PointNormalT,Eigen::aligned_allocator<PointNormalT> >::iterator    keypointIt=PC_Target_copy->begin();
+
+                for(size_t i=k; k<brisk_keypoints_2D.size(); ++k)
+                    PC_Target_copy->erase(keypointIt+i);
+            }*/
+
+            // perform alignment
+            Transform T = Align(PC_Target_copy, PC_Input_copy, decimate_percent, corr_max_distance);
+
+            for (int l = i+1; l < this->getNumberOfPointCloudLines(); l++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    Transform currentPose = Transform( this->getPointCloud(l, j)->sensor_origin_,
+                                                       this->getPointCloud(l, j)->sensor_orientation_);
+                    currentPose = T.postmultiplyby(currentPose);
+                    // currentPose.print();
+
+                    this->getPointCloud(l, j)->sensor_origin_ = currentPose.getOrigin4();
+                    this->getPointCloud(l, j)->sensor_orientation_ = currentPose.getQuaternion();
+
+                    // this->getPointCloud(l, j)->sensor_origin_ = T.block<4,1>(0,3)+ this->getPointCloud(l, j)->sensor_origin_;
+                    // this->getPointCloud(l, j)->sensor_orientation_ = Eigen::Quaternionf(T.block<3,3>(0,0)) * this->getPointCloud(l, j)->sensor_orientation_;
+                }
+            }
+
+        }
+    }
+}
+
+void MatrixOfCloud::AlignLines(int refindex, int newindex)
+{
+    SetOfCloud refline = _MatrixOfCloud.at(refindex);
+    SetOfCloud newline = _MatrixOfCloud.at(newindex);
+
+
+
+    for (int iter = 0; iter < 20; iter++)
+    {
+        PointCloudNormalT::Ptr PC_Target(new PointCloudNormalT);
+        PC_Target = refline.getMergedPointCloud();
+        qDebug() << "PC_Target: " << PC_Target->size();
+
+
+        PointCloudNormalT::Ptr PC_Input(new PointCloudNormalT);
+        PC_Input = newline.getMergedPointCloud();
+        qDebug() << "PC_Input: " << PC_Input->size();
+
+
+        float decimate_percent = 1.0;
+        if (iter < 10)  decimate_percent = 0.0625;
+        else if (iter < 15)  decimate_percent = 0.25;
+        else if (iter < 18)  decimate_percent = 0.5;
+        else if (iter < 20)  decimate_percent = 0.9;
+
+        float corr_max_distance = 0.2;
+        if (iter < 10)  corr_max_distance = (0.5);
+        else if (iter < 15)  corr_max_distance = 0.2;
+        else if (iter < 18)  corr_max_distance = (0.1);
+        else if (iter < 20)  corr_max_distance = (0.05);
+
+        // perform alignment
+        Transform T = Align(PC_Target, PC_Input, decimate_percent, corr_max_distance);
+
+
+        for (int l = newindex; l < this->getNumberOfPointCloudLines(); l++)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Transform currentPose = Transform( this->getPointCloud(l, i)->sensor_origin_,
+                                                   this->getPointCloud(l, i)->sensor_orientation_);
+                currentPose = T.postmultiplyby(currentPose);
+                // currentPose.print();
+
+                this->getPointCloud(l, i)->sensor_origin_ = currentPose.getOrigin4();
+                this->getPointCloud(l, i)->sensor_orientation_ = currentPose.getQuaternion();
+            }
+        }
+    }
+
+    //  PC_Input = newline.getMergedPointCloud();
+
+
+    //  pcl::transformPointCloudWithNormals (*PC_Input, *PC_Input, transformation_);
+
+
+    /*
+    Transform T =  utils::getTransformationNormal(PC_target, PC_input);
+
+
+    PointCloudT::Ptr PCnew = ui->myKinectWidget2->getPointCloud();
+    Transform currentPose = Transform(PCnew->sensor_origin_, PCnew->sensor_orientation_);
+
+
+    T = T.postmultiplyby(currentPose);
+    T.print();
+*/
+
+}
+
+
+
+Transform MatrixOfCloud::Align(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input, float decimate_percent, float corr_max_distance)
+{
+    // PRE - TRANSFORM
+    pcl::transformPointCloudWithNormals(*PC_Target, *PC_Target, PC_Target->sensor_origin_.head(3), PC_Target->sensor_orientation_);
+    pcl::transformPointCloudWithNormals(*PC_Input, *PC_Input, PC_Input->sensor_origin_.head(3), PC_Input->sensor_orientation_);
+
+    qDebug() << "PC_Target: " << PC_Target->size();
+    qDebug() << "PC_Input: " << PC_Input->size();
+
+
+    pcl::RandomSample<PointNormalT> random_sampler;
+    random_sampler.setKeepOrganized(false);
+
+    random_sampler.setInputCloud(PC_Target);
+    random_sampler.setSample((int) (decimate_percent*PC_Target->points.size()));
+    random_sampler.filter(*PC_Target);
+
+    random_sampler.setInputCloud(PC_Input);
+    random_sampler.setSample((int) (decimate_percent*PC_Input->points.size()));
+    random_sampler.filter(*PC_Input);
+
+
+    qDebug() << "PC_Target_decim: " << PC_Target->size();
+    qDebug() << "PC_Input_decim: " << PC_Input->size();
+
+
+    // remove NAN
+    std::vector<int> ind;
+    pcl::removeNaNFromPointCloud(*PC_Target, *PC_Target, ind);
+    pcl::removeNaNNormalsFromPointCloud(*PC_Target, *PC_Target, ind);
+    pcl::removeNaNFromPointCloud(*PC_Input, *PC_Input, ind);
+    pcl::removeNaNNormalsFromPointCloud(*PC_Input, *PC_Input, ind);
+
+
+
+
+
+
+
+
+
+    /*
+pcl::IterativeClosestPoint<PointNormalT, PointNormalT> icp;
+
+
+// Corrispondence Estimation
+// Scelgo il mia stima dei accopiamenti
+qDebug() << "Corrispondence Estimation";
+pcl::registration::CorrespondenceEstimationBase<PointNormalT, PointNormalT>::Ptr cens;
+cens.reset(new pcl::registration::CorrespondenceEstimation<PointNormalT, PointNormalT>);
+cens->setInputTarget (PC_Target);
+cens->setInputSource (PC_Input);
+icp.setCorrespondenceEstimation (cens);
+
+
+// Corrispondence Rejection
+qDebug() << "Corrispondence Rejection";
+pcl::registration::CorrespondenceRejectorDistance::Ptr cor_rej_dist (new pcl::registration::CorrespondenceRejectorDistance);
+cor_rej_dist->setMaximumDistance(0.2);
+cor_rej_dist->setInputTarget<PointNormalT> (PC_Target);
+cor_rej_dist->setInputSource<PointNormalT> (PC_Input);
+icp.addCorrespondenceRejector (cor_rej_dist);
+
+
+// Transformation Estimation
+// Scelgo un metodo per risolvere il problema
+qDebug() << "Transformation Estimation";
+pcl::registration::TransformationEstimation<PointNormalT, PointNormalT>::Ptr te;
+te.reset(new pcl::registration::TransformationEstimationPointToPlaneLLS<PointNormalT, PointNormalT>);
+icp.setTransformationEstimation (te);
+
+
+icp.setInputSource(PC_Input);
+icp.setInputTarget(PC_Target);
+
+// Modalità di fine ICP
+// icp.setEuclideanFitnessEpsilon(10E-9);
+//  icp.setTransformationEpsilon(10E-9);
+icp.setMaximumIterations(1);
+
+
+qDebug() << "Align";
+PointCloudNormalT::Ptr Final(new PointCloudNormalT);
+icp.align(*Final);
+qDebug() << "has converged:" << icp.hasConverged() << " score: " << icp.getFitnessScore();
+
+
+Eigen::Matrix4f transformation_ = icp.getFinalTransformation();
+*/
+
+
+
+
+
+
+
+
+
+    pcl::CorrespondencesPtr correspondences(new pcl::Correspondences);
+
+    // Find Correspondences
+    {
+        pcl::ScopeTime t ("Find Correspondences");
+        pcl::registration::CorrespondenceEstimationBase<PointNormalT, PointNormalT>::Ptr myCorrespondenceEstimation;
+        myCorrespondenceEstimation.reset(new pcl::registration::CorrespondenceEstimation<PointNormalT, PointNormalT>);
+        myCorrespondenceEstimation->setInputSource (PC_Input);
+        myCorrespondenceEstimation->setInputTarget (PC_Target);
+       // myCorrespondenceEstimation->determineReciprocalCorrespondences (*correspondences);
+         myCorrespondenceEstimation->determineCorrespondences(*correspondences);
+        qDebug() << "corresp found : " << correspondences->size() ;
+    }
+
+    // Filter Correspondences
+    {
+        pcl::ScopeTime t ("Reject Correspondences");
+        pcl::registration::CorrespondenceRejectorDistance::Ptr cor_rej_dist (new pcl::registration::CorrespondenceRejectorDistance);
+        cor_rej_dist->setMaximumDistance(corr_max_distance);
+        if (cor_rej_dist->requiresSourcePoints())
+        {
+            pcl::PCLPointCloud2::Ptr Source2 (new pcl::PCLPointCloud2);
+            pcl::toPCLPointCloud2 (*PC_Input, *Source2);
+            cor_rej_dist->setSourcePoints(Source2);
+        }
+        if (cor_rej_dist->requiresTargetPoints())
+        {
+            pcl::PCLPointCloud2::Ptr Target2 (new pcl::PCLPointCloud2);
+            pcl::toPCLPointCloud2 (*PC_Target, *Target2);
+            cor_rej_dist->setTargetPoints(Target2);
+        }
+        cor_rej_dist->setInputCorrespondences (correspondences);
+        cor_rej_dist->getCorrespondences (*correspondences);
+        qDebug() << "corresp filtered : " << correspondences->size();
+    }
+
+
+ //   if (correspondences->size() < 10) return Transform();
+    // Find Transformation
+    pcl::ScopeTime t ("Find Transformation");
+    Eigen::Matrix4f transformation_ = Eigen::Matrix4f::Identity();
+    pcl::registration::TransformationEstimationPointToPlaneLLS<PointNormalT, PointNormalT> transf_est;
+    transf_est.estimateRigidTransformation (*PC_Input, *PC_Target, *correspondences, transformation_);
+    Transform T(transformation_);
+    qDebug() << "transf est : " << T.prettyprint();
+
+    return T;
 }

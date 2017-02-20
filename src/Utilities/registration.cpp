@@ -4,7 +4,7 @@ namespace utils
 {
 
 
-Transform getTransformation(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input )
+Transform getTransformationNormal(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input )
 {
     try
     {/*
@@ -90,7 +90,7 @@ Transform getTransformation(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT:
         // Scelgo un metodo per risolvere il problema
         qDebug() << "Transformation Estimation";
         pcl::registration::TransformationEstimation<PointNormalT, PointNormalT>::Ptr te;
-        te.reset(new pcl::registration::TransformationEstimationPointToPlane<PointNormalT, PointNormalT>);
+        te.reset(new pcl::registration::TransformationEstimationPointToPlaneLLS<PointNormalT, PointNormalT>);
 
         icp.setTransformationEstimation (te);
 
@@ -157,7 +157,7 @@ Transform getTransformation(PointCloudT::Ptr PC_Target, PointCloudT::Ptr PC_Inpu
     pcl::copyPointCloud(*PC_Target, *PC_Target_Normal);
     pcl::copyPointCloud(*PC_Input, *PC_Input_Normal);
 
-    return getTransformation(PC_Target_Normal, PC_Input_Normal );
+    return getTransformationNormal(PC_Target_Normal, PC_Input_Normal );
 }
 
 

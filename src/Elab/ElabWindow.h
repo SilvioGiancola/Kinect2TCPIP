@@ -34,14 +34,16 @@ public:
 
 private slots:
     void on_actionOpenAcq_triggered();
+    void on_actionSavePointCloudAs_triggered();
+    void on_actionExportReconstruction_triggered();
 
     void on_actionShowPC_triggered();
 
-    void on_LineAlign_clicked();
-
     void on_EstimateNormals_clicked();
-
     void on_RemoveOutliers_clicked();
+    void on_LineAlign_clicked();
+    void on_LignAlignAll_clicked();
+    void on_BackBoneAlign_clicked();
 
 private:
     Ui::ElabWindow *ui;
@@ -53,8 +55,6 @@ private:
 
 
     MatrixOfCloud myMatrixOfPointCloud;
-
-  //  QStringList IDorder = {0,0,0,0};
 
 };
 #endif // ElabWindow_H

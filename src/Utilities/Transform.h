@@ -8,6 +8,8 @@
 #include "define.h"
 #include <QStringList>
 
+
+// Angles in ???
 class Transform
 {
 public:
@@ -21,11 +23,16 @@ public:
     virtual ~Transform();
 
 
+    // Point Cloud sensor transformation
+    Eigen::Vector4f getSensorOrigin(){return getOrigin4();}
+    Eigen::Quaternionf getSensorOrientation(){return getQuaternion();}
+
     Eigen::Vector4f getOrigin4(){return matrix.block<4,1>(0,3);}
     Eigen::Vector3f getOrigin3(){return matrix.block<3,1>(0,3);}
     Eigen::Quaternionf getQuaternion(){return Eigen::Quaternionf(matrix3());}
     Eigen::Vector3f getEulerAngles(){return matrix3().eulerAngles(0,1,2);}
     Eigen::Affine3f getAffine3f(){return Eigen::Affine3f(matrix);}
+    Eigen::Matrix4f getMatrix4(){return matrix;}
 
     QVector3D getEulerAnglesQVector3D(){Eigen::Vector3f vect = getEulerAngles(); return QVector3D(vect(0), vect(1), vect(2));}
     QVector3D getOriginQVector3D(){Eigen::Vector3f vect = getOrigin3(); return QVector3D(vect(0), vect(1), vect(2));}

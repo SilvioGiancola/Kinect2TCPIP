@@ -7,6 +7,7 @@
 #include <QDebug>
 #include "Transform.h"
 #include <stdio.h>
+#include <pcl/common/time.h>  // Scope Time
 
 
 // exceptions
