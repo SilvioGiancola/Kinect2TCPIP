@@ -9,6 +9,7 @@
 #include "define.h"
 #include <QList>
 #include <QStringList>
+#include <QTime>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -70,7 +71,12 @@ private:
     QList<SetOfCloud> _MatrixOfCloud;
 
 
-    Transform Align(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input, float decimate_percent = 1.0, float corr_max_distance = 0.2);
+    Transform AlignICP(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input, float decimate_percent = 1.0, float corr_max_distance = 0.2);
+    Transform AlignRANSAC(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input);
+
+    void DetectBRISK(PointCloudNormalT::Ptr input, PointCloudNormalT::Ptr output, int paramThreshold, int octave);
+    void DescribeCSHOT(PointCloudNormalT::Ptr input,PointCloudNormalT::Ptr keypoints, pcl::PointCloud<pcl::SHOT1344>::Ptr descriptor );
+
 };
 
 #endif /* MatrixOfCloud_H_ */

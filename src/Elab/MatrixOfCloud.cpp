@@ -207,7 +207,7 @@ void MatrixOfCloud::BackBoneAlign(QString ID)
 {
     for (int i = 0; i < _MatrixOfCloud.length() - 1; i++)
     {
-        for (int iter = 0; iter < 20; iter++)
+        for (int iter = 0; iter < 1; iter++)
         {
             PointCloudNormalT::Ptr PC_Target(new PointCloudNormalT);
             PC_Target = this->getPointCloud(i,ID);
@@ -221,7 +221,7 @@ void MatrixOfCloud::BackBoneAlign(QString ID)
 
 
             float decimate_percent = 1.0;
-              if (iter < 10)  decimate_percent = 0.0625;
+            if (iter < 10)  decimate_percent = 0.0625;
             else if (iter < 15)  decimate_percent = 0.25;
             else if (iter < 18)  decimate_percent = 0.5;
             else if (iter < 20)  decimate_percent = 1.0;
@@ -238,7 +238,7 @@ void MatrixOfCloud::BackBoneAlign(QString ID)
             PointCloudNormalT::Ptr PC_Input_copy(new PointCloudNormalT);
             pcl::copyPointCloud(*PC_Target, *PC_Target_copy);
             pcl::copyPointCloud(*PC_Input, *PC_Input_copy);
-/*
+            /*
 
             //DO BRISK STUFF
             {
@@ -312,7 +312,8 @@ void MatrixOfCloud::BackBoneAlign(QString ID)
             }*/
 
             // perform alignment
-            Transform T = Align(PC_Target_copy, PC_Input_copy, decimate_percent, corr_max_distance);
+            //Transform T = AlignICP(PC_Target_copy, PC_Input_copy, decimate_percent, corr_max_distance);
+            Transform T = AlignRANSAC(PC_Target_copy, PC_Input_copy);
 
             for (int l = i+1; l < this->getNumberOfPointCloudLines(); l++)
             {
@@ -367,7 +368,8 @@ void MatrixOfCloud::AlignLines(int refindex, int newindex)
         else if (iter < 20)  corr_max_distance = (0.05);
 
         // perform alignment
-        Transform T = Align(PC_Target, PC_Input, decimate_percent, corr_max_distance);
+        Transform T = AlignICP(PC_Target, PC_Input, decimate_percent, corr_max_distance);
+
 
 
         for (int l = newindex; l < this->getNumberOfPointCloudLines(); l++)
@@ -407,7 +409,7 @@ void MatrixOfCloud::AlignLines(int refindex, int newindex)
 
 
 
-Transform MatrixOfCloud::Align(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input, float decimate_percent, float corr_max_distance)
+Transform MatrixOfCloud::AlignICP(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input, float decimate_percent, float corr_max_distance)
 {
     // PRE - TRANSFORM
     pcl::transformPointCloudWithNormals(*PC_Target, *PC_Target, PC_Target->sensor_origin_.head(3), PC_Target->sensor_orientation_);
@@ -514,8 +516,8 @@ Eigen::Matrix4f transformation_ = icp.getFinalTransformation();
         myCorrespondenceEstimation.reset(new pcl::registration::CorrespondenceEstimation<PointNormalT, PointNormalT>);
         myCorrespondenceEstimation->setInputSource (PC_Input);
         myCorrespondenceEstimation->setInputTarget (PC_Target);
-       // myCorrespondenceEstimation->determineReciprocalCorrespondences (*correspondences);
-         myCorrespondenceEstimation->determineCorrespondences(*correspondences);
+        // myCorrespondenceEstimation->determineReciprocalCorrespondences (*correspondences);
+        myCorrespondenceEstimation->determineCorrespondences(*correspondences);
         qDebug() << "corresp found : " << correspondences->size() ;
     }
 
@@ -542,7 +544,7 @@ Eigen::Matrix4f transformation_ = icp.getFinalTransformation();
     }
 
 
- //   if (correspondences->size() < 10) return Transform();
+    //   if (correspondences->size() < 10) return Transform();
     // Find Transformation
     pcl::ScopeTime t ("Find Transformation");
     Eigen::Matrix4f transformation_ = Eigen::Matrix4f::Identity();
@@ -553,3 +555,330 @@ Eigen::Matrix4f transformation_ = icp.getFinalTransformation();
 
     return T;
 }
+
+
+#include <pcl/filters/conditional_removal.h>
+Transform MatrixOfCloud::AlignRANSAC(PointCloudNormalT::Ptr PC_Target, PointCloudNormalT::Ptr PC_Input)
+{
+
+
+    pcl::transformPointCloudWithNormals(*PC_Target, *PC_Target, PC_Target->sensor_origin_.head(3), PC_Target->sensor_orientation_);
+    // pcl::transformPointCloudWithNormals(*PC_Target_BRISK, *PC_Target_BRISK, PC_Target_BRISK->sensor_origin_.head(3), PC_Target_BRISK->sensor_orientation_);
+
+    pcl::transformPointCloudWithNormals(*PC_Input, *PC_Input, PC_Input->sensor_origin_.head(3), PC_Input->sensor_orientation_);
+    // pcl::transformPointCloudWithNormals(*PC_Input_BRISK, *PC_Input_BRISK, PC_Input_BRISK->sensor_origin_.head(3), PC_Input_BRISK->sensor_orientation_);
+
+
+
+    PointCloudNormalT::Ptr PC_Target_BRISK(new PointCloudNormalT);
+    DetectBRISK(PC_Target,PC_Target_BRISK,15,4);
+
+    PointCloudNormalT::Ptr PC_Input_BRISK(new PointCloudNormalT);
+    DetectBRISK(PC_Input,PC_Input_BRISK,15,4);
+
+
+
+
+    // remove 0 point
+    pcl::ConditionAnd<PointNormalT>::Ptr range_cond (new pcl::ConditionAnd<PointNormalT> ());
+    range_cond->addComparison (pcl::FieldComparison<PointNormalT>::ConstPtr (new pcl::FieldComparison<PointNormalT> ("z", pcl::ComparisonOps::GT, 0.1)));
+
+    // build the filter
+    pcl::ConditionalRemoval<PointNormalT> condrem(true);
+    condrem.setCondition(range_cond);
+
+    condrem.setInputCloud (PC_Target_BRISK);
+    condrem.setKeepOrganized(PC_Target_BRISK->isOrganized());
+    condrem.filter (*PC_Target_BRISK);
+
+    condrem.setInputCloud (PC_Input_BRISK);
+    condrem.setKeepOrganized(PC_Input_BRISK->isOrganized());
+    condrem.filter (*PC_Input_BRISK);
+
+
+
+
+    std::vector<int> ind;
+    //  PointCloudT::Ptr Model_nonan (new PointCloudT);
+    // PointCloudT::Ptr PC_nonan (new PointCloudT);
+    pcl::removeNaNFromPointCloud(*PC_Target, *PC_Target, ind);
+    pcl::removeNaNNormalsFromPointCloud(*PC_Target, *PC_Target, ind);
+    pcl::removeNaNFromPointCloud(*PC_Input, *PC_Input, ind);
+    pcl::removeNaNNormalsFromPointCloud(*PC_Input, *PC_Input, ind);
+
+    pcl::PointCloud<pcl::SHOT1344>::Ptr PC_Target_desc (new pcl::PointCloud<pcl::SHOT1344>);
+    DescribeCSHOT(PC_Target, PC_Target_BRISK, PC_Target_desc);
+
+    pcl::PointCloud<pcl::SHOT1344>::Ptr PC_Input_desc (new pcl::PointCloud<pcl::SHOT1344>);
+    DescribeCSHOT(PC_Input, PC_Input_BRISK, PC_Input_desc);
+
+
+
+    pcl::CorrespondencesPtr correspondences(new pcl::Correspondences);
+    // Filter Correspondences
+    {
+        pcl::ScopeTime t ("Estimate Correspondences");
+        pcl::registration::CorrespondenceEstimationBase<pcl::SHOT1344, pcl::SHOT1344>::Ptr myCorrespondenceEstimation;
+        myCorrespondenceEstimation.reset(new pcl::registration::CorrespondenceEstimation<pcl::SHOT1344, pcl::SHOT1344>);
+
+        myCorrespondenceEstimation->setInputSource (PC_Input_desc);
+        myCorrespondenceEstimation->setInputTarget (PC_Target_desc);
+        //if (ui->myCorrespondenceEstimation->_reciprok)
+        myCorrespondenceEstimation->determineReciprocalCorrespondences (*correspondences);
+        // else
+        //   myCorrespondenceEstimation->determineCorrespondences (*correspondences);
+
+        qDebug() << "correspondence size : " << correspondences->size();
+    }
+
+
+/*
+    // Filter Correspondences
+    {
+        pcl::ScopeTime t ("Reject Correspondences");
+        pcl::registration::CorrespondenceRejectorDistance::Ptr cor_rej_dist (new pcl::registration::CorrespondenceRejectorDistance);
+        cor_rej_dist->setMaximumDistance(0.5);
+        if (cor_rej_dist->requiresSourcePoints())
+        {
+            pcl::PCLPointCloud2::Ptr Source2 (new pcl::PCLPointCloud2);
+            pcl::toPCLPointCloud2 (*PC_Input_BRISK, *Source2);
+            cor_rej_dist->setSourcePoints(Source2);
+        }
+        if (cor_rej_dist->requiresTargetPoints())
+        {
+            pcl::PCLPointCloud2::Ptr Target2 (new pcl::PCLPointCloud2);
+            pcl::toPCLPointCloud2 (*PC_Target_BRISK, *Target2);
+            cor_rej_dist->setTargetPoints(Target2);
+        }
+        cor_rej_dist->setInputCorrespondences (correspondences);
+        cor_rej_dist->getCorrespondences (*correspondences);
+        qDebug() << "corresp filtered : " << correspondences->size();
+    }
+*/
+    if (correspondences->size() < 4)
+        return Transform();
+
+
+
+    std::vector<int> source_indices(correspondences->size());
+    std::vector<int> target_indices(correspondences->size());
+    for (int i = 0; i < (int)correspondences->size(); ++i)
+    {
+        source_indices[i] = correspondences->at(i).index_query;
+        target_indices[i] = correspondences->at(i).index_match;
+    }
+    double inlierThreshold = 0.1;
+
+    pcl::SampleConsensusModelRegistration<PointNormalT>::Ptr model;
+    std::vector<int> inliers;
+    Eigen::VectorXf model_coefficients;
+    Eigen::Matrix4f Transformation;
+
+    {
+        pcl::ScopeTime t("ransac-main");
+
+        model.reset(new pcl::SampleConsensusModelRegistration<PointNormalT>(PC_Input_BRISK, source_indices ));
+        model->setInputTarget(PC_Target_BRISK, target_indices);
+
+
+        pcl::RandomSampleConsensus<PointNormalT> sac(model, inlierThreshold);
+
+
+        sac.setMaxIterations(10000000);
+        sac.setProbability(0.99);
+        sac.computeModel();
+
+
+        sac.getInliers(inliers);
+        sac.getModelCoefficients (model_coefficients);
+    }
+
+
+    Transformation.row (0) = model_coefficients.segment<4>(0);
+    Transformation.row (1) = model_coefficients.segment<4>(4);
+    Transformation.row (2) = model_coefficients.segment<4>(8);
+    Transformation.row (3) = model_coefficients.segment<4>(12);
+
+
+
+    std::cout << Transformation << std::endl;
+
+
+
+    return Transform(Transformation);
+}
+
+
+#include <pcl/keypoints/brisk_2d.h>
+
+void MatrixOfCloud::DetectBRISK(PointCloudNormalT::Ptr input, PointCloudNormalT::Ptr output, int paramThreshold, int octave)
+{
+    std::cout << "BRISK Detector...";
+
+    QTime t;
+    t.start();
+
+    // constructor
+    pcl::BriskKeypoint2D<PointNormalT> brisk_keypoint_estimation;
+
+    //output
+    pcl::PointCloud<pcl::PointWithScale> brisk_keypoints_2D;
+
+    //parameters
+    brisk_keypoint_estimation.setThreshold(paramThreshold);
+    brisk_keypoint_estimation.setOctaves(octave);
+    brisk_keypoint_estimation.setInputCloud (input);
+
+    //compute
+    brisk_keypoint_estimation.compute (brisk_keypoints_2D);
+
+    //convert pointwithscale to 3D
+    output->resize(brisk_keypoints_2D.size());
+
+    int k = brisk_keypoints_2D.size();
+    for(int i = 0, j = 0; i < k; ++i)
+    {
+        /// TO DO: improve accuracy
+        int u = floor(brisk_keypoints_2D.points[i].x + 0.5);
+        int v = floor(brisk_keypoints_2D.points[i].y + 0.5);
+
+        j = u + v * input->width;
+
+        if(isnan(input->points[j].x))
+        {
+            --k;
+        }
+        else
+        {
+            output->points[i]=input->points[j];
+            /* output->points[i].b=input->points[j].b;
+            output->points[i].g=input->points[j].g;
+            output->points[i].r=input->points[j].r;
+            output->points[i].x=input->points[j].x;
+            output->points[i].y=input->points[j].y;
+            output->points[i].z=input->points[j].z;*/
+        }
+    }
+
+    std::vector<PointNormalT,Eigen::aligned_allocator<PointNormalT> >::iterator    keypointIt=output->begin();
+
+    for(size_t i=k; k<brisk_keypoints_2D.size(); ++k)
+        output->erase(keypointIt+i);
+
+
+
+    pcl::PointIndices::Ptr indices (new pcl::PointIndices);
+
+    // Remove NAN from keypoints cloud
+    pcl::removeNaNFromPointCloud(*output, *output,indices->indices);
+    pcl::removeNaNNormalsFromPointCloud(*output, *output,indices->indices);
+
+
+
+    /*  // remove 0 points
+    pcl::ConditionAnd<PointT>::Ptr range_cond (new pcl::ConditionAnd<PointT> ());
+    range_cond->addComparison (pcl::FieldComparison<PointT>::ConstPtr (new pcl::FieldComparison<PointT> ("z", pcl::ComparisonOps::GT, 0.1)));
+
+    // build the filter
+    pcl::ConditionalRemoval<PointT> condrem(true);
+    condrem.setCondition(range_cond);
+
+    condrem.setInputCloud (output);
+    condrem.setKeepOrganized(output->isOrganized());
+    condrem.filter (*output);
+
+*/
+
+    std::cout << "DONE " << output->size() << " in " << t.elapsed() << std::endl;
+
+}
+
+
+#include <pcl/features/shot.h>
+#include <pcl/filters/extract_indices.h>
+
+void MatrixOfCloud::DescribeCSHOT(PointCloudNormalT::Ptr input,PointCloudNormalT::Ptr keypoints, pcl::PointCloud<pcl::SHOT1344>::Ptr descriptor )
+{
+
+    pcl::ScopeTime t ("DescribeCSHOT");
+    //cout << "Description with SHOTRGB..." <<endl;
+
+
+    // Calculate features FPFH
+    pcl::SHOTColorEstimation<PointNormalT, PointNormalT, pcl::SHOT1344> shotrgb;
+    shotrgb.setInputCloud (keypoints);
+    shotrgb.setSearchSurface(input);
+    shotrgb.setInputNormals (input);
+
+    // Create an empty kdtree representation, and pass it to the FPFH estimation object.
+    // Its content will be filled inside the object, based on the given input dataset (as no other search surface is given).
+    pcl::search::KdTree<PointNormalT>::Ptr tree (new pcl::search::KdTree<PointNormalT>);
+
+    shotrgb.setSearchMethod (tree);
+
+    // Use all neighbors in a sphere of radius 5cm
+    // IMPORTANT: the radius used here has to be larger than the radius used to estimate the surface normals!!!
+    shotrgb.setRadiusSearch (0.05);
+
+    // Compute the features
+    shotrgb.compute(*descriptor);
+
+    //cout << "OK. keypoints described in " << Timer->elapsed() << " milliseconds" << endl;
+
+    /*
+    // Check if there are NAN points in input cloud
+    for ( size_t i=0; i<input_noNAN->size(); i++ )
+    {
+        cout <<  "x:   " << input_noNAN->points[i].x << "   y:   " << input_noNAN->points[i].y << "   z:   " << input_noNAN->points[i].z <<"  normal_x:   " << input_noNAN->points[i].normal_x  << "  normal_y:   "<< input_noNAN->points[i].normal_y <<"  normal_z:   "<< input_noNAN->points[i].normal_z <<endl;
+    }
+
+    // Visualize histogram
+    for ( size_t i=0; i<descriptor->size(); i++ )
+        for ( int j=0; j<33; j++ )
+            cout << descriptor->points[i].histogram[j] <<endl;
+*/
+
+    pcl::PointIndices::Ptr indices_NAN_feature (new pcl::PointIndices);
+    bool found_NAN_at_i =false;
+
+    //Take Nan indices of point of features that have an histogram value NAN
+    for ( size_t i=0; i<descriptor->size(); i++ )
+    {
+        found_NAN_at_i =false;
+        for ( int j=0; j<1344; j++ )
+            if( !pcl_isfinite(descriptor->points[i].descriptor[j]))
+                found_NAN_at_i =true;
+
+
+        if(found_NAN_at_i)
+            indices_NAN_feature->indices.push_back(i);
+    }
+
+    // Filter descriptor with the indices founded
+    pcl::PointCloud<pcl::SHOT1344>::Ptr descriptor_noNAN ( new pcl::PointCloud<pcl::SHOT1344>);
+
+    pcl::ExtractIndices<pcl::SHOT1344> extract;
+    extract.setInputCloud (descriptor);
+    extract.setIndices (indices_NAN_feature);
+    extract.setNegative (true);
+    extract.filter (*descriptor_noNAN);
+    *descriptor = *descriptor_noNAN;
+
+    /*
+      // Check same length -> obviously not!
+      cout << "Try: Is:" << endl;
+      cout << descriptor->size() << " = " << keypoints->size() << endl;
+     */
+
+    // We have to erase the keypoints that have no more features.
+    pcl::ExtractIndices<pcl::PointXYZRGBNormal> extractKP;
+    extractKP.setInputCloud (keypoints);
+    extractKP.setIndices (indices_NAN_feature);
+    extractKP.setNegative (true);
+    extractKP.filter (*keypoints);
+
+    // Check same length ->obviously yes!
+    //cout << "Try2: Is:" << endl;
+    //cout <<  descriptor->size() << " = " << keypoints->size() << endl;
+}
+

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>910</width>
-    <height>595</height>
+    <height>667</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -212,6 +212,13 @@
         <string>BackBone Alignment</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="radioButton_ICP">
+          <property name="text">
+           <string>ICP</string>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="0">
          <widget class="QComboBox" name="IDlistcomboBox"/>
         </item>
@@ -219,6 +226,16 @@
          <widget class="QPushButton" name="BackBoneAlign">
           <property name="text">
            <string>BackBone Align</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QRadioButton" name="radioButton_RANSAC">
+          <property name="text">
+           <string>RANSAC</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
