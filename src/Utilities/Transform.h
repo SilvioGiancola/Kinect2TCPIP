@@ -9,7 +9,7 @@
 #include <QStringList>
 
 
-// Angles in ???
+// Angles in radians
 class Transform
 {
 public:
@@ -67,6 +67,13 @@ public:
     }
 
 
+    Transform inverse()
+    {
+        Eigen::Matrix3f Rtransp = this->matrix3().transpose();
+        Eigen::Vector3f Ttransp = - Rtransp * this->getOrigin3();
+        Transform inverse(Ttransp, Eigen::Quaternionf(Rtransp));
+        return inverse;
+    }
 
     void print(){ std::cout << matrix << std::endl; }
 

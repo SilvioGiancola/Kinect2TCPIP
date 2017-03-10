@@ -1,6 +1,6 @@
 # ELABORATION SOLUTION (Kinect V2 Handler)
-set(elab_SOURCES ElabMain.cpp ElabWindow.cpp SetOfCloud.cpp MatrixOfCloud.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/registration.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
-set(elab_HEADERS ElabWindow.h SetOfCloud.h MatrixOfCloud.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/registration.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
+set(elab_SOURCES ElabMain.cpp ElabWindow.cpp SetOfCloud.cpp MatrixOfCloud.cpp Matcher.cpp Downsampler.cpp ../Utilities/TransformationWidget.cpp ../Utilities/CloudViewer.cpp ../Utilities/registration.cpp ../Utilities/Transform.cpp ../Utilities/LogWidget.cpp)
+set(elab_HEADERS ElabWindow.h SetOfCloud.h MatrixOfCloud.h Matcher.h Downsampler.h ../Utilities/TransformationWidget.h ../Utilities/CloudViewer.h ../Utilities/define.h ../Utilities/registration.h ../Utilities/Transform.h ../Utilities/LogWidget.h )
 set(elab_FORMS   ElabWindow.ui ../Utilities/TransformationWidget.ui ../Utilities/CloudViewer.ui ../Utilities/LogWidget.ui)
 
 
